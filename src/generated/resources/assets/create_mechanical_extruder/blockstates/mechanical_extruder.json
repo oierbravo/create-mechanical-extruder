@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "create_mechanical_extruder:block/mechanical_extruder/block"
+    }
+  }
+}

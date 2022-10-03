@@ -1,0 +1,33 @@
+modLoader = "javafml"
+loaderVersion = "[40,)"
+license = "MIT License"
+[[mods]]
+modId = "create_mechanical_extruder"
+version = "${file.jarVersion}"
+displayName = "Create Mechanical Extruder"
+logoFile="logo.png"
+description = '''
+Gather blocks from fluid combinations.
+'''
+
+[[dependencies.create_mechanical_extruder]]
+    modId = "forge"
+    mandatory = true
+    versionRange = "[40,)"
+    ordering = "NONE"
+    side = "BOTH"
+
+[[dependencies.create_mechanical_extruder]]
+    modId = "minecraft"
+    mandatory = true
+    versionRange = "[1.18,1.19)"
+    ordering = "NONE"
+    side = "BOTH"
+
+[[dependencies.create_mechanical_extruder]]
+    modId = "create"
+    mandatory = true
+    versionRange="[0.5.0.e,)"
+    ordering = "AFTER"
+    side = "BOTH"
+
