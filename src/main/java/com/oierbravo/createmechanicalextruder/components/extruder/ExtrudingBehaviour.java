@@ -1,31 +1,17 @@
 package com.oierbravo.createmechanicalextruder.components.extruder;
 
-import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllSoundEvents;
-import com.simibubi.create.content.contraptions.components.press.BeltPressingCallbacks;
-import com.simibubi.create.content.contraptions.relays.belt.transport.TransportedItemStack;
 import com.simibubi.create.foundation.tileEntity.SmartTileEntity;
-import com.simibubi.create.foundation.tileEntity.TileEntityBehaviour;
 import com.simibubi.create.foundation.tileEntity.behaviour.belt.BeltProcessingBehaviour;
-import com.simibubi.create.foundation.tileEntity.behaviour.belt.TransportedItemStackHandlerBehaviour;
-import com.simibubi.create.foundation.utility.NBTHelper;
 import com.simibubi.create.foundation.utility.VecHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ExtrudingBehaviour extends BeltProcessingBehaviour {
 
@@ -45,6 +31,7 @@ public class ExtrudingBehaviour extends BeltProcessingBehaviour {
 
 
 		public float getKineticSpeed();
+		public boolean tryProcess(boolean simulate);
 	}
 
 	public <T extends SmartTileEntity & ExtrudingBehaviourSpecifics> ExtrudingBehaviour(T te) {
@@ -94,7 +81,19 @@ public class ExtrudingBehaviour extends BeltProcessingBehaviour {
 
 		Level level = getWorld();
 		BlockPos worldPosition = getPos();
+		if (!running || level == null) {
+			if (level != null && !level.isClientSide) {
 
+				if (specifics.getKineticSpeed() == 0)
+					return;
+
+				if (specifics.tryProcess( true))
+					start();
+
+
+			}
+			return;
+		}
 
 
 		if (level.isClientSide && runningTicks == -CYCLE / 2) {
@@ -103,14 +102,8 @@ public class ExtrudingBehaviour extends BeltProcessingBehaviour {
 		}
 
 		if (runningTicks == CYCLE / 2 && specifics.getKineticSpeed() != 0) {
-
-		/*	if (level.getBlockState(worldPosition.below(2))
-				.getSoundType() == SoundType.WOOL)
-				AllSoundEvents.MECHANICAL_PRESS_ACTIVATION_ON_BELT.playOnServer(level, worldPosition);
-			else
-				AllSoundEvents.MECHANICAL_PRESS_ACTIVATION.playOnServer(level, worldPosition, .5f,
-					.75f + (Math.abs(specifics.getKineticSpeed()) / 1024f));
-*/
+			apply();
+			AllSoundEvents.MECHANICAL_PRESS_ACTIVATION_ON_BELT.playOnServer(level, worldPosition);
 			if (!level.isClientSide)
 				tileEntity.sendData();
 		}
@@ -135,30 +128,19 @@ public class ExtrudingBehaviour extends BeltProcessingBehaviour {
 
 
 
-	/*protected void applyInWorld() {
+	protected void apply() {
 		Level level = getWorld();
-		BlockPos worldPosition = getPos();
-		AABB bb = new AABB(worldPosition.below(1));
-		boolean bulk = specifics.canProcessInBulk();
+		//BlockPos worldPosition = getPos();
+		//AABB bb = new AABB(worldPosition.below(1));
 
-		particleItems.clear();
+		//particleItems.clear();
 
 		if (level.isClientSide)
 			return;
 
-		for (Entity entity : level.getEntities(null, bb)) {
-			if (!(entity instanceof ItemEntity itemEntity))
-				continue;
-			if (!entity.isAlive() || !entity.isOnGround())
-				continue;
-
-			entityScanCooldown = 0;
-			if (specifics.tryProcessInWorld(itemEntity, false))
-				tileEntity.sendData();
-			if (!bulk)
-				break;
-		}
-	}*/
+		if (specifics.tryProcess(false))
+			tileEntity.sendData();
+	}
 
 	public int getRunningTickSpeed() {
 		float speed = specifics.getKineticSpeed();

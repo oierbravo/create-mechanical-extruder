@@ -1,12 +1,11 @@
 {
 	"credit": "Made with Blockbench",
 	"textures": {
-		"0": "create:block/axis",
-		"1": "create:block/axis_top",
 		"2": "create:block/andesite_casing",
 		"3": "create:block/andesite_tunnel_top_window",
 		"4": "create:block/funnel_open",
 		"5": "create:block/funnel_closed",
+		"7": "create:block/gearbox",
 		"particle": "create:block/mechanical_press_top"
 	},
 	"elements": [
@@ -32,7 +31,7 @@
 				"east": {"uv": [0, 0, 16, 1], "texture": "#3"},
 				"south": {"uv": [0, 0, 16, 1], "texture": "#2"},
 				"west": {"uv": [0, 0, 16, 1], "texture": "#3"},
-				"up": {"uv": [0, 0, 16, 16], "texture": "#0"},
+				"up": {"uv": [0, 0, 16, 16], "texture": "#particle"},
 				"down": {"uv": [0, 0, 16, 16], "texture": "#2"}
 			}
 		},
@@ -70,10 +69,10 @@
 		},
 		{
 			"name": "back",
-			"from": [1, 1, 15],
-			"to": [15, 15, 16],
+			"from": [1, 1, 14],
+			"to": [15, 15, 15],
 			"faces": {
-				"south": {"uv": [1, 1, 15, 15], "texture": "#1"}
+				"south": {"uv": [1, 1, 15, 15], "texture": "#7"}
 			}
 		},
 		{

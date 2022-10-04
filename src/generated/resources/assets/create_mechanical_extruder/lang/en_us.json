@@ -1,3 +1,4 @@
 {
-  "block.create_mechanical_extruder.mechanical_extruder": "Mechanical Extruder"
+  "block.create_mechanical_extruder.mechanical_extruder": "Mechanical Extruder",
+  "create.recipe.extruding": "Extruding recipe"
 }

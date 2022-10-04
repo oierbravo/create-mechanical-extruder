@@ -1,0 +1,18 @@
+{
+  "type": "create_mechanical_extruder:extruding",
+  "ingredients": [
+    {
+      "fluid": "minecraft:lava",
+      "amount": 1000
+    },
+    {
+      "item": "minecraft:soul_sand"
+    }
+  ],
+  "catalyst": {
+    "item": "minecraft:blue_ice"
+  },
+  "result": {
+    "item": "minecraft:basalt"
+  }
+}

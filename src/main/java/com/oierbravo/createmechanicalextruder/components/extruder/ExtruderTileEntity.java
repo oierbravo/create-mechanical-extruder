@@ -1,25 +1,32 @@
 package com.oierbravo.createmechanicalextruder.components.extruder;
 
+import com.oierbravo.createmechanicalextruder.register.ModRecipes;
 import com.simibubi.create.content.contraptions.base.KineticTileEntity;
-import com.simibubi.create.content.contraptions.components.press.PressingBehaviour;
-import com.simibubi.create.foundation.advancement.AllAdvancements;
+import com.simibubi.create.foundation.fluid.FluidIngredient;
 import com.simibubi.create.foundation.tileEntity.TileEntityBehaviour;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.AirBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
-import net.minecraftforge.items.wrapper.RecipeWrapper;
 
 import java.util.List;
+import java.util.Optional;
 
 public class ExtruderTileEntity extends KineticTileEntity implements ExtrudingBehaviour.ExtrudingBehaviourSpecifics {
     public ItemStackHandler outputInv;
@@ -27,123 +34,69 @@ public class ExtruderTileEntity extends KineticTileEntity implements ExtrudingBe
     public int timer;
     //private ExtruderRecipe lastRecipe;
 
-    public ItemStackHandler meshInv;
-    public ExtrudingBehaviour extudingBehaviour;
+    public ExtrudingBehaviour extrudingBehaviour;
 
     public ExtruderTileEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
 
-        outputInv = new ItemStackHandler(9);
+        outputInv = new ItemStackHandler(1);
         capability = LazyOptional.of(ExtruderInventoryHandler::new);
     }
     @Override
     public void addBehaviours(List<TileEntityBehaviour> behaviours) {
         super.addBehaviours(behaviours);
-        extudingBehaviour = new ExtrudingBehaviour(this);
-        behaviours.add(extudingBehaviour);
+        extrudingBehaviour = new ExtrudingBehaviour(this);
+        behaviours.add(extrudingBehaviour);
 
     }
-    public ExtrudingBehaviour getExtrudinggBehaviour() {
-        return extudingBehaviour;
+    public ExtrudingBehaviour getExtrudingBehaviour() {
+        return extrudingBehaviour;
     }
     @Override
     public void onExtrudingCompleted() {
-
+        int a = 10;
     }
 
     @Override
     public float getKineticSpeed() {
         return getSpeed();
     }
-
-
-    protected boolean isRunning() {
-        return extudingBehaviour.running;
+    protected <C extends Container> boolean matchExtrudingRecipe(ExtrudingRecipe recipe) {
+        if (recipe == null)
+            return false;
+        return ExtrudingRecipe.match(this, recipe);
+    }
+    @Override
+    public boolean tryProcess(boolean simulate) {
+        Optional<ExtrudingRecipe> recipe = getRecipe();
+        if(!recipe.isPresent())
+            return false;
+        if(outputInv.getStackInSlot(0).getCount() == outputInv.getStackInSlot(0).getMaxStackSize()){
+            return false;
+        }
+        if(!outputInv.getStackInSlot(0).isEmpty() && !outputInv.getStackInSlot(0).is(recipe.get().getResultItem().getItem())){
+            return false;
+        }
+        if(simulate)
+            return true;
+       if(outputInv.getStackInSlot(0).isEmpty()){
+            outputInv.setStackInSlot(0, new ItemStack(recipe.get().getResultItem().getItem(),recipe.get().getResultItem().getCount()));
+        } else if(outputInv.getStackInSlot(0).is(recipe.get().getResultItem().getItem())) {
+            outputInv.getStackInSlot(0).grow(1);
+        }
+        return true;
     }
 
-    /*@Override
-    @OnlyIn(Dist.CLIENT)
-    public void tickAudio() {
-        super.tickAudio();
+    public Optional<ExtrudingRecipe> getRecipe() {
 
-        if (getSpeed() == 0)
-            return;
-        if (inputInv.getStackInSlot(0)
-                .isEmpty())
-            return;
 
-        float pitch = Mth.clamp((Math.abs(getSpeed()) / 256f) + .45f, .85f, 1f);
-        SoundScapes.play(SoundScapes.AmbienceGroup.MILLING, worldPosition, pitch);
-    }*/
-
-    @Override
-    public void tick() {
-        super.tick();
-
-        if (getSpeed() == 0)
-            return;
-        for (int i = 0; i < outputInv.getSlots(); i++)
-            if (outputInv.getStackInSlot(i)
-                    .getCount() == outputInv.getSlotLimit(i))
-                return;
-
-        if (timer > 0) {
-            timer -= getProcessingSpeed();
-
-            if (level.isClientSide) {
-                //spawnParticles();
-                return;
-            }
-            if (timer <= 0)
-                process();
-            return;
-        }
-
-       // if (inputInv.getStackInSlot(0)
-       //         .isEmpty())
-        //    return;
-
-        /*RecipeWrapper inventoryIn = new RecipeWrapper(inputAndMeshCombined);
-        if (lastRecipe == null || !lastRecipe.matches(inventoryIn, level)) {
-            Optional<ExtruderRecipe> recipe = ModRecipeTypes.SIFTING.find(inventoryIn, level);
-            if (!recipe.isPresent()) {
-                timer = 100;
-                sendData();
-            } else {
-                lastRecipe = recipe.get();
-                timer = lastRecipe.getProcessingDuration();
-                sendData();
-            }
-            return;
-        }*/
-
-        //timer = lastRecipe.getProcessingDuration();
-        sendData();
+        //return ModRecipes.findExtruding(getItemIngredients(),getFluidIngredients(),getCatalystItem(), level);
+        return ModRecipes.findExtruding(this, level);
     }
     @Override
     public void setRemoved() {
         super.setRemoved();
         capability.invalidate();
-    }
-
-    private void process() {
-
-        //RecipeWrapper inventoryIn = new RecipeWrapper(inputAndMeshCombined);
-
-        //if (lastRecipe == null || !lastRecipe.matches(inventoryIn, level)) {
-            /*Optional<ExtruderRecipe> recipe = ModRecipeTypes.SIFTING.find(inventoryIn, level);
-            if (!recipe.isPresent())
-                return;
-            lastRecipe = recipe.get();*/
-        //}
-
-        /*ItemStack stackInSlot = inputInv.getStackInSlot(0);
-        stackInSlot.shrink(1);
-        inputInv.setStackInSlot(0, stackInSlot);
-        lastRecipe.rollResults()
-                .forEach(stack -> ItemHandlerHelper.insertItemStacked(outputInv, stack, false));
-        sendData();
-        setChanged();*/
     }
 
 
@@ -173,33 +126,102 @@ public class ExtruderTileEntity extends KineticTileEntity implements ExtrudingBe
             return capability.cast();
         return super.getCapability(cap, side);
     }
-    private boolean canProcess(ItemStack stack) {
 
-        ItemStackHandler tester = new ItemStackHandler(2);
-        tester.setStackInSlot(0, stack);
-
-        //if (lastRecipe != null && lastRecipe.matches(inventoryIn, level))
-        //    return true;
-        return true;
-        //return ModRecipeTypes.SIFTING.find(inventoryIn, level)
-        //        .isPresent();
+    private Block getLeftBlock(){
+        BlockPos currentPos = this.getBlockPos();
+        int x = currentPos.getX();
+        return this.level.getBlockState(new BlockPos(x-1,currentPos.getY(),currentPos.getZ())).getBlock();
     }
+    private Block getRightBlock(){
+        BlockPos currentPos = this.getBlockPos();
+        int x = currentPos.getX();
+        return this.level.getBlockState(new BlockPos(x+1,currentPos.getY(),currentPos.getZ())).getBlock();
+    }
+    private Block getBelowBlock(){
+        BlockPos currentPos = this.getBlockPos();
+        return this.level.getBlockState(currentPos.below()).getBlock();
+    }
+    public NonNullList<ItemStack> getItemStacks() {
+        NonNullList<ItemStack> itemStacks = NonNullList.create();
+        Block leftBlock = getLeftBlock();
+        Block rightBlock = getRightBlock();
+
+        if(!(leftBlock instanceof LiquidBlock) && !(leftBlock instanceof AirBlock)){
+            itemStacks.add( new ItemStack(leftBlock.asItem()));
+        }
+        if(!(rightBlock instanceof LiquidBlock) && !(leftBlock instanceof AirBlock)){
+            itemStacks.add( new ItemStack(rightBlock.asItem()));
+        }
+        return itemStacks;
+    }
+    public NonNullList<FluidStack> getFluidStacks() {
+        NonNullList<FluidStack> fluidStacks = NonNullList.create();
+        Block leftBlock = getLeftBlock();
+        Block rightBlock = getRightBlock();
+
+        if((leftBlock instanceof LiquidBlock) && !(leftBlock instanceof AirBlock)){
+            fluidStacks.add( new FluidStack(((LiquidBlock) leftBlock).getFluid(),1000));
+        }
+        if((rightBlock instanceof LiquidBlock) && !(leftBlock instanceof AirBlock)){
+            fluidStacks.add( new FluidStack(((LiquidBlock) rightBlock).getFluid(),1000));
+        }
+        return fluidStacks;
+    }
+    public NonNullList<Ingredient> getItemIngredients() {
+        NonNullList<Ingredient> itemIngredients = NonNullList.create();
+        Block leftBlock = getLeftBlock();
+        Block rightBlock = getRightBlock();
+
+        if(!(leftBlock instanceof LiquidBlock)){
+            itemIngredients.add( Ingredient.of(leftBlock.asItem()));
+        }
+        if(!(rightBlock instanceof LiquidBlock)){
+            itemIngredients.add( Ingredient.of(rightBlock.asItem()));
+        }
+
+        //if(boolean isLiquid = leftBlock.getBlock().g instanceof BlockLiquid || block instance IFluidBlock;)
+        //Collection<ItemStack> itemIngredients = new List<ItemStack>();
+        return itemIngredients;
+    }
+
+    public NonNullList<FluidIngredient> getFluidIngredients() {
+        NonNullList<FluidIngredient> fluidIngredients = NonNullList.create();
+        Block leftBlock = getLeftBlock();
+        Block rightBlock = getRightBlock();
+
+        if(leftBlock instanceof LiquidBlock){
+            fluidIngredients.add( FluidIngredient.fromFluid(((LiquidBlock) leftBlock).getFluid(),1000 ));
+        }
+        if(rightBlock instanceof LiquidBlock){
+            fluidIngredients.add( FluidIngredient.fromFluid(((LiquidBlock) rightBlock).getFluid(),1000 ));
+        }
+
+        return fluidIngredients;
+    }
+
+    public Item getCatalystItem() {
+        Block below = getBelowBlock();
+        return below.asItem();
+    }
+
+
+
     private class ExtruderInventoryHandler extends CombinedInvWrapper {
 
         public ExtruderInventoryHandler() {
-            super( outputInv);
+            super(outputInv);
         }
 
         @Override
         public boolean isItemValid(int slot, ItemStack stack) {
             if (outputInv == getHandlerFromIndex(getIndexForSlot(slot)))
                 return false;
-            return canProcess(stack) && super.isItemValid(slot, stack);
+            return super.isItemValid(slot, stack);
         }
 
         @Override
         public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-            return ItemStack.EMPTY;
+            return stack;
         }
 
 

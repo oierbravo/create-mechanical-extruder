@@ -8,6 +8,7 @@ import com.simibubi.create.foundation.block.ITE;
 import com.simibubi.create.foundation.item.ItemHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -22,7 +23,13 @@ public class ExtruderBlock extends HorizontalKineticBlock implements ITE<Extrude
         super(properties);
     }
 
-
+    @Override
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        Direction prefferedSide = getPreferredHorizontalFacing(context);
+        if (prefferedSide != null)
+            return defaultBlockState().setValue(HORIZONTAL_FACING, prefferedSide);
+        return super.getStateForPlacement(context);
+    }
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
         return ModShapes.EXTRUDER;
@@ -48,7 +55,8 @@ public class ExtruderBlock extends HorizontalKineticBlock implements ITE<Extrude
 
     @Override
     public Direction.Axis getRotationAxis(BlockState state) {
-        return Direction.Axis.Y;
+        return state.getValue(HORIZONTAL_FACING).getOpposite()
+                .getAxis();
     }
 
     @Override

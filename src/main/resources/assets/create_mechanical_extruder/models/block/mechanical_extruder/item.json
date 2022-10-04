@@ -7,8 +7,9 @@
 		"3": "create:block/andesite_tunnel_top_window",
 		"4": "create:block/funnel_open",
 		"5": "create:block/funnel_closed",
-		"particle": "create:block/mechanical_press_top",
-		"mechanical_press_pole": "create:mechanical_press_pole"
+		"8": "create:block/gearbox",
+		"mechanical_press_pole": "create:block/mechanical_press_pole",
+		"particle": "create:block/mechanical_press_top"
 	},
 	"elements": [
 		{
@@ -33,7 +34,7 @@
 				"east": {"uv": [0, 0, 16, 1], "texture": "#3"},
 				"south": {"uv": [0, 0, 16, 1], "texture": "#2"},
 				"west": {"uv": [0, 0, 16, 1], "texture": "#3"},
-				"up": {"uv": [0, 0, 16, 16], "texture": "#0"},
+				"up": {"uv": [0, 0, 16, 16], "texture": "#particle"},
 				"down": {"uv": [0, 0, 16, 16], "texture": "#2"}
 			}
 		},
@@ -71,10 +72,10 @@
 		},
 		{
 			"name": "back",
-			"from": [1, 1, 15],
-			"to": [15, 15, 16],
+			"from": [1, 1, 14],
+			"to": [15, 15, 15],
 			"faces": {
-				"south": {"uv": [1, 1, 15, 15], "texture": "#1"}
+				"south": {"uv": [1, 1, 15, 15], "texture": "#8"}
 			}
 		},
 		{
@@ -125,8 +126,8 @@
 		},
 		{
 			"name": "Axis",
-			"from": [6, 6, 12],
-			"to": [10, 10, 17],
+			"from": [6, 6, 11],
+			"to": [10, 10, 16],
 			"faces": {
 				"north": {"uv": [6, 6, 10, 10], "rotation": 180, "texture": "#1"},
 				"east": {"uv": [6, 0, 10, 16], "rotation": 90, "texture": "#0"},
@@ -137,6 +138,17 @@
 			}
 		}
 	],
+	"display": {
+		"gui": {
+			"rotation": [30, 225, 0],
+			"translation": [0, -2, 0],
+			"scale": [0.55, 0.55, 0.55]
+		},
+		"fixed": {
+			"translation": [0, -2.75, -0.0625],
+			"scale": [0.5, 0.5, 0.5]
+		}
+	},
 	"groups": [
 		0,
 		1,
@@ -154,16 +166,5 @@
 			"color": 0,
 			"children": [10]
 		}
-	],
-	"display": {
-		"gui": {
-			"rotation": [30, 225, 0],
-			"translation": [0, -2, 0],
-			"scale": [0.55, 0.55, 0.55]
-		},
-		"fixed": {
-			"translation": [0, -2.75, -0.0625],
-			"scale": [0.5, 0.5, 0.5]
-		}
-	}
+	]
 }
