@@ -10,7 +10,7 @@
     }
   ],
   "catalyst": {
-    "item": "minecraft:soul_sand"
+    "item": "minecraft:soul_soil"
   },
   "result": {
     "item": "minecraft:basalt"
