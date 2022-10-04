@@ -6,11 +6,11 @@
       "amount": 1000
     },
     {
-      "item": "minecraft:soul_sand"
+      "item": "minecraft:blue_ice"
     }
   ],
   "catalyst": {
-    "item": "minecraft:blue_ice"
+    "item": "minecraft:soul_sand"
   },
   "result": {
     "item": "minecraft:basalt"
