@@ -25,6 +25,8 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -99,6 +101,35 @@ public class ExtruderTileEntity extends KineticTileEntity implements ExtrudingBe
         capability.invalidate();
     }
 
+    public boolean hasIngredient(FluidIngredient fluidIngredient){
+        Block leftBlock = getLeftBlock();
+        boolean found = false;
+        if((leftBlock instanceof LiquidBlock)
+            && fluidIngredient.getMatchingFluidStacks().contains(new FluidStack(((LiquidBlock) leftBlock).getFluid(),1000)
+        ))
+            found = true;
+        Block rightBlock = getLeftBlock();
+        if((rightBlock instanceof LiquidBlock)
+                && fluidIngredient.getMatchingFluidStacks().contains(new FluidStack(((LiquidBlock) rightBlock).getFluid(),1000)
+        ))
+            found = true;
+        return found;
+    }
+    public boolean hasIngredient(Ingredient ingredient){
+        Block leftBlock = getLeftBlock();
+        boolean found = false;
+        if(!(leftBlock instanceof LiquidBlock)
+                && ingredient.test(new ItemStack(leftBlock.asItem())
+        ))
+            found = true;
+        Block rightBlock = getLeftBlock();
+        if(!(rightBlock instanceof LiquidBlock)
+                && ingredient.test(new ItemStack(rightBlock.asItem())
+        ))
+            found = true;
+        return found;
+    }
+
 
 
     @Override
@@ -127,17 +158,17 @@ public class ExtruderTileEntity extends KineticTileEntity implements ExtrudingBe
         return super.getCapability(cap, side);
     }
 
-    private Block getLeftBlock(){
+    public Block getLeftBlock(){
         BlockPos currentPos = this.getBlockPos();
         int x = currentPos.getX();
         return this.level.getBlockState(new BlockPos(x-1,currentPos.getY(),currentPos.getZ())).getBlock();
     }
-    private Block getRightBlock(){
+    public Block getRightBlock(){
         BlockPos currentPos = this.getBlockPos();
         int x = currentPos.getX();
         return this.level.getBlockState(new BlockPos(x+1,currentPos.getY(),currentPos.getZ())).getBlock();
     }
-    private Block getBelowBlock(){
+    public Block getBelowBlock(){
         BlockPos currentPos = this.getBlockPos();
         return this.level.getBlockState(currentPos.below()).getBlock();
     }
@@ -179,8 +210,6 @@ public class ExtruderTileEntity extends KineticTileEntity implements ExtrudingBe
             itemIngredients.add( Ingredient.of(rightBlock.asItem()));
         }
 
-        //if(boolean isLiquid = leftBlock.getBlock().g instanceof BlockLiquid || block instance IFluidBlock;)
-        //Collection<ItemStack> itemIngredients = new List<ItemStack>();
         return itemIngredients;
     }
 
@@ -204,6 +233,13 @@ public class ExtruderTileEntity extends KineticTileEntity implements ExtrudingBe
         return below.asItem();
     }
 
+    public List<String> getAllIngredients() {
+        List<String> list = new ArrayList<>();
+        getItemIngredients().forEach(ingredient -> list.add((!ingredient.isEmpty()) ? ingredient.getItems()[0].getItem().toString() : ItemStack.EMPTY.toString()));
+        getFluidIngredients().forEach(ingredient -> list.add(ingredient.getMatchingFluidStacks().get(0).getFluid().getFluidType().toString()));
+        Collections.sort(list);
+        return list;
+    }
 
 
     private class ExtruderInventoryHandler extends CombinedInvWrapper {
