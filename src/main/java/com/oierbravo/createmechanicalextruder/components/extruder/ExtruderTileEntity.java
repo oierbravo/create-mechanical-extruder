@@ -236,7 +236,7 @@ public class ExtruderTileEntity extends KineticTileEntity implements ExtrudingBe
     public List<String> getAllIngredients() {
         List<String> list = new ArrayList<>();
         getItemIngredients().forEach(ingredient -> list.add((!ingredient.isEmpty()) ? ingredient.getItems()[0].getItem().toString() : ItemStack.EMPTY.toString()));
-        getFluidIngredients().forEach(ingredient -> list.add(ingredient.getMatchingFluidStacks().get(0).getFluid().getFluidType().toString()));
+        getFluidIngredients().forEach(ingredient -> list.add(ingredient.getMatchingFluidStacks().get(0).getFluid().getRegistryName().toString()));
         Collections.sort(list);
         return list;
     }
