@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[40,)"
+loaderVersion="[43,)"
 license = "MIT License"
 [[mods]]
 modId = "create_mechanical_extruder"
@@ -13,14 +13,14 @@ Gather blocks from fluid combinations.
 [[dependencies.create_mechanical_extruder]]
     modId = "forge"
     mandatory = true
-    versionRange = "[40,)"
+versionRange="[43.0.0,)"
     ordering = "NONE"
     side = "BOTH"
 
 [[dependencies.create_mechanical_extruder]]
     modId = "minecraft"
     mandatory = true
-    versionRange = "[1.18,1.19)"
+    versionRange="[1.19.2,1.20)"
     ordering = "NONE"
     side = "BOTH"
 

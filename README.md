@@ -14,7 +14,7 @@
 [![Modrinth](https://modrinth-utils.vercel.app/api/badge/downloads?id=hGAlcCDJ&logo=true)][MODRINTH]
 <!-- modrinth_exclude.end -->
 
-[![](https://img.shields.io/badge/REQUIRES%20CREATE%20v0.5.0d-gold?logo=curseforge&labelColor=gray&style=for-the-badge)][CREATE]
+[![](https://img.shields.io/badge/REQUIRES%20CREATE%20v0.5.0e-gold?logo=curseforge&labelColor=gray&style=for-the-badge)][CREATE]
 
 A mechanical extruder block. Can be used to generate any block or item from adjacent blocks/fluids.
 This mod it's meant to be used in modpacks. Only contains very basic recipes.
