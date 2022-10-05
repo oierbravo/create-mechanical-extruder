@@ -8,6 +8,10 @@ import com.simibubi.create.foundation.block.ITE;
 import com.simibubi.create.foundation.item.ItemHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -15,14 +19,45 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.items.IItemHandlerModifiable;
 
 public class ExtruderBlock extends HorizontalKineticBlock implements ITE<ExtruderTileEntity>, ICogWheel {
     public ExtruderBlock(Properties properties) {
         super(properties);
     }
+    @Override
+    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn,
+                                 BlockHitResult hit) {
+        ExtruderTileEntity extruderTileEntity = (ExtruderTileEntity) worldIn.getBlockEntity(pos);
+        ItemStack handInStack = player.getItemInHand(handIn);
 
+        if (worldIn.isClientSide)
+            return InteractionResult.SUCCESS;
+        if (!handInStack.isEmpty())
+            return InteractionResult.PASS;
+
+        withTileEntityDo(worldIn, pos, extruder -> {
+            boolean emptyOutput = true;
+            IItemHandlerModifiable inv = extruder.outputInv;
+            for (int slot = 0; slot < inv.getSlots(); slot++) {
+                ItemStack stackInSlot = inv.getStackInSlot(slot);
+
+                player.getInventory()
+                        .placeItemBackInInventory(stackInSlot);
+                inv.setStackInSlot(slot, ItemStack.EMPTY);
+            }
+
+
+
+            extruder.setChanged();
+            extruder.sendData();
+        });
+
+        return InteractionResult.SUCCESS;
+    }
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         Direction prefferedSide = getPreferredHorizontalFacing(context);

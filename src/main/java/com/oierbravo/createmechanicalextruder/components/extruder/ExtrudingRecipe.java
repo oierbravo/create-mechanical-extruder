@@ -13,8 +13,12 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraftforge.fluids.FluidStack;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo {
@@ -32,51 +36,33 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
         this.catalyst = params.catalyst;
     }
 
-    /*public static IRecipeTypeInfo getTypeInfo() {
-        return new IRecipeTypeInfo() {
-            @Override
-            public ResourceLocation getId() {
-                return Serializer.ID;
-            }
 
-            @Override
-            public <T extends RecipeSerializer<?>> T getSerializer() {
-                return Serializer;
-            }
-
-
-
-            @Override
-            public <T extends RecipeType<?>> T getType() {
-                return Type.class;
-            }
-        };
-    }*/
 
     @Override
     public boolean matches(SimpleContainer pContainer, Level pLevel) {
         return false;
     }
 
+    /**
+     * ToDO: Solved in a kind of dirty way!!!
+     * @param extruderTileEntity
+     * @param recipe
+     * @return
+     */
     public static boolean match(ExtruderTileEntity extruderTileEntity, ExtrudingRecipe recipe) {
-        List<ItemStack> stack = extruderTileEntity.getItemStacks();
-
-        if(recipe.getItemIngredients().size() != extruderTileEntity.getItemStacks().size())
+        if(!getAllIngredients(recipe).equals(extruderTileEntity.getAllIngredients()))
             return false;
-        if(!recipe.getItemIngredients().isEmpty()
-                && !extruderTileEntity.getItemStacks().stream().allMatch(itemStack -> hasItemStack(itemStack,recipe.getItemIngredients() ))
-        ) return false;
 
-        List<FluidStack> fluids = extruderTileEntity.getFluidStacks();
-        if(recipe.getFluidIngredients().size() != extruderTileEntity.getFluidStacks().size())
-            return false;
-        if(!recipe.getFluidIngredients().isEmpty()
-                && !extruderTileEntity.getFluidStacks().stream().allMatch(fluidStack -> hasFluidStack(fluidStack,recipe.getFluidIngredients() ))
-        ) return false;
 
         if(!recipe.catalyst.isEmpty() && !recipe.catalyst.is(extruderTileEntity.getCatalystItem()))
             return false;
         return true;
+    }
+    private static boolean checkBlockInRecipe(Block block, ExtrudingRecipe recipe){
+        if(block instanceof LiquidBlock){
+            return hasFluidStack(new FluidStack(((LiquidBlock) block).getFluid(),1000),recipe.getFluidIngredients());
+        }
+        return hasItemStack(new ItemStack(block.asItem()),recipe.getItemIngredients());
     }
     private static boolean hasItemStack(ItemStack itemStack,List<Ingredient> itemIngredients){
         if(itemStack.isEmpty())
@@ -106,6 +92,14 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
         return fluidIngredients;
     }
 
+    public static List<String> getAllIngredients(ExtrudingRecipe recipe) {
+        List<String> list = new ArrayList<>();
+        recipe.getItemIngredients().forEach(ingredient -> list.add(ingredient.getItems()[0].getItem().toString()));
+        recipe.getFluidIngredients().forEach(ingredient -> list.add(ingredient.getMatchingFluidStacks().get(0).getFluid().getFluidType().toString()));
+        Collections.sort(list);
+        return list;
+    }
+
     @Override
     public ItemStack assemble(SimpleContainer pContainer) {
         return getResultItem();
@@ -115,7 +109,6 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
     public boolean canCraftInDimensions(int pWidth, int pHeight) {
         return true;
     }
-
 
 
     @Override
