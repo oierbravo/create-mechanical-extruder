@@ -75,7 +75,7 @@ public class ExtruderInstance extends ShaftInstance implements DynamicInstance {
 
 
             BlockState referenceState = blockState.rotate(blockEntity.getLevel(), blockEntity.getBlockPos(), Rotation.CLOCKWISE_180);
-            Direction facing = referenceState.getValue(BlockStateProperties.HORIZONTAL_FACING).getOpposite();
+            Direction facing = referenceState.getValue(BlockStateProperties.HORIZONTAL_FACING);
             return getRotatingMaterial().getModel(AllBlockPartials.SHAFT_HALF, referenceState, facing);
     }
 }

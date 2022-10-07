@@ -72,7 +72,8 @@ public class ExtruderBlock extends HorizontalKineticBlock implements ITE<Extrude
 
     @Override
     public boolean hasShaftTowards(LevelReader world, BlockPos pos, BlockState state, Direction face) {
-        return face == Direction.SOUTH;
+        return face.getAxis() == state.getValue(HORIZONTAL_FACING)
+                .getAxis();
     }
 
 
@@ -90,7 +91,7 @@ public class ExtruderBlock extends HorizontalKineticBlock implements ITE<Extrude
 
     @Override
     public Direction.Axis getRotationAxis(BlockState state) {
-        return state.getValue(HORIZONTAL_FACING).getOpposite()
+        return state.getValue(HORIZONTAL_FACING)
                 .getAxis();
     }
 
