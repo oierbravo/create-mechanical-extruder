@@ -58,9 +58,10 @@ public class ExtruderBlock extends HorizontalKineticBlock implements ITE<Extrude
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         Direction prefferedSide = getPreferredHorizontalFacing(context);
-        if (prefferedSide != null)
-            return defaultBlockState().setValue(HORIZONTAL_FACING, prefferedSide);
-        return super.getStateForPlacement(context);
+        if (prefferedSide == null)
+            prefferedSide = context.getNearestLookingDirection();
+        return defaultBlockState().setValue(HORIZONTAL_FACING, context.getPlayer() != null && context.getPlayer()
+                .isShiftKeyDown() ? prefferedSide : prefferedSide.getOpposite());
     }
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
@@ -69,8 +70,8 @@ public class ExtruderBlock extends HorizontalKineticBlock implements ITE<Extrude
 
     @Override
     public boolean hasShaftTowards(LevelReader world, BlockPos pos, BlockState state, Direction face) {
-        return face.getAxis() == state.getValue(HORIZONTAL_FACING)
-                .getAxis();
+        return face == state.getValue(HORIZONTAL_FACING)
+                .getOpposite();
     }
 
 
