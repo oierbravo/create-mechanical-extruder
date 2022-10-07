@@ -5,7 +5,7 @@ import com.oierbravo.createmechanicalextruder.components.extruder.ExtruderBlock;
 import com.simibubi.create.Create;
 import com.simibubi.create.content.AllSections;
 import com.simibubi.create.foundation.block.BlockStressDefaults;
-import com.simibubi.create.foundation.data.AssetLookup;
+import com.simibubi.create.foundation.data.BlockStateGen;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.data.SharedProperties;
 import com.tterrag.registrate.util.entry.BlockEntry;
@@ -29,7 +29,7 @@ public class ModBlocks {
             .initialProperties(SharedProperties::stone)
             .properties(p -> p.color(MaterialColor.METAL))
             .transform(pickaxeOnly())
-            .blockstate((c, p) -> p.simpleBlock(c.getEntry(), AssetLookup.partialBaseModel(c, p)))
+            .blockstate(BlockStateGen.horizontalBlockProvider(true))
             .transform(BlockStressDefaults.setImpact(4.0))
             .item()
             .transform(customItemModel())

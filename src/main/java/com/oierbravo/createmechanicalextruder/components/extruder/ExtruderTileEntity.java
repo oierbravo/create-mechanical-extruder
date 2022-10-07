@@ -25,10 +25,9 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+
+import static net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING;
 
 public class ExtruderTileEntity extends KineticTileEntity implements ExtrudingBehaviour.ExtrudingBehaviourSpecifics {
     public ItemStackHandler outputInv;
@@ -157,18 +156,29 @@ public class ExtruderTileEntity extends KineticTileEntity implements ExtrudingBe
             return capability.cast();
         return super.getCapability(cap, side);
     }
-
+    private final Map<Direction, Direction> directionLefttBlockMap =
+            Map.of(Direction.NORTH, Direction.WEST,
+                   Direction.SOUTH, Direction.EAST,
+                   Direction.WEST, Direction.NORTH,
+                   Direction.EAST, Direction.SOUTH
+                    );
+    private final Map<Direction, Direction> directionRightBlockMap =
+            Map.of(Direction.NORTH, Direction.EAST,
+                    Direction.SOUTH, Direction.WEST,
+                    Direction.WEST, Direction.SOUTH,
+                    Direction.EAST, Direction.NORTH
+            );
     public Block getLeftBlock(){
         BlockPos currentPos = this.getBlockPos();
-        int x = currentPos.getX();
-        return this.level.getBlockState(new BlockPos(x-1,currentPos.getY(),currentPos.getZ())).getBlock();
+        Direction localDir = this.getBlockState().getValue(HORIZONTAL_FACING);
+        return this.level.getBlockState(currentPos.relative(directionLefttBlockMap.get(localDir))).getBlock();
     }
-    public Block getRightBlock(){
+    private Block getRightBlock(){
         BlockPos currentPos = this.getBlockPos();
-        int x = currentPos.getX();
-        return this.level.getBlockState(new BlockPos(x+1,currentPos.getY(),currentPos.getZ())).getBlock();
+        Direction localDir = this.getBlockState().getValue(HORIZONTAL_FACING);
+        return this.level.getBlockState(currentPos.relative(directionRightBlockMap.get(localDir))).getBlock();
     }
-    public Block getBelowBlock(){
+    private Block getBelowBlock(){
         BlockPos currentPos = this.getBlockPos();
         return this.level.getBlockState(currentPos.below()).getBlock();
     }
