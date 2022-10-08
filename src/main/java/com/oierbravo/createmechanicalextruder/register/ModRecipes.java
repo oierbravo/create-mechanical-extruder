@@ -10,6 +10,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -31,7 +32,8 @@ public class ModRecipes {
         List<ExtrudingRecipe> allExtrudingRecipes = level.getRecipeManager().getAllRecipesFor(ExtrudingRecipe.Type.INSTANCE);
 
         Stream<ExtrudingRecipe> allExtrudingRecipesFiltered = allExtrudingRecipes.stream().filter(extrudingRecipe -> ExtrudingRecipe.match(extruder,extrudingRecipe));
-        Optional<ExtrudingRecipe> recipe = allExtrudingRecipesFiltered.findFirst();
+        Stream<ExtrudingRecipe> allExtrudingRecipesFilteredSorted = allExtrudingRecipesFiltered.sorted(Comparator.comparing(ExtrudingRecipe::hasCatalyst,Comparator.reverseOrder()));
+        Optional<ExtrudingRecipe> recipe = allExtrudingRecipesFilteredSorted.findFirst();
         return recipe;
     }
     /*public static Optional<ExtrudingRecipe> findExtruding(NonNullList<Ingredient> itemIngredients , NonNullList<FluidIngredient> fluidIngredients, Item catalyst, Level level){

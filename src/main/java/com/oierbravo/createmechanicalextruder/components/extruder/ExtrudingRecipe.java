@@ -20,9 +20,11 @@ import net.minecraftforge.fluids.FluidStack;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo {
+    public static Comparator<? super ExtrudingRecipe> hasCatalyst;
     private ResourceLocation id;
     private NonNullList<Ingredient> itemIngredients;
     private NonNullList<FluidIngredient> fluidIngredients;
@@ -92,6 +94,9 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
                 hasFluidStack = true;
         }
         return hasFluidStack;
+    }
+    public boolean hasCatalyst() {
+        return !this.getCatalyst().isEmpty();
     }
     public List<Ingredient> getItemIngredients() {
         return itemIngredients;
