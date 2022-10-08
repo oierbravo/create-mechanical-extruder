@@ -4,6 +4,9 @@ import com.oierbravo.createmechanicalextruder.register.ModRecipes;
 import com.simibubi.create.content.contraptions.base.KineticTileEntity;
 import com.simibubi.create.foundation.fluid.FluidIngredient;
 import com.simibubi.create.foundation.tileEntity.TileEntityBehaviour;
+import com.simibubi.create.foundation.tileEntity.behaviour.ValueBoxTransform;
+import com.simibubi.create.foundation.tileEntity.behaviour.filtering.FilteringBehaviour;
+import com.simibubi.create.foundation.utility.VecHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -18,6 +21,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -34,18 +38,29 @@ public class ExtruderTileEntity extends KineticTileEntity implements ExtrudingBe
     public LazyOptional<IItemHandler> capability;
     public int timer;
     //private ExtruderRecipe lastRecipe;
+    //private boolean contentsChanged;
 
     public ExtrudingBehaviour extrudingBehaviour;
+    private FilteringBehaviour filtering;
+
 
     public ExtruderTileEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
 
         outputInv = new ItemStackHandler(1);
         capability = LazyOptional.of(ExtruderInventoryHandler::new);
+        //contentsChanged = true;
     }
     @Override
     public void addBehaviours(List<TileEntityBehaviour> behaviours) {
         super.addBehaviours(behaviours);
+
+        //filtering = new FilteringBehaviour(this, new ExtruderTileEntity.ExtruderValueBox()).moveText(new Vec3(2, -8, 0))
+            //    .withCallback(newFilter -> contentsChanged = true)
+        filtering = new FilteringBehaviour(this, new ExtruderFilterSlotPositioning())
+                .forRecipes();
+        behaviours.add(filtering);
+
         extrudingBehaviour = new ExtrudingBehaviour(this);
         behaviours.add(extrudingBehaviour);
 
@@ -129,7 +144,9 @@ public class ExtruderTileEntity extends KineticTileEntity implements ExtrudingBe
         return found;
     }
 
-
+    public FilteringBehaviour getFilter() {
+        return filtering;
+    }
 
     @Override
     public void write(CompoundTag compound, boolean clientPacket) {
@@ -270,6 +287,20 @@ public class ExtruderTileEntity extends KineticTileEntity implements ExtrudingBe
             return stack;
         }
 
+
+    }
+    class ExtruderValueBox extends ValueBoxTransform.Sided {
+
+        @Override
+        protected Vec3 getSouthLocation() {
+            return VecHelper.voxelSpace(8, 12, 15.75);
+        }
+
+        @Override
+        protected boolean isSideActive(BlockState state, Direction direction) {
+            return direction.getAxis()
+                    .isHorizontal();
+        }
 
     }
 }

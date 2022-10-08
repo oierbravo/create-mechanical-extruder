@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.oierbravo.createmechanicalextruder.CreateMechanicalExtruder;
 import com.simibubi.create.foundation.fluid.FluidIngredient;
+import com.simibubi.create.foundation.tileEntity.behaviour.filtering.FilteringBehaviour;
 import com.simibubi.create.foundation.utility.recipe.IRecipeTypeInfo;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
@@ -50,11 +51,19 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
      * @return
      */
     public static boolean match(ExtruderTileEntity extruderTileEntity, ExtrudingRecipe recipe) {
+        FilteringBehaviour filter = extruderTileEntity.getFilter();
+        if (filter == null)
+            return false;
+
+        boolean filterTest = filter.test(recipe.getResultItem());
         if(!getAllIngredients(recipe).equals(extruderTileEntity.getAllIngredients()))
             return false;
 
 
         if(!recipe.catalyst.isEmpty() && !recipe.catalyst.is(extruderTileEntity.getCatalystItem()))
+            return false;
+
+        if (!filterTest)
             return false;
         return true;
     }

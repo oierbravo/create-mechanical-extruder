@@ -59,7 +59,10 @@ public class ExtruderBlock extends HorizontalKineticBlock implements ITE<Extrude
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         Direction prefferedSide = getPreferredHorizontalFacing(context);
         if (prefferedSide == null)
-            prefferedSide = context.getNearestLookingDirection();
+            prefferedSide = context.getHorizontalDirection();
+        //if(prefferedSide == Direction.DOWN || prefferedSide == Direction.UP)
+        //    prefferedSide = Direction.NORTH;
+        //context.getHorizontalDirection()
         return defaultBlockState().setValue(HORIZONTAL_FACING, context.getPlayer() != null && context.getPlayer()
                 .isShiftKeyDown() ? prefferedSide : prefferedSide.getOpposite());
     }
