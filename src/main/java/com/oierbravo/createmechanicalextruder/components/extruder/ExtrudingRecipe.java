@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.oierbravo.createmechanicalextruder.CreateMechanicalExtruder;
 import com.simibubi.create.foundation.fluid.FluidIngredient;
+import com.simibubi.create.foundation.tileEntity.behaviour.filtering.FilteringBehaviour;
 import com.simibubi.create.foundation.utility.recipe.IRecipeTypeInfo;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
@@ -20,9 +21,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo {
+    public static Comparator<? super ExtrudingRecipe> hasCatalyst;
     private ResourceLocation id;
     private NonNullList<Ingredient> itemIngredients;
     private NonNullList<FluidIngredient> fluidIngredients;
@@ -51,11 +54,19 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
      * @return
      */
     public static boolean match(ExtruderTileEntity extruderTileEntity, ExtrudingRecipe recipe) {
+        FilteringBehaviour filter = extruderTileEntity.getFilter();
+        if (filter == null)
+            return false;
+
+        boolean filterTest = filter.test(recipe.getResultItem());
         if(!getAllIngredients(recipe).equals(extruderTileEntity.getAllIngredients()))
             return false;
 
 
         if(!recipe.catalyst.isEmpty() && !recipe.catalyst.is(extruderTileEntity.getCatalystItem()))
+            return false;
+
+        if (!filterTest)
             return false;
         return true;
     }
@@ -84,6 +95,9 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
                 hasFluidStack = true;
         }
         return hasFluidStack;
+    }
+    public boolean hasCatalyst() {
+        return !this.getCatalyst().isEmpty();
     }
     public List<Ingredient> getItemIngredients() {
         return itemIngredients;
@@ -233,8 +247,6 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
             buffer.writeItemStack(result, false);
             buffer.writeItemStack(catalyst, false);
         }
-
-
         @Override
         public RecipeSerializer<?> setRegistryName(ResourceLocation name) {
             return INSTANCE;

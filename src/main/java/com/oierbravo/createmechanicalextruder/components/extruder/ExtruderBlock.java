@@ -3,7 +3,6 @@ package com.oierbravo.createmechanicalextruder.components.extruder;
 import com.oierbravo.createmechanicalextruder.register.ModShapes;
 import com.oierbravo.createmechanicalextruder.register.ModTiles;
 import com.simibubi.create.content.contraptions.base.HorizontalKineticBlock;
-import com.simibubi.create.content.contraptions.relays.elementary.ICogWheel;
 import com.simibubi.create.foundation.block.ITE;
 import com.simibubi.create.foundation.item.ItemHelper;
 import net.minecraft.core.BlockPos;
@@ -24,14 +23,13 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
-public class ExtruderBlock extends HorizontalKineticBlock implements ITE<ExtruderTileEntity>, ICogWheel {
+public class ExtruderBlock extends HorizontalKineticBlock implements ITE<ExtruderTileEntity> {
     public ExtruderBlock(Properties properties) {
         super(properties);
     }
     @Override
     public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn,
                                  BlockHitResult hit) {
-        ExtruderTileEntity extruderTileEntity = (ExtruderTileEntity) worldIn.getBlockEntity(pos);
         ItemStack handInStack = player.getItemInHand(handIn);
 
         if (worldIn.isClientSide)
@@ -40,7 +38,6 @@ public class ExtruderBlock extends HorizontalKineticBlock implements ITE<Extrude
             return InteractionResult.PASS;
 
         withTileEntityDo(worldIn, pos, extruder -> {
-            boolean emptyOutput = true;
             IItemHandlerModifiable inv = extruder.outputInv;
             for (int slot = 0; slot < inv.getSlots(); slot++) {
                 ItemStack stackInSlot = inv.getStackInSlot(slot);
@@ -61,9 +58,13 @@ public class ExtruderBlock extends HorizontalKineticBlock implements ITE<Extrude
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         Direction prefferedSide = getPreferredHorizontalFacing(context);
-        if (prefferedSide != null)
-            return defaultBlockState().setValue(HORIZONTAL_FACING, prefferedSide);
-        return super.getStateForPlacement(context);
+        if (prefferedSide == null)
+            prefferedSide = context.getHorizontalDirection();
+        //if(prefferedSide == Direction.DOWN || prefferedSide == Direction.UP)
+        //    prefferedSide = Direction.NORTH;
+        //context.getHorizontalDirection()
+        return defaultBlockState().setValue(HORIZONTAL_FACING, context.getPlayer() != null && context.getPlayer()
+                .isShiftKeyDown() ? prefferedSide : prefferedSide.getOpposite());
     }
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
@@ -72,8 +73,8 @@ public class ExtruderBlock extends HorizontalKineticBlock implements ITE<Extrude
 
     @Override
     public boolean hasShaftTowards(LevelReader world, BlockPos pos, BlockState state, Direction face) {
-        return face.getAxis() == state.getValue(HORIZONTAL_FACING)
-                .getAxis();
+        return face == state.getValue(HORIZONTAL_FACING)
+                .getOpposite();
     }
 
 

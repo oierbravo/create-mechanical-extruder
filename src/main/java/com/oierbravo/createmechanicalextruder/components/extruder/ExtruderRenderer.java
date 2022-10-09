@@ -1,16 +1,11 @@
 package com.oierbravo.createmechanicalextruder.components.extruder;
 
-import com.jozufozu.flywheel.core.PartialModel;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.simibubi.create.content.contraptions.base.KineticTileEntity;
 import com.simibubi.create.content.contraptions.components.millstone.MillstoneRenderer;
-import com.simibubi.create.foundation.render.CachedBufferer;
+import com.simibubi.create.foundation.tileEntity.behaviour.filtering.FilteringRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.state.BlockState;
 
 public class ExtruderRenderer extends MillstoneRenderer {
     public ExtruderRenderer(BlockEntityRendererProvider.Context context) {
@@ -35,7 +30,7 @@ public class ExtruderRenderer extends MillstoneRenderer {
                     .light(light)
                     .renderInto(ms, vb);
         }*/
-
+        FilteringRenderer.renderOnTileEntity(te, partialTicks, ms, buffer, light, overlay);
         super.renderSafe(te, partialTicks, ms, buffer, light, overlay);
     }
 }
