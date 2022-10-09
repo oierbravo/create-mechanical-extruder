@@ -1,5 +1,9 @@
 {
   "variants": {
+    "facing=east": {
+      "model": "create_mechanical_extruder:block/mechanical_extruder/block",
+      "y": 90
+    },
     "facing=north": {
       "model": "create_mechanical_extruder:block/mechanical_extruder/block"
     },
@@ -10,10 +14,6 @@
     "facing=west": {
       "model": "create_mechanical_extruder:block/mechanical_extruder/block",
       "y": 270
-    },
-    "facing=east": {
-      "model": "create_mechanical_extruder:block/mechanical_extruder/block",
-      "y": 90
     }
   }
 }

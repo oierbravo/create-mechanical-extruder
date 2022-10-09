@@ -1,9 +1,6 @@
 package com.oierbravo.createmechanicalextruder;
 
-import com.oierbravo.createmechanicalextruder.register.ModBlocks;
-import com.oierbravo.createmechanicalextruder.register.ModPartials;
-import com.oierbravo.createmechanicalextruder.register.ModRecipes;
-import com.oierbravo.createmechanicalextruder.register.ModTiles;
+import com.oierbravo.createmechanicalextruder.register.*;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import net.minecraft.resources.ResourceLocation;
@@ -12,6 +9,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -36,14 +34,24 @@ public class CreateMechanicalExtruder
         ModBlocks.register();
         ModTiles.register();
         ModRecipes.register(modEventBus);
+        modEventBus.addListener(this::doClientStuff);
 
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT,
                 () -> ModPartials::load);
         generateLangEntries();
     }
     private void generateLangEntries(){
-
         registrate().addRawLang("create.recipe.extruding", "Extruding recipe");
+
+        registrate().addRawLang("create_mechanical_extruder.ponder.extruder.header", "Block generation");
+        registrate().addRawLang("create_mechanical_extruder.ponder.extruder.text_1", "The Extruder uses rotational force to generate blocks");
+        registrate().addRawLang("create_mechanical_extruder.ponder.extruder.text_2", "Generation depends on side & below blocks.");
+        registrate().addRawLang("create_mechanical_extruder.ponder.extruder.text_3", "When the process is done, the result can be obtained via Right-click");
+        registrate().addRawLang("create_mechanical_extruder.ponder.extruder.text_4", "The outputs can also be extracted by automation");
+
+    }
+    private void doClientStuff(final FMLClientSetupEvent event) {
+        event.enqueueWork(ModPonders::register);
     }
     public static CreateRegistrate registrate() {
         return registrate.get();
