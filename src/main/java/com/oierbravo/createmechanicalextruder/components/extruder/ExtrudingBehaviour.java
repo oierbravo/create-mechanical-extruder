@@ -22,7 +22,7 @@ public class ExtrudingBehaviour extends BeltProcessingBehaviour {
 	public int runningTicks;
 	public boolean running;
 	public boolean finished;
-
+	public float headOffset = 0.44f;
 
 
 	public interface ExtrudingBehaviourSpecifics {

@@ -50,7 +50,7 @@ public class ExtruderInstance extends ShaftInstance implements DynamicInstance {
         float renderedHeadOffset = getRenderedHeadOffset(extruder);
 
         extruderPole.setPosition(getInstancePosition())
-                .nudge(0, -renderedHeadOffset + 0.44f, 0);
+                .nudge(0, -renderedHeadOffset + extruder.getExtrudingBehaviour().headOffset, 0);
     }
 
     private float getRenderedHeadOffset(ExtruderTileEntity press) {
