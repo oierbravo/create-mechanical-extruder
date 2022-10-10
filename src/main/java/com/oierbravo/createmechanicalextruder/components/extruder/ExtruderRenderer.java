@@ -27,13 +27,14 @@ public class ExtruderRenderer extends KineticTileEntityRenderer {
     }
     @Override
     protected void renderSafe(KineticTileEntity te, float partialTicks, PoseStack ms, MultiBufferSource buffer, int light, int overlay) {
-
+        super.renderSafe(te, partialTicks, ms, buffer, light, overlay);
+        FilteringRenderer.renderOnTileEntity(te, partialTicks, ms, buffer, light, overlay);
         if (Backend.canUseInstancing(te.getLevel()))
             return;
 
         VertexConsumer vb = buffer.getBuffer(RenderType.solid());
 
-        FilteringRenderer.renderOnTileEntity(te, partialTicks, ms, buffer, light, overlay);
+        //FilteringRenderer.renderOnTileEntity(te, partialTicks, ms, buffer, light, overlay);
 
 
 
