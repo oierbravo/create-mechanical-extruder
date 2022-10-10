@@ -21,6 +21,13 @@ This mod it's meant to be used in modpacks. Only contains very basic recipes.
 
 Heavily inspired on Thermal Expansions Igneous Extruder.
 
+## Features
+- Andesite based kinetic block.
+- Filter functionality for selecting output when recipe collides.
+- Ponder scene.
+- Shift+right click with empty hand to extract content.
+- Extraction via automation.
+- JEI integration.
 
 ## Extruding recipes
 - Left and right blocks/fluids are `ingredients` in any order.
@@ -65,6 +72,17 @@ BasaltGen example (already in the mod)
     "item": "minecraft:basalt"
   }
 }
+```
+
+### KubeJS integration:
+
+```
+//event.recipes.createsifterSifting(output, input[])
+
+//EXAMPLE
+event.recipes.createMechanicalExtruderExtruding(Item.of('minecraft:sand'),[Item.of('minecraft:cobblestone'),Item.of('minecraft:stone')])
+//With catalyst
+event.recipes.createMechanicalExtruderExtruding(Item.of('minecraft:dirt'),[Item.of('minecraft:sand'),Item.of('minecraft:stone')]).withCatalyst('minecraft:clay')
 ```
 
 **Thanks to the Creators of Create.**

@@ -145,9 +145,9 @@ dependencies {
 
 
 
-   // implementation fg.deobf("dev.latvian.mods:rhino-forge:${rhino_version}")
-   // implementation fg.deobf("dev.architectury:architectury-forge:${architectury_version}")
-   // implementation fg.deobf("dev.latvian.mods:kubejs-forge:${kubejs_version}")
+    implementation fg.deobf("dev.latvian.mods:rhino-forge:${rhino_version}")
+    implementation fg.deobf("dev.architectury:architectury-forge:${architectury_version}")
+    implementation fg.deobf("dev.latvian.mods:kubejs-forge:${kubejs_version}")
 
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_minecraft_version}-${curios_version}:api")
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_minecraft_version}-${curios_version}")
