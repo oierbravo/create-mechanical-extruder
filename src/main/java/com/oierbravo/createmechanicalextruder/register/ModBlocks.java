@@ -25,6 +25,9 @@ public class ModBlocks {
 
         Create.registrate().addToSection(MECHANICAL_EXTRUDER, AllSections.KINETICS);
     }
+    static {
+        REGISTRATE.startSection(AllSections.LOGISTICS);
+    }
     public static final BlockEntry<ExtruderBlock> MECHANICAL_EXTRUDER = REGISTRATE.block("mechanical_extruder", ExtruderBlock::new)
             .initialProperties(SharedProperties::stone)
             .properties(p -> p.color(MaterialColor.METAL))

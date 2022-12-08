@@ -148,22 +148,6 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
     public RecipeType<?> getType() {
         return Type.INSTANCE;
     }
-    /*public static class TypeInfo implements IRecipeTypeInfo {
-        @Override
-        public ResourceLocation getId() {
-            return Serializer.ID;
-        }
-
-        @Override
-        public <T extends RecipeSerializer<?>> T getSerializer() {
-            return  Serializer.class;
-        }
-
-        @Override
-        public <T extends RecipeType<?>> T getType() {
-            return null;
-        }
-    }*/
     public static class Type implements RecipeType<ExtrudingRecipe> {
         private Type() { }
         public static final Type INSTANCE = new Type();

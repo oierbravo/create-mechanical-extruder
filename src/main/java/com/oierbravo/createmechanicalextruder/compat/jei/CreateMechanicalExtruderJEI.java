@@ -50,8 +50,8 @@ public class CreateMechanicalExtruderJEI implements IModPlugin {
         RecipeManager rm = Objects.requireNonNull(Minecraft.getInstance().level).getRecipeManager();
 
         List<ExtrudingRecipe> extrudingRecipes = rm.getAllRecipesFor(ExtrudingRecipe.Type.INSTANCE);
-        CreateRecipeCategory<?>
 
+        CreateRecipeCategory<?>
                 extruding = builder(ExtrudingRecipe.class)
                 .addRecipes( extrudingRecipes)
                 //.addTypedRecipes(ExtrudingRecipe.getTypeInfo())

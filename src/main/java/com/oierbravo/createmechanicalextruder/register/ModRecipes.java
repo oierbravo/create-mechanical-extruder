@@ -33,14 +33,6 @@ public class ModRecipes {
 
         Stream<ExtrudingRecipe> allExtrudingRecipesFiltered = allExtrudingRecipes.stream().filter(extrudingRecipe -> ExtrudingRecipe.match(extruder,extrudingRecipe));
         Stream<ExtrudingRecipe> allExtrudingRecipesFilteredSorted = allExtrudingRecipesFiltered.sorted(Comparator.comparing(ExtrudingRecipe::hasCatalyst,Comparator.reverseOrder()));
-        Optional<ExtrudingRecipe> recipe = allExtrudingRecipesFilteredSorted.findFirst();
-        return recipe;
+        return allExtrudingRecipesFilteredSorted.findFirst();
     }
-    /*public static Optional<ExtrudingRecipe> findExtruding(NonNullList<Ingredient> itemIngredients , NonNullList<FluidIngredient> fluidIngredients, Item catalyst, Level level){
-        List<ExtrudingRecipe> allExtrudingRecipes = level.getRecipeManager().getAllRecipesFor(ExtrudingRecipe.Type.INSTANCE);
-        Stream<ExtrudingRecipe> allExtrudingRecipesFiltered = allExtrudingRecipes.stream().filter(extrudingRecipe -> ExtrudingRecipe.match(itemIngredients,fluidIngredients,catalyst,extrudingRecipe));
-        Stream<ExtrudingRecipe> allExtrudingRecipesFiltered = allExtrudingRecipes.stream().filter(extrudingRecipe -> ExtrudingRecipe.match(itemIngredients,fluidIngredients,catalyst,extrudingRecipe));
-        Optional<ExtrudingRecipe> recipe = allExtrudingRecipesFiltered.findFirst();
-        return recipe;
-    }*/
 }
