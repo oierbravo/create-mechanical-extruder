@@ -3,6 +3,7 @@ package com.oierbravo.createmechanicalextruder.components.extruder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.oierbravo.createmechanicalextruder.CreateMechanicalExtruder;
+import com.simibubi.create.content.contraptions.processing.ProcessingOutput;
 import com.simibubi.create.foundation.fluid.FluidIngredient;
 import com.simibubi.create.foundation.tileEntity.behaviour.filtering.FilteringBehaviour;
 import com.simibubi.create.foundation.utility.recipe.IRecipeTypeInfo;
@@ -19,25 +20,27 @@ import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo {
     public static Comparator<? super ExtrudingRecipe> hasCatalyst;
+    private static final Random r = new Random();
     private ResourceLocation id;
     private NonNullList<Ingredient> itemIngredients;
     private NonNullList<FluidIngredient> fluidIngredients;
     private ItemStack catalyst;
 
-    private ItemStack result;
+    private ProcessingOutput result;
+
+    private int requiredBonks;
+
     public ExtrudingRecipe(ExtrudingRecipeBuilder.ExtrudingRecipeParams params) {
         this.id = params.id;
         this.result = params.result;
         this.itemIngredients = params.itemIngredients;
         this.fluidIngredients = params.fluidIngredients;
         this.catalyst = params.catalyst;
+        this.requiredBonks = params.requiredBonks;
     }
 
 
@@ -117,7 +120,7 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
 
     @Override
     public ItemStack assemble(SimpleContainer pContainer) {
-        return getResultItem();
+        return result.rollOutput();
     }
 
     @Override
@@ -128,6 +131,9 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
 
     @Override
     public ItemStack getResultItem() {
+        return result.getStack();
+    }
+    public ProcessingOutput getResult(){
         return result;
     }
 
@@ -149,22 +155,7 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
     public RecipeType<?> getType() {
         return Type.INSTANCE;
     }
-    /*public static class TypeInfo implements IRecipeTypeInfo {
-        @Override
-        public ResourceLocation getId() {
-            return Serializer.ID;
-        }
 
-        @Override
-        public <T extends RecipeSerializer<?>> T getSerializer() {
-            return  Serializer.class;
-        }
-
-        @Override
-        public <T extends RecipeType<?>> T getType() {
-            return null;
-        }
-    }*/
     public static class Type implements RecipeType<ExtrudingRecipe> {
         private Type() { }
         public static final Type INSTANCE = new Type();
@@ -180,8 +171,10 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
             ExtrudingRecipeBuilder builder = new ExtrudingRecipeBuilder(id);
             NonNullList<Ingredient> itemIngredients = NonNullList.create();
             NonNullList<FluidIngredient> fluidIngredients = NonNullList.create();
-            ItemStack result = ItemStack.EMPTY;
+            //ItemStack result = ItemStack.EMPTY;
+            ProcessingOutput result = ProcessingOutput.EMPTY;
             ItemStack catalyst = ItemStack.EMPTY;
+            int requiredBonks = 0;
 
 
             for (JsonElement je : GsonHelper.getAsJsonArray(json, "ingredients")) {
@@ -190,15 +183,21 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
                 else
                     itemIngredients.add(Ingredient.fromJson(je));
             }
-            result = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, "result"));
+            result = ProcessingOutput.deserialize(GsonHelper.getAsJsonObject(json, "result"));
+            //result = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, "result"));
             if(GsonHelper.isValidNode(json,"catalyst")){
                 catalyst = ShapedRecipe.itemStackFromJson( GsonHelper.getAsJsonObject(json, "catalyst"));
+            }
+
+            if(GsonHelper.isValidNode(json,"requiredBonks")){
+                requiredBonks = GsonHelper.getAsInt(json,"requiredBonks");
             }
 
             builder.withItemIngredients(itemIngredients)
                     .withSingleItemOutput(result)
                     .withFluidIngredients(fluidIngredients)
-                    .withCatalyst(catalyst);
+                    .withCatalyst(catalyst)
+                    .requiredBonks(requiredBonks);
             return builder.build();
         }
 
@@ -207,8 +206,9 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
             ExtrudingRecipeBuilder builder = new ExtrudingRecipeBuilder(id);
             NonNullList<Ingredient> itemIngredients = NonNullList.create();
             NonNullList<FluidIngredient> fluidIngredients = NonNullList.create();
-            ItemStack result = ItemStack.EMPTY;
+            ProcessingOutput result = ProcessingOutput.EMPTY;
             ItemStack catalyst = ItemStack.EMPTY;
+            int requiredBonks = 1;
 
 
             int size = buffer.readVarInt();
@@ -219,14 +219,16 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
             for (int i = 0; i < size; i++)
                 fluidIngredients.add(FluidIngredient.read(buffer));
 
-            result = buffer.readItem();
+            result = ProcessingOutput.read(buffer);
             catalyst = buffer.readItem();
+            requiredBonks = buffer.readInt();
 
 
             builder.withItemIngredients(itemIngredients)
                     .withSingleItemOutput(result)
                     .withFluidIngredients(fluidIngredients)
-                    .withCatalyst(catalyst);
+                    .withCatalyst(catalyst)
+                    .requiredBonks(requiredBonks);
             return builder.build();
         }
 
@@ -234,8 +236,9 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
         public void toNetwork(FriendlyByteBuf buffer, ExtrudingRecipe recipe) {
             NonNullList<Ingredient> itemIngredients = recipe.itemIngredients;
             NonNullList<FluidIngredient> fluidIngredients = recipe.fluidIngredients;
-            ItemStack result = recipe.result;
+            ProcessingOutput result = recipe.result;
             ItemStack catalyst = recipe.catalyst;
+            int requiredBonks = recipe.requiredBonks;
 
 
 
@@ -243,9 +246,9 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
             itemIngredients.forEach(i -> i.toNetwork(buffer));
             buffer.writeVarInt(fluidIngredients.size());
             fluidIngredients.forEach(i -> i.write(buffer));
-
-            buffer.writeItemStack(result, false);
+            result.write(buffer);
             buffer.writeItemStack(catalyst, false);
+            buffer.writeInt(requiredBonks);
         }
         @Override
         public RecipeSerializer<?> setRegistryName(ResourceLocation name) {

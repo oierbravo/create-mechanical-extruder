@@ -86,5 +86,4 @@ public class ExtrudingRecipeJS extends RecipeJS {
         save();
         return this;
     }
-
 }

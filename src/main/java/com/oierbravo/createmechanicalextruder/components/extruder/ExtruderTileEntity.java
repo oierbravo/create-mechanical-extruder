@@ -16,7 +16,6 @@ import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.block.AirBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -24,7 +23,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
@@ -42,6 +40,8 @@ public class ExtruderTileEntity extends KineticTileEntity implements ExtrudingBe
 
     public ExtrudingBehaviour extrudingBehaviour;
     private FilteringBehaviour filtering;
+
+    private int currentBonks = 0;
 
 
     public ExtruderTileEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
@@ -95,11 +95,17 @@ public class ExtruderTileEntity extends KineticTileEntity implements ExtrudingBe
         }
         if(simulate)
             return true;
-       if(outputInv.getStackInSlot(0).isEmpty()){
-            outputInv.setStackInSlot(0, new ItemStack(recipe.get().getResultItem().getItem(),recipe.get().getResultItem().getCount()));
+        currentBonks +=1;
+        ItemStack output = recipe.get().getResult().rollOutput();
+        if(outputInv.getStackInSlot(0).isEmpty()){
+
+            outputInv.setStackInSlot(0, output);
+            //outputInv.setStackInSlot(0, new ItemStack(recipe.get().getResultItem().getItem(),recipe.get().getResultItem().getCount()));
         } else if(outputInv.getStackInSlot(0).is(recipe.get().getResultItem().getItem())) {
-            outputInv.getStackInSlot(0).grow(1);
+            outputInv.getStackInSlot(0).grow(output.getCount());
+            //outputInv.getStackInSlot(0).grow(1);
         }
+        //currentBonks +=1;
         return true;
     }
 
@@ -109,39 +115,14 @@ public class ExtruderTileEntity extends KineticTileEntity implements ExtrudingBe
         //return ModRecipes.findExtruding(getItemIngredients(),getFluidIngredients(),getCatalystItem(), level);
         return ModRecipes.findExtruding(this, level);
     }
-    @Override
-    public void setRemoved() {
-        super.setRemoved();
-        capability.invalidate();
-    }
 
-    public boolean hasIngredient(FluidIngredient fluidIngredient){
-        Block leftBlock = getLeftBlock();
-        boolean found = false;
-        if((leftBlock instanceof LiquidBlock)
-            && fluidIngredient.getMatchingFluidStacks().contains(new FluidStack(((LiquidBlock) leftBlock).getFluid(),1000)
-        ))
-            found = true;
-        Block rightBlock = getLeftBlock();
-        if((rightBlock instanceof LiquidBlock)
-                && fluidIngredient.getMatchingFluidStacks().contains(new FluidStack(((LiquidBlock) rightBlock).getFluid(),1000)
-        ))
-            found = true;
-        return found;
+    private void resetBonks() {
+        currentBonks = 0;
     }
-    public boolean hasIngredient(Ingredient ingredient){
-        Block leftBlock = getLeftBlock();
-        boolean found = false;
-        if(!(leftBlock instanceof LiquidBlock)
-                && ingredient.test(new ItemStack(leftBlock.asItem())
-        ))
-            found = true;
-        Block rightBlock = getLeftBlock();
-        if(!(rightBlock instanceof LiquidBlock)
-                && ingredient.test(new ItemStack(rightBlock.asItem())
-        ))
-            found = true;
-        return found;
+    @Override
+    public void invalidate() {
+        super.invalidate();
+        capability.invalidate();
     }
 
     public FilteringBehaviour getFilter() {
@@ -150,17 +131,18 @@ public class ExtruderTileEntity extends KineticTileEntity implements ExtrudingBe
 
     @Override
     public void write(CompoundTag compound, boolean clientPacket) {
+        super.write(compound, clientPacket);
         compound.putInt("Timer", timer);
         compound.put("OutputInventory", outputInv.serializeNBT());
-
-        super.write(compound, clientPacket);
+        compound.putInt("CurrentBonks", currentBonks);
     }
 
     @Override
     protected void read(CompoundTag compound, boolean clientPacket) {
+        super.read(compound, clientPacket);
         timer = compound.getInt("Timer");
         outputInv.deserializeNBT(compound.getCompound("OutputInventory"));
-        super.read(compound, clientPacket);
+        currentBonks = compound.getInt("CurrentBonks");
     }
 
     public int getProcessingSpeed() {
@@ -199,32 +181,7 @@ public class ExtruderTileEntity extends KineticTileEntity implements ExtrudingBe
         BlockPos currentPos = this.getBlockPos();
         return this.level.getBlockState(currentPos.below()).getBlock();
     }
-    public NonNullList<ItemStack> getItemStacks() {
-        NonNullList<ItemStack> itemStacks = NonNullList.create();
-        Block leftBlock = getLeftBlock();
-        Block rightBlock = getRightBlock();
 
-        if(!(leftBlock instanceof LiquidBlock) && !(leftBlock instanceof AirBlock)){
-            itemStacks.add( new ItemStack(leftBlock.asItem()));
-        }
-        if(!(rightBlock instanceof LiquidBlock) && !(leftBlock instanceof AirBlock)){
-            itemStacks.add( new ItemStack(rightBlock.asItem()));
-        }
-        return itemStacks;
-    }
-    public NonNullList<FluidStack> getFluidStacks() {
-        NonNullList<FluidStack> fluidStacks = NonNullList.create();
-        Block leftBlock = getLeftBlock();
-        Block rightBlock = getRightBlock();
-
-        if((leftBlock instanceof LiquidBlock) && !(leftBlock instanceof AirBlock)){
-            fluidStacks.add( new FluidStack(((LiquidBlock) leftBlock).getFluid(),1000));
-        }
-        if((rightBlock instanceof LiquidBlock) && !(leftBlock instanceof AirBlock)){
-            fluidStacks.add( new FluidStack(((LiquidBlock) rightBlock).getFluid(),1000));
-        }
-        return fluidStacks;
-    }
     public NonNullList<Ingredient> getItemIngredients() {
         NonNullList<Ingredient> itemIngredients = NonNullList.create();
         Block leftBlock = getLeftBlock();
