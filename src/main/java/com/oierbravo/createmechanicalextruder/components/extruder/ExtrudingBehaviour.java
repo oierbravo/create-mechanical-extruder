@@ -111,8 +111,8 @@ public class ExtrudingBehaviour extends BeltProcessingBehaviour {
 		if (!level.isClientSide && runningTicks > CYCLE) {
 			finished = true;
 			running = false;
-			specifics.onExtrudingCompleted();
 			tileEntity.sendData();
+			specifics.onExtrudingCompleted();
 			return;
 		}
 

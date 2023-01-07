@@ -5,6 +5,7 @@ import com.oierbravo.createmechanicalextruder.CreateMechanicalExtruder;
 import com.oierbravo.createmechanicalextruder.compat.jei.animations.AnimatedExtruder;
 import com.oierbravo.createmechanicalextruder.components.extruder.ExtrudingRecipe;
 import com.simibubi.create.compat.jei.category.CreateRecipeCategory;
+import com.simibubi.create.content.contraptions.processing.ProcessingOutput;
 import com.simibubi.create.foundation.gui.AllGuiTextures;
 import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -39,8 +40,10 @@ public class ExtrudingCategory extends CreateRecipeCategory<ExtrudingRecipe> {
                     .setBackground(getRenderedSlot(), -1, -1)
                     .addItemStack(recipe.getCatalyst());
 
+        ProcessingOutput output = recipe.getResult();
         builder.addSlot(RecipeIngredientRole.OUTPUT,  130,29)
                 .setBackground(getRenderedSlot(), -1, -1)
+                .addTooltipCallback(addStochasticTooltip(output))
                 .addItemStack(recipe.getResultItem());
 
     }

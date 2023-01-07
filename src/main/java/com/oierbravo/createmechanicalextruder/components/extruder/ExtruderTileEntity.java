@@ -43,6 +43,8 @@ public class ExtruderTileEntity extends KineticTileEntity implements ExtrudingBe
     public ExtrudingBehaviour extrudingBehaviour;
     private FilteringBehaviour filtering;
 
+    private int currentBonks = 0;
+
 
     public ExtruderTileEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -95,10 +97,15 @@ public class ExtruderTileEntity extends KineticTileEntity implements ExtrudingBe
         }
         if(simulate)
             return true;
-       if(outputInv.getStackInSlot(0).isEmpty()){
-            outputInv.setStackInSlot(0, new ItemStack(recipe.get().getResultItem().getItem(),recipe.get().getResultItem().getCount()));
+        currentBonks +=1;
+        ItemStack output = recipe.get().getResult().rollOutput();
+        if(outputInv.getStackInSlot(0).isEmpty()){
+
+            outputInv.setStackInSlot(0, output);
+            //outputInv.setStackInSlot(0, new ItemStack(recipe.get().getResultItem().getItem(),recipe.get().getResultItem().getCount()));
         } else if(outputInv.getStackInSlot(0).is(recipe.get().getResultItem().getItem())) {
-            outputInv.getStackInSlot(0).grow(1);
+            outputInv.getStackInSlot(0).grow(output.getCount());
+            //outputInv.getStackInSlot(0).grow(1);
         }
         return true;
     }
@@ -109,11 +116,17 @@ public class ExtruderTileEntity extends KineticTileEntity implements ExtrudingBe
         //return ModRecipes.findExtruding(getItemIngredients(),getFluidIngredients(),getCatalystItem(), level);
         return ModRecipes.findExtruding(this, level);
     }
+
+    private void resetBonks() {
+        currentBonks = 0;
+    }
+
     @Override
-    public void setRemoved() {
-        super.setRemoved();
+    public void invalidate() {
+        super.invalidate();
         capability.invalidate();
     }
+
 
     public boolean hasIngredient(FluidIngredient fluidIngredient){
         Block leftBlock = getLeftBlock();
@@ -150,17 +163,18 @@ public class ExtruderTileEntity extends KineticTileEntity implements ExtrudingBe
 
     @Override
     public void write(CompoundTag compound, boolean clientPacket) {
+        super.write(compound, clientPacket);
         compound.putInt("Timer", timer);
         compound.put("OutputInventory", outputInv.serializeNBT());
-
-        super.write(compound, clientPacket);
+        compound.putInt("CurrentBonks", currentBonks);
     }
 
     @Override
     protected void read(CompoundTag compound, boolean clientPacket) {
+        super.read(compound, clientPacket);
         timer = compound.getInt("Timer");
         outputInv.deserializeNBT(compound.getCompound("OutputInventory"));
-        super.read(compound, clientPacket);
+        currentBonks = compound.getInt("CurrentBonks");
     }
 
     public int getProcessingSpeed() {
@@ -260,13 +274,14 @@ public class ExtruderTileEntity extends KineticTileEntity implements ExtrudingBe
         return below.asItem();
     }
 
-    public List<String> getAllIngredients() {
+    public List<String> getAllIngredientsStringList() {
         List<String> list = new ArrayList<>();
         getItemIngredients().forEach(ingredient -> list.add((!ingredient.isEmpty()) ? ingredient.getItems()[0].getItem().toString() : ItemStack.EMPTY.toString()));
-        getFluidIngredients().forEach(ingredient -> list.add(ingredient.getMatchingFluidStacks().get(0).getFluid().getFluidType().toString()));
+        getFluidIngredients().forEach(ingredient -> list.add(ingredient.getMatchingFluidStacks().get(0).getFluid().getFluidType().getDescriptionId()));
         Collections.sort(list);
         return list;
     }
+
 
 
     private class ExtruderInventoryHandler extends CombinedInvWrapper {

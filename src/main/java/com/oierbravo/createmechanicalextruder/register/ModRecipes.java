@@ -32,6 +32,7 @@ public class ModRecipes {
         List<ExtrudingRecipe> allExtrudingRecipes = level.getRecipeManager().getAllRecipesFor(ExtrudingRecipe.Type.INSTANCE);
 
         Stream<ExtrudingRecipe> allExtrudingRecipesFiltered = allExtrudingRecipes.stream().filter(extrudingRecipe -> ExtrudingRecipe.match(extruder,extrudingRecipe));
+
         Stream<ExtrudingRecipe> allExtrudingRecipesFilteredSorted = allExtrudingRecipesFiltered.sorted(Comparator.comparing(ExtrudingRecipe::hasCatalyst,Comparator.reverseOrder()));
         return allExtrudingRecipesFilteredSorted.findFirst();
     }
