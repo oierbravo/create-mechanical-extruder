@@ -27,7 +27,6 @@ public class ExtruderRenderer extends KineticTileEntityRenderer {
     }
     @Override
     protected void renderSafe(KineticTileEntity te, float partialTicks, PoseStack ms, MultiBufferSource buffer, int light, int overlay) {
-        super.renderSafe(te, partialTicks, ms, buffer, light, overlay);
         FilteringRenderer.renderOnTileEntity(te, partialTicks, ms, buffer, light, overlay);
         if (Backend.canUseInstancing(te.getLevel()))
             return;
@@ -53,8 +52,5 @@ public class ExtruderRenderer extends KineticTileEntityRenderer {
                 .light(light)
                 .renderInto(ms, vb);
     }
-    /*@Override
-    protected BlockState getRenderedBlockState(KineticTileEntity te) {
-        return shaft(getRotationAxisOf(te));
-    }*/
+
 }
