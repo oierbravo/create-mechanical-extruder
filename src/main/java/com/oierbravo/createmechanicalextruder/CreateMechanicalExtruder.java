@@ -56,9 +56,6 @@ public class CreateMechanicalExtruder
     public static CreateRegistrate registrate() {
         return registrate.get();
     }
-
-
-
     public static ResourceLocation asResource(String path) {
         return new ResourceLocation(MODID, path);
     }
