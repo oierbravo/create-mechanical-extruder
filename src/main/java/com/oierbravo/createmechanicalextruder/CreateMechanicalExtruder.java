@@ -2,7 +2,6 @@ package com.oierbravo.createmechanicalextruder;
 
 import com.oierbravo.createmechanicalextruder.register.*;
 import com.simibubi.create.foundation.data.CreateRegistrate;
-import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -24,15 +23,19 @@ public class CreateMechanicalExtruder
     private static final Logger LOGGER = LogManager.getLogger(MODID);
     public static IEventBus modEventBus;
 
-    public static final NonNullSupplier<CreateRegistrate> registrate = CreateRegistrate.lazy(MODID);
+    public static final CreateRegistrate REGISTRATE = CreateRegistrate.create(MODID);
 
     public CreateMechanicalExtruder()
     {
         modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        REGISTRATE.registerEventListeners(modEventBus);
+
         MinecraftForge.EVENT_BUS.register(this);
 
+        new ModGroup("main");
+
         ModBlocks.register();
-        ModTiles.register();
+        ModBlockEntities.register();
         ModRecipes.register(modEventBus);
         modEventBus.addListener(this::doClientStuff);
 
@@ -54,7 +57,7 @@ public class CreateMechanicalExtruder
         event.enqueueWork(ModPonders::register);
     }
     public static CreateRegistrate registrate() {
-        return registrate.get();
+        return REGISTRATE;
     }
     public static ResourceLocation asResource(String path) {
         return new ResourceLocation(MODID, path);

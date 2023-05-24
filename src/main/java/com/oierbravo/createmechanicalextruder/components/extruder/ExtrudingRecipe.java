@@ -3,10 +3,10 @@ package com.oierbravo.createmechanicalextruder.components.extruder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.oierbravo.createmechanicalextruder.CreateMechanicalExtruder;
-import com.simibubi.create.content.contraptions.processing.ProcessingOutput;
+import com.simibubi.create.content.processing.recipe.ProcessingOutput;
 import com.simibubi.create.foundation.fluid.FluidIngredient;
-import com.simibubi.create.foundation.tileEntity.behaviour.filtering.FilteringBehaviour;
-import com.simibubi.create.foundation.utility.recipe.IRecipeTypeInfo;
+import com.simibubi.create.foundation.blockEntity.behaviour.filtering.FilteringBehaviour;
+import com.simibubi.create.foundation.recipe.IRecipeTypeInfo;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -52,21 +52,21 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
 
     /**
      * ToDO: Solved in a kind of dirty way!!!
-     * @param extruderTileEntity
+     * @param extruderBlockEntity
      * @param recipe
      * @return
      */
-    public static boolean match(ExtruderTileEntity extruderTileEntity, ExtrudingRecipe recipe) {
-        FilteringBehaviour filter = extruderTileEntity.getFilter();
+    public static boolean match(ExtruderBlockEntity extruderBlockEntity, ExtrudingRecipe recipe) {
+        FilteringBehaviour filter = extruderBlockEntity.getFilter();
         if (filter == null)
             return false;
 
         boolean filterTest = filter.test(recipe.getResultItem());
-        if(!getAllIngredients(recipe).equals(extruderTileEntity.getAllIngredients()))
+        if(!getAllIngredients(recipe).equals(extruderBlockEntity.getAllIngredients()))
             return false;
 
 
-        if(!recipe.catalyst.isEmpty() && !recipe.catalyst.is(extruderTileEntity.getCatalystItem()))
+        if(!recipe.catalyst.isEmpty() && !recipe.catalyst.is(extruderBlockEntity.getCatalystItem()))
             return false;
 
         if (!filterTest)

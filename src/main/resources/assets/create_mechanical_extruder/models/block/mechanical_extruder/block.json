@@ -2,7 +2,7 @@
 	"credit": "Made with Blockbench",
 	"textures": {
 		"2": "create:block/andesite_casing",
-		"3": "create:block/andesite_tunnel_top_window",
+		"3": "create_mechanical_extruder:block/andesite_tunnel_top_window",
 		"4": "create:block/funnel_open",
 		"5": "create:block/funnel_closed",
 		"7": "create:block/gearbox",

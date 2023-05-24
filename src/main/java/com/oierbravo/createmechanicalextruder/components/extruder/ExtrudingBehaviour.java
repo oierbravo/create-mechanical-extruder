@@ -1,8 +1,9 @@
 package com.oierbravo.createmechanicalextruder.components.extruder;
 
 import com.simibubi.create.AllSoundEvents;
-import com.simibubi.create.foundation.tileEntity.SmartTileEntity;
-import com.simibubi.create.foundation.tileEntity.behaviour.belt.BeltProcessingBehaviour;
+import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
+import com.simibubi.create.foundation.blockEntity.behaviour.BehaviourType;
+import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.utility.VecHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ItemParticleOption;
@@ -13,10 +14,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-public class ExtrudingBehaviour extends BeltProcessingBehaviour {
+public class ExtrudingBehaviour extends BlockEntityBehaviour {
 
 	public static final int CYCLE = 240;
-
+	public static final BehaviourType<ExtrudingBehaviour> TYPE = new BehaviourType<>();
 	public ExtrudingBehaviourSpecifics specifics;
 	public int prevRunningTicks;
 	public int runningTicks;
@@ -34,7 +35,7 @@ public class ExtrudingBehaviour extends BeltProcessingBehaviour {
 		public boolean tryProcess(boolean simulate);
 	}
 
-	public <T extends SmartTileEntity & ExtrudingBehaviourSpecifics> ExtrudingBehaviour(T te) {
+	public <T extends SmartBlockEntity & ExtrudingBehaviourSpecifics> ExtrudingBehaviour(T te) {
 		super(te);
 		this.specifics = te;
 	}
@@ -71,9 +72,14 @@ public class ExtrudingBehaviour extends BeltProcessingBehaviour {
 		running = true;
 		prevRunningTicks = 0;
 		runningTicks = 0;
-		tileEntity.sendData();
+		blockEntity.sendData();
 	}
 
+
+	@Override
+	public BehaviourType<?> getType() {
+		return TYPE;
+	}
 
 	@Override
 	public void tick() {
@@ -105,14 +111,14 @@ public class ExtrudingBehaviour extends BeltProcessingBehaviour {
 			apply();
 			AllSoundEvents.MECHANICAL_PRESS_ACTIVATION_ON_BELT.playOnServer(level, worldPosition);
 			if (!level.isClientSide)
-				tileEntity.sendData();
+				blockEntity.sendData();
 		}
 
 		if (!level.isClientSide && runningTicks > CYCLE) {
 			finished = true;
 			running = false;
 			specifics.onExtrudingCompleted();
-			tileEntity.sendData();
+			blockEntity.sendData();
 			return;
 		}
 
@@ -121,7 +127,7 @@ public class ExtrudingBehaviour extends BeltProcessingBehaviour {
 		if (prevRunningTicks < CYCLE / 2 && runningTicks >= CYCLE / 2) {
 			runningTicks = CYCLE / 2;
 			// Pause the ticks until a packet is received
-			if (level.isClientSide && !tileEntity.isVirtual())
+			if (level.isClientSide && !blockEntity.isVirtual())
 				runningTicks = -(CYCLE / 2);
 		}
 	}
@@ -139,7 +145,7 @@ public class ExtrudingBehaviour extends BeltProcessingBehaviour {
 			return;
 
 		if (specifics.tryProcess(false))
-			tileEntity.sendData();
+			blockEntity.sendData();
 	}
 
 	public int getRunningTickSpeed() {
@@ -148,29 +154,6 @@ public class ExtrudingBehaviour extends BeltProcessingBehaviour {
 			return 0;
 		return (int) Mth.lerp(Mth.clamp(Math.abs(speed) / 512f, 0, 1), 1, 60);
 	}
-
-	/*protected void spawnParticles() {
-		if (particleItems.isEmpty())
-			return;
-
-		BlockPos worldPosition = getPos();
-
-		if (mode == Mode.BASIN)
-			particleItems
-				.forEach(stack -> makeCompactingParticleEffect(VecHelper.getCenterOf(worldPosition.below(2)), stack));
-		if (mode == Mode.BELT)
-			particleItems.forEach(stack -> makePressingParticleEffect(VecHelper.getCenterOf(worldPosition.below(2))
-				.add(0, 8 / 16f, 0), stack));
-		if (mode == Mode.WORLD)
-			particleItems.forEach(stack -> makePressingParticleEffect(VecHelper.getCenterOf(worldPosition.below(1))
-				.add(0, -1 / 4f, 0), stack));
-
-		particleItems.clear();
-	}*/
-
-
-
-
 
 	public void makeCompactingParticleEffect(Vec3 pos, ItemStack stack) {
 		Level level = getWorld();

@@ -1,6 +1,6 @@
 package com.oierbravo.createmechanicalextruder.ponder;
 
-import com.oierbravo.createmechanicalextruder.components.extruder.ExtruderTileEntity;
+import com.oierbravo.createmechanicalextruder.components.extruder.ExtruderBlockEntity;
 import com.simibubi.create.foundation.ponder.PonderPalette;
 import com.simibubi.create.foundation.ponder.SceneBuilder;
 import com.simibubi.create.foundation.ponder.SceneBuildingUtil;
@@ -18,16 +18,12 @@ public class PonderScenes {
         scene.title("extruder", "Block generation");
         scene.configureBasePlate(0, 0, 5);
         scene.world.showSection(util.select.layer(0), Direction.UP);
-        //scene.world.showSection(util.select.layer(2), Direction.UP);
-        //scene.world.showSection(util.select.fromTo(0, 0, 0, 5, 0, 5), Direction.UP);
         for(int i = 0; i < 5;i++){
             for(int j= 0; j < 5;j++){
                // scene.world.showSection(util.select.position(i, 0, j), Direction.UP);
                // scene.idle(5);
             }
         }
-        //scene.world.showSection(util.select.position(0, 0, 0), Direction.UP);
-        //scene.world.showSection(util.select.position(0, 0, 4), Direction.UP);
         //Cogs
         scene.idle(5);
         scene.world.showSection(util.select.position(2, 1, 5), Direction.DOWN); // back cog
@@ -89,11 +85,11 @@ public class PonderScenes {
 
         scene.world.setKineticSpeed(extruderS, 32);
 
-        Class<ExtruderTileEntity> type = ExtruderTileEntity.class;
-        scene.world.modifyTileEntity(extruderPos, type, pte -> pte.getExtrudingBehaviour()
+        Class<ExtruderBlockEntity> type = ExtruderBlockEntity.class;
+        scene.world.modifyBlockEntity(extruderPos, type, pte -> pte.getExtrudingBehaviour()
                 .start());
         ItemStack output = new ItemStack(Blocks.COBBLESTONE);
-        scene.world.modifyTileEntity(extruderPos, ExtruderTileEntity.class,
+        scene.world.modifyBlockEntity(extruderPos, ExtruderBlockEntity.class,
                 ms -> ms.outputInv.setStackInSlot(0, output));
 
         scene.overlay.showText(50)
@@ -118,7 +114,7 @@ public class PonderScenes {
         scene.world.showSection(util.select.position(2, 1, 1), Direction.NORTH);
         scene.world.showSection(util.select.position(2, 1, 0), Direction.NORTH);
 
-        scene.world.modifyTileEntity(extruderPos, type, pte -> pte.getExtrudingBehaviour()
+        scene.world.modifyBlockEntity(extruderPos, type, pte -> pte.getExtrudingBehaviour()
                 .start());
         scene.idle(35);
         scene.world.createItemOnBelt(util.grid.at(2, 1, 2), Direction.UP, output);

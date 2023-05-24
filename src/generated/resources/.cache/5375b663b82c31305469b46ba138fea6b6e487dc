@@ -1,7 +1,0 @@
-// 1.19.2	2022-10-09T17:09:58.715023696	Registrate Provider for create_mechanical_extruder [Recipes, Advancements, Loot tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), Blockstates, Item models, Lang (en_us/en_ud)]
-f34bf825d2e5cb5deb151c503f031e4d924a3007 assets/create_mechanical_extruder/blockstates/mechanical_extruder.json
-24e97701f39b2c99cc28849b7642e35770894e23 assets/create_mechanical_extruder/lang/en_ud.json
-f26f4d6a6b226fc6a31b899477b5de20077ce678 assets/create_mechanical_extruder/lang/en_us.json
-5042d1ae35c8c621d51a095b7f79b73a38945048 assets/create_mechanical_extruder/models/item/mechanical_extruder.json
-13211a57239d492db282b2ba12b68810342a6d47 data/create_mechanical_extruder/loot_tables/blocks/mechanical_extruder.json
-01043f26fdfc54cc082d2663dd6ce80b2cc482c0 data/minecraft/tags/blocks/mineable/pickaxe.json

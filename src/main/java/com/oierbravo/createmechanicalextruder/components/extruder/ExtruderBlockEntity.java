@@ -1,11 +1,11 @@
 package com.oierbravo.createmechanicalextruder.components.extruder;
 
 import com.oierbravo.createmechanicalextruder.register.ModRecipes;
-import com.simibubi.create.content.contraptions.base.KineticTileEntity;
+import com.simibubi.create.content.kinetics.base.KineticBlockEntity ;
 import com.simibubi.create.foundation.fluid.FluidIngredient;
-import com.simibubi.create.foundation.tileEntity.TileEntityBehaviour;
-import com.simibubi.create.foundation.tileEntity.behaviour.ValueBoxTransform;
-import com.simibubi.create.foundation.tileEntity.behaviour.filtering.FilteringBehaviour;
+import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
+import com.simibubi.create.foundation.blockEntity.behaviour.ValueBoxTransform;
+import com.simibubi.create.foundation.blockEntity.behaviour.filtering.FilteringBehaviour;
 import com.simibubi.create.foundation.utility.VecHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -31,7 +31,7 @@ import java.util.*;
 
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING;
 
-public class ExtruderTileEntity extends KineticTileEntity implements ExtrudingBehaviour.ExtrudingBehaviourSpecifics {
+public class ExtruderBlockEntity extends KineticBlockEntity implements ExtrudingBehaviour.ExtrudingBehaviourSpecifics {
     public ItemStackHandler outputInv;
     public LazyOptional<IItemHandler> capability;
     public int timer;
@@ -44,7 +44,7 @@ public class ExtruderTileEntity extends KineticTileEntity implements ExtrudingBe
     private int currentBonks = 0;
 
 
-    public ExtruderTileEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+    public ExtruderBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
 
         outputInv = new ItemStackHandler(1);
@@ -52,7 +52,7 @@ public class ExtruderTileEntity extends KineticTileEntity implements ExtrudingBe
         //contentsChanged = true;
     }
     @Override
-    public void addBehaviours(List<TileEntityBehaviour> behaviours) {
+    public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
         super.addBehaviours(behaviours);
 
         //filtering = new FilteringBehaviour(this, new ExtruderTileEntity.ExtruderValueBox()).moveText(new Vec3(2, -8, 0))

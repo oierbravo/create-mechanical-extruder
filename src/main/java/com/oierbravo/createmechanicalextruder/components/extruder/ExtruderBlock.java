@@ -1,9 +1,9 @@
 package com.oierbravo.createmechanicalextruder.components.extruder;
 
 import com.oierbravo.createmechanicalextruder.register.ModShapes;
-import com.oierbravo.createmechanicalextruder.register.ModTiles;
-import com.simibubi.create.content.contraptions.base.HorizontalKineticBlock;
-import com.simibubi.create.foundation.block.ITE;
+import com.oierbravo.createmechanicalextruder.register.ModBlockEntities;
+import com.simibubi.create.content.kinetics.base.HorizontalKineticBlock ;
+import com.simibubi.create.foundation.block.IBE;
 import com.simibubi.create.foundation.item.ItemHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -23,7 +23,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
-public class ExtruderBlock extends HorizontalKineticBlock implements ITE<ExtruderTileEntity> {
+public class ExtruderBlock extends HorizontalKineticBlock implements IBE<ExtruderBlockEntity> {
     public ExtruderBlock(Properties properties) {
         super(properties);
     }
@@ -37,7 +37,7 @@ public class ExtruderBlock extends HorizontalKineticBlock implements ITE<Extrude
         if (!handInStack.isEmpty())
             return InteractionResult.PASS;
 
-        withTileEntityDo(worldIn, pos, extruder -> {
+        withBlockEntityDo(worldIn, pos, extruder -> {
             IItemHandlerModifiable inv = extruder.outputInv;
             for (int slot = 0; slot < inv.getSlots(); slot++) {
                 ItemStack stackInSlot = inv.getStackInSlot(slot);
@@ -82,7 +82,7 @@ public class ExtruderBlock extends HorizontalKineticBlock implements ITE<Extrude
     @Override
     public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
         if (state.hasBlockEntity() && state.getBlock() != newState.getBlock()) {
-            withTileEntityDo(worldIn, pos, te -> {
+            withBlockEntityDo(worldIn, pos, te -> {
                 ItemHelper.dropContents(worldIn, pos, te.outputInv);
             });
 
@@ -96,18 +96,20 @@ public class ExtruderBlock extends HorizontalKineticBlock implements ITE<Extrude
                 .getAxis();
     }
 
-    @Override
-    public Class<ExtruderTileEntity> getTileEntityClass() {
-        return ExtruderTileEntity.class;
-    }
 
-    @Override
-    public BlockEntityType<? extends ExtruderTileEntity> getTileEntityType() {
-        return ModTiles.MECHANICAL_EXTRUDER.get();
-    }
 
     @Override
     public boolean isPathfindable(BlockState state, BlockGetter reader, BlockPos pos, PathComputationType type) {
         return false;
+    }
+
+    @Override
+    public Class<ExtruderBlockEntity> getBlockEntityClass() {
+        return ExtruderBlockEntity.class;
+    }
+
+    @Override
+    public BlockEntityType<? extends ExtruderBlockEntity> getBlockEntityType() {
+        return ModBlockEntities.MECHANICAL_EXTRUDER.get();
     }
 }
