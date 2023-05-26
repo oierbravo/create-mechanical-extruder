@@ -1,7 +1,7 @@
 package com.oierbravo.createmechanicalextruder.register;
 
 import com.oierbravo.createmechanicalextruder.CreateMechanicalExtruder;
-import com.oierbravo.createmechanicalextruder.components.extruder.ExtruderTileEntity;
+import com.oierbravo.createmechanicalextruder.components.extruder.ExtruderBlockEntity;
 import com.oierbravo.createmechanicalextruder.components.extruder.ExtrudingRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
@@ -26,7 +26,7 @@ public class ModRecipes {
     public static void register(IEventBus eventBus) {
         SERIALIZERS.register(eventBus);
     }
-    public static Optional<ExtrudingRecipe> findExtruding(ExtruderTileEntity extruder, Level level){
+    public static Optional<ExtrudingRecipe> findExtruding(ExtruderBlockEntity extruder, Level level){
         if(level.isClientSide())
             return Optional.empty();
         List<ExtrudingRecipe> allExtrudingRecipes = level.getRecipeManager().getAllRecipesFor(ExtrudingRecipe.Type.INSTANCE);

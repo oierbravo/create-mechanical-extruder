@@ -3,10 +3,10 @@ package com.oierbravo.createmechanicalextruder.components.extruder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.oierbravo.createmechanicalextruder.CreateMechanicalExtruder;
-import com.simibubi.create.content.contraptions.processing.ProcessingOutput;
+import com.simibubi.create.content.processing.recipe.ProcessingOutput;
+import com.simibubi.create.foundation.blockEntity.behaviour.filtering.FilteringBehaviour;
 import com.simibubi.create.foundation.fluid.FluidIngredient;
-import com.simibubi.create.foundation.tileEntity.behaviour.filtering.FilteringBehaviour;
-import com.simibubi.create.foundation.utility.recipe.IRecipeTypeInfo;
+import com.simibubi.create.foundation.recipe.IRecipeTypeInfo;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -50,82 +50,37 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
 
     /**
      * ToDO: Solved in a kind of dirty way!!!
-     * @param extruderTileEntity
+     * @param extruderBlockEntity
      * @param recipe
      * @return
      */
-    public static boolean matchOLD(ExtruderTileEntity extruderTileEntity, ExtrudingRecipe recipe) {
-        FilteringBehaviour filter = extruderTileEntity.getFilter();
+    public static boolean matchOLD(ExtruderBlockEntity extruderBlockEntity, ExtrudingRecipe recipe) {
+        FilteringBehaviour filter = extruderBlockEntity.getFilter();
         if (filter == null)
             return false;
 
         boolean filterTest = filter.test(recipe.getResultItem());
-        if(!getAllIngredientsStringList(recipe).equals(extruderTileEntity.getAllIngredientsStringList()))
+        if(!getAllIngredientsStringList(recipe).equals(extruderBlockEntity.getAllIngredientsStringList()))
             return false;
 
 
-        if(!recipe.catalyst.isEmpty() && !recipe.catalyst.is(extruderTileEntity.getCatalystItem()))
+        if(!recipe.catalyst.isEmpty() && !recipe.catalyst.is(extruderBlockEntity.getCatalystItem()))
             return false;
 
         if (!filterTest)
             return false;
         return true;
     }
-    public static boolean match(ExtruderTileEntity extruderTileEntity, ExtrudingRecipe recipe){
-        FilteringBehaviour filter = extruderTileEntity.getFilter();
+    public static boolean match(ExtruderBlockEntity extruderBlockEntity, ExtrudingRecipe recipe){
+        FilteringBehaviour filter = extruderBlockEntity.getFilter();
         if (filter == null)
             return false;
         boolean filterTest = filter.test(recipe.getResultItem());
-        if(!getAllIngredientsStringList(recipe).equals(extruderTileEntity.getAllIngredientsStringList()))
+        if(!getAllIngredientsStringList(recipe).equals(extruderBlockEntity.getAllIngredientsStringList()))
             return false;
 
-        if(!recipe.catalyst.isEmpty() && !recipe.catalyst.is(extruderTileEntity.getCatalystItem()))
+        if(!recipe.catalyst.isEmpty() && !recipe.catalyst.is(extruderBlockEntity.getCatalystItem()))
             return false;
-
-        /*List<Ingredient> itemIngredients = recipe.getItemIngredients();
-        List<FluidIngredient> fluidIngredients = recipe.getFluidIngredients();
-
-        //itemIngredients.forEach(ingredient -> list.add(ingredient.getItems()[0].getItem().toString()));
-        for (boolean simulate : Iterate.trueAndFalse) {
-            if(!itemIngredients.isEmpty()){
-                Ingredients: for (int i = 0; i < itemIngredients.size(); i++) {
-                    Ingredient ingredient = itemIngredients.get(i);
-
-                    List<ItemStack> entityItemsStack = extruderTileEntity.getItemStacks();
-                    for(int ei = 0; ei < entityItemsStack.size(); ei++){
-                        if(ingredient.test(entityItemsStack.get(ei))){
-                            continue Ingredients;
-                        };
-                    }
-                    return false;
-                }
-            }
-
-            if(!fluidIngredients.isEmpty()){
-                FluidIngredients: for (int i = 0; i < fluidIngredients.size(); i++) {
-                    FluidIngredient fluidIngredient = fluidIngredients.get(i);
-
-                    List<FluidStack> entityItemsStack = extruderTileEntity.getFluidStacks();
-                    for(int ei = 0; ei < entityItemsStack.size(); ei++){
-                        if(fluidIngredient.test(entityItemsStack.get(ei))){
-                            continue FluidIngredients;
-                        };
-                    }
-                    return false;
-                }
-            }
-
-        }*/
-
-       /* List<String> currentEntityIngredients = extruderTileEntity.getAllIngredientsStringList();
-        if(!getAllIngredientsStringList(recipe).equals(extruderTileEntity.getAllIngredientsStringList()))
-            return false;
-
-
-        if(!recipe.catalyst.isEmpty() && !recipe.catalyst.is(extruderTileEntity.getCatalystItem()))
-            return false;
-*/
-
 
         if (!filterTest)
             return false;

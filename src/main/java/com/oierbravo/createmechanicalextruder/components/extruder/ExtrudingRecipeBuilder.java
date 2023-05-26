@@ -1,6 +1,6 @@
 package com.oierbravo.createmechanicalextruder.components.extruder;
 
-import com.simibubi.create.content.contraptions.processing.ProcessingOutput;
+import com.simibubi.create.content.processing.recipe.ProcessingOutput;
 import com.simibubi.create.foundation.fluid.FluidIngredient;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
