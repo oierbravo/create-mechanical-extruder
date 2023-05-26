@@ -24,9 +24,9 @@ public class ExtrudingCategory extends CreateRecipeCategory<ExtrudingRecipe> {
 
     public void setRecipe(IRecipeLayoutBuilder builder, ExtrudingRecipe recipe, IFocusGroup focuses) {
         int slotIndex = 0;
-        int initX = 11;
+        int initX = 12;
         int initY = 30;
-        int distance = 43;
+        int distance = 42;
         for(int i= 0;i <recipe.getItemIngredients().size();i++ ){
             builder.addSlot(RecipeIngredientRole.INPUT, initX + distance * slotIndex, initY).setBackground(getRenderedSlot(), -1, -1).addIngredients(recipe.getItemIngredients().get(i));
             slotIndex++;
@@ -36,7 +36,7 @@ public class ExtrudingCategory extends CreateRecipeCategory<ExtrudingRecipe> {
             slotIndex++;
         }
         if(!recipe.getCatalyst().isEmpty())
-            builder.addSlot(RecipeIngredientRole.INPUT,  34,57)
+            builder.addSlot(RecipeIngredientRole.INPUT,  33,57)
                     .setBackground(getRenderedSlot(), -1, -1)
                     .addItemStack(recipe.getCatalyst());
 
