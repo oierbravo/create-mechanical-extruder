@@ -15,6 +15,6 @@ public class ExtruderFilterSlotPositioning extends ValueBoxTransform.Sided {
     }
     @Override
     protected Vec3 getSouthLocation() {
-        return VecHelper.voxelSpace(8f, 14f,  16f);
+        return VecHelper.voxelSpace(8f, 13.5f,  16f);
     }
 }
