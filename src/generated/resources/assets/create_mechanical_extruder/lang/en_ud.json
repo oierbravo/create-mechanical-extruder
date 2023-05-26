@@ -1,9 +1,10 @@
 {
-  "block.create_mechanical_extruder.mechanical_extruder": "\u0279\u01DDpn\u0279\u0287x\u018E \u05DF\u0250\u0254\u0131u\u0250\u0265\u0254\u01DDW",
-  "create.recipe.extruding": "\u01DDd\u0131\u0254\u01DD\u0279 bu\u0131pn\u0279\u0287x\u018E",
-  "create_mechanical_extruder.ponder.extruder.header": "uo\u0131\u0287\u0250\u0279\u01DDu\u01DDb \u029E\u0254o\u05DF\u15FA",
-  "create_mechanical_extruder.ponder.extruder.text_1": "s\u029E\u0254o\u05DFq \u01DD\u0287\u0250\u0279\u01DDu\u01DDb o\u0287 \u01DD\u0254\u0279o\u025F \u05DF\u0250uo\u0131\u0287\u0250\u0287o\u0279 s\u01DDsn \u0279\u01DDpn\u0279\u0287x\u018E \u01DD\u0265\u27D8",
-  "create_mechanical_extruder.ponder.extruder.text_2": "\u02D9s\u029E\u0254o\u05DFq \u028Do\u05DF\u01DDq & \u01DDp\u0131s uo spu\u01DDd\u01DDp uo\u0131\u0287\u0250\u0279\u01DDu\u01DD\u2141",
-  "create_mechanical_extruder.ponder.extruder.text_3": "\u029E\u0254\u0131\u05DF\u0254-\u0287\u0265b\u0131\u1D1A \u0250\u0131\u028C p\u01DDu\u0131\u0250\u0287qo \u01DDq u\u0250\u0254 \u0287\u05DFns\u01DD\u0279 \u01DD\u0265\u0287 '\u01DDuop s\u0131 ss\u01DD\u0254o\u0279d \u01DD\u0265\u0287 u\u01DD\u0265M",
-  "create_mechanical_extruder.ponder.extruder.text_4": "uo\u0131\u0287\u0250\u026Fo\u0287n\u0250 \u028Eq p\u01DD\u0287\u0254\u0250\u0279\u0287x\u01DD \u01DDq os\u05DF\u0250 u\u0250\u0254 s\u0287nd\u0287no \u01DD\u0265\u27D8"
+  "block.create_mechanical_extruder.mechanical_extruder": "ɹǝpnɹʇxƎ ןɐɔıuɐɥɔǝW",
+  "create.recipe.extruding": "ǝdıɔǝɹ buıpnɹʇxƎ",
+  "create_mechanical_extruder.ponder.extruder.header": "uoıʇɐɹǝuǝb ʞɔoןᗺ",
+  "create_mechanical_extruder.ponder.extruder.text_1": "sʞɔoןq ǝʇɐɹǝuǝb oʇ ǝɔɹoɟ ןɐuoıʇɐʇoɹ sǝsn ɹǝpnɹʇxƎ ǝɥ⟘",
+  "create_mechanical_extruder.ponder.extruder.text_2": "˙sʞɔoןq ʍoןǝq & ǝpıs uo spuǝdǝp uoıʇɐɹǝuǝ⅁",
+  "create_mechanical_extruder.ponder.extruder.text_3": "ʞɔıןɔ-ʇɥbıᴚ ɐıʌ pǝuıɐʇqo ǝq uɐɔ ʇןnsǝɹ ǝɥʇ 'ǝuop sı ssǝɔoɹd ǝɥʇ uǝɥM",
+  "create_mechanical_extruder.ponder.extruder.text_4": "uoıʇɐɯoʇnɐ ʎq pǝʇɔɐɹʇxǝ ǝq osןɐ uɐɔ sʇndʇno ǝɥ⟘",
+  "itemGroup.create_mechanical_extruder:main": "ɹǝpnɹʇxƎ ןɐɔıuɐɥɔǝW ǝʇɐǝɹƆ"
 }

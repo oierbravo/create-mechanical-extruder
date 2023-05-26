@@ -45,6 +45,7 @@ public class CreateMechanicalExtruder
     }
     private void generateLangEntries(){
         registrate().addRawLang("create.recipe.extruding", "Extruding recipe");
+        registrate().addRawLang("itemGroup.create_mechanical_extruder:main", DISPLAY_NAME);
 
         registrate().addRawLang("create_mechanical_extruder.ponder.extruder.header", "Block generation");
         registrate().addRawLang("create_mechanical_extruder.ponder.extruder.text_1", "The Extruder uses rotational force to generate blocks");
