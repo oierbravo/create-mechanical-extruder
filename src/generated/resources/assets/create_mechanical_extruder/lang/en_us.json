@@ -1,5 +1,6 @@
 {
   "block.create_mechanical_extruder.mechanical_extruder": "Mechanical Extruder",
+  "create.create_mechanical_extruder.goggles.bonks": "%1$s bonks",
   "create.recipe.extruding": "Extruding recipe",
   "create_mechanical_extruder.ponder.extruder.header": "Block generation",
   "create_mechanical_extruder.ponder.extruder.text_1": "The Extruder uses rotational force to generate blocks",

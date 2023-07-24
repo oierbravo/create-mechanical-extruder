@@ -29,6 +29,7 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
     private NonNullList<FluidIngredient> fluidIngredients;
     private ItemStack catalyst;
 
+
     private ProcessingOutput result;
 
     private int requiredBonks;
@@ -39,6 +40,7 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
         this.itemIngredients = params.itemIngredients;
         this.fluidIngredients = params.fluidIngredients;
         this.catalyst = params.catalyst;
+        this.requiredBonks = params.requiredBonks;
     }
 
 
@@ -149,6 +151,10 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
         return catalyst;
     }
 
+    public int getRequiredBonks() {
+        return requiredBonks;
+    }
+
     @Override
     public ResourceLocation getId() {
         return id;
@@ -181,7 +187,7 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
             //ItemStack result = ItemStack.EMPTY;
             ProcessingOutput result = ProcessingOutput.EMPTY;
             ItemStack catalyst = ItemStack.EMPTY;
-            int requiredBonks = 0;
+            int requiredBonks = 1;
 
 
             for (JsonElement je : GsonHelper.getAsJsonArray(json, "ingredients")) {

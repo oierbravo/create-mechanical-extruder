@@ -25,12 +25,11 @@ public class ExtrudingBehaviour extends BlockEntityBehaviour {
 	public boolean finished;
 	public float headOffset = 0.44f;
 
+	public int bonks;
 
 	public interface ExtrudingBehaviourSpecifics {
 
 		public void onExtrudingCompleted();
-
-
 		public float getKineticSpeed();
 		public boolean tryProcess(boolean simulate);
 	}
@@ -45,6 +44,7 @@ public class ExtrudingBehaviour extends BlockEntityBehaviour {
 		running = compound.getBoolean("Running");
 		finished = compound.getBoolean("Finished");
 		prevRunningTicks = runningTicks = compound.getInt("Ticks");
+		bonks = compound.getInt("Bonks");
 		super.read(compound, clientPacket);
 
 	}
@@ -54,6 +54,7 @@ public class ExtrudingBehaviour extends BlockEntityBehaviour {
 		compound.putBoolean("Running", running);
 		compound.putBoolean("Finished", finished);
 		compound.putInt("Ticks", runningTicks);
+		compound.putInt("Bonks", bonks);
 		super.write(compound, clientPacket);
 
 	}
@@ -74,7 +75,16 @@ public class ExtrudingBehaviour extends BlockEntityBehaviour {
 		runningTicks = 0;
 		blockEntity.sendData();
 	}
-
+	public void resetBonks() {
+		bonks = 0;
+	}
+	public int addBonk() {
+		bonks += 1;
+		return bonks;
+	}
+	public int getBonks(){
+		return bonks;
+	}
 
 	@Override
 	public BehaviourType<?> getType() {

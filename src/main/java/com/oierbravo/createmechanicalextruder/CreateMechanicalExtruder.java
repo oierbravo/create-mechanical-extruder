@@ -47,6 +47,7 @@ public class CreateMechanicalExtruder
         registrate().addRawLang("create.recipe.extruding", "Extruding recipe");
         registrate().addRawLang("itemGroup.create_mechanical_extruder:main", DISPLAY_NAME);
 
+        registrate().addRawLang("create.create_mechanical_extruder.goggles.bonks", "%1$s bonks");
         registrate().addRawLang("create_mechanical_extruder.ponder.extruder.header", "Block generation");
         registrate().addRawLang("create_mechanical_extruder.ponder.extruder.text_1", "The Extruder uses rotational force to generate blocks");
         registrate().addRawLang("create_mechanical_extruder.ponder.extruder.text_2", "Generation depends on side & below blocks.");

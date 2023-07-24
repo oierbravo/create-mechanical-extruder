@@ -6,11 +6,13 @@ import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour
 import com.simibubi.create.foundation.blockEntity.behaviour.ValueBoxTransform;
 import com.simibubi.create.foundation.blockEntity.behaviour.filtering.FilteringBehaviour;
 import com.simibubi.create.foundation.fluid.FluidIngredient;
+import com.simibubi.create.foundation.utility.Lang;
 import com.simibubi.create.foundation.utility.VecHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
@@ -43,8 +45,6 @@ public class ExtruderBlockEntity extends KineticBlockEntity implements Extruding
     public ExtrudingBehaviour extrudingBehaviour;
     private FilteringBehaviour filtering;
 
-    private int currentBonks = 0;
-
 
     public ExtruderBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -72,7 +72,7 @@ public class ExtruderBlockEntity extends KineticBlockEntity implements Extruding
     }
     @Override
     public void onExtrudingCompleted() {
-        int a = 10;
+        //extrudingBehaviour.resetBonks();
     }
 
     @Override
@@ -87,8 +87,11 @@ public class ExtruderBlockEntity extends KineticBlockEntity implements Extruding
     @Override
     public boolean tryProcess(boolean simulate) {
         Optional<ExtrudingRecipe> recipe = getRecipe();
+
         if(!recipe.isPresent())
-            return false;
+           return false;
+
+
         if(outputInv.getStackInSlot(0).getCount() == outputInv.getStackInSlot(0).getMaxStackSize()){
             return false;
         }
@@ -97,15 +100,21 @@ public class ExtruderBlockEntity extends KineticBlockEntity implements Extruding
         }
         if(simulate)
             return true;
-        currentBonks +=1;
+
+        int requiredBonks = recipe.get().getRequiredBonks();
+        int currentBonks = extrudingBehaviour.addBonk();
+        if(currentBonks < requiredBonks){
+
+            setChanged();
+            return true;
+        }
+        extrudingBehaviour.resetBonks();
         ItemStack output = recipe.get().getResult().rollOutput();
         if(outputInv.getStackInSlot(0).isEmpty()){
 
             outputInv.setStackInSlot(0, output);
-            //outputInv.setStackInSlot(0, new ItemStack(recipe.get().getResultItem().getItem(),recipe.get().getResultItem().getCount()));
         } else if(outputInv.getStackInSlot(0).is(recipe.get().getResultItem().getItem())) {
             outputInv.getStackInSlot(0).grow(output.getCount());
-            //outputInv.getStackInSlot(0).grow(1);
         }
         return true;
     }
@@ -117,11 +126,7 @@ public class ExtruderBlockEntity extends KineticBlockEntity implements Extruding
         return ModRecipes.findExtruding(this, level);
     }
 
-    private void resetBonks() {
-        currentBonks = 0;
-    }
-
-    @Override
+        @Override
     public void invalidate() {
         super.invalidate();
         capability.invalidate();
@@ -166,7 +171,15 @@ public class ExtruderBlockEntity extends KineticBlockEntity implements Extruding
         super.write(compound, clientPacket);
         compound.putInt("Timer", timer);
         compound.put("OutputInventory", outputInv.serializeNBT());
-        compound.putInt("CurrentBonks", currentBonks);
+    }
+
+    @Override
+    public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
+        boolean addToGoggleTooltip = super.addToGoggleTooltip(tooltip, isPlayerSneaking);
+        int currentBonks = extrudingBehaviour.getBonks();
+        Lang.translate("create_mechanical_extruder.goggles.bonks",currentBonks)
+                .forGoggles(tooltip, 1);
+        return true;
     }
 
     @Override
@@ -174,7 +187,6 @@ public class ExtruderBlockEntity extends KineticBlockEntity implements Extruding
         super.read(compound, clientPacket);
         timer = compound.getInt("Timer");
         outputInv.deserializeNBT(compound.getCompound("OutputInventory"));
-        currentBonks = compound.getInt("CurrentBonks");
     }
 
     public int getProcessingSpeed() {

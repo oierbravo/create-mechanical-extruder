@@ -5,6 +5,8 @@ import com.oierbravo.createmechanicalextruder.components.extruder.ExtruderInstan
 import com.oierbravo.createmechanicalextruder.components.extruder.ExtruderRenderer;
 import com.oierbravo.createmechanicalextruder.components.extruder.ExtruderBlockEntity;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
+
+
 public class ModBlockEntities {
     public static final BlockEntityEntry<ExtruderBlockEntity> MECHANICAL_EXTRUDER = CreateMechanicalExtruder.registrate()
             .blockEntity("mechanical_extruder", ExtruderBlockEntity::new)

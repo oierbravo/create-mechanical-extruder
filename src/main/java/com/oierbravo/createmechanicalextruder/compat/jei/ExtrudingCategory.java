@@ -7,11 +7,14 @@ import com.oierbravo.createmechanicalextruder.components.extruder.ExtrudingRecip
 import com.simibubi.create.compat.jei.category.CreateRecipeCategory;
 import com.simibubi.create.content.processing.recipe.ProcessingOutput;
 import com.simibubi.create.foundation.gui.AllGuiTextures;
+import com.simibubi.create.foundation.utility.Lang;
 import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.resources.ResourceLocation;
 
 public class ExtrudingCategory extends CreateRecipeCategory<ExtrudingRecipe> {
@@ -52,5 +55,12 @@ public class ExtrudingCategory extends CreateRecipeCategory<ExtrudingRecipe> {
     public void draw(ExtrudingRecipe recipe, IRecipeSlotsView iRecipeSlotsView, PoseStack matrixStack, double mouseX, double mouseY) {
         AllGuiTextures.JEI_ARROW.render(matrixStack, 80, 32); //Output arrow
         extruder.draw(matrixStack, 53, 55);
+        drawBonks(recipe, matrixStack, 65,55);
+
+    }
+    protected void drawBonks(ExtrudingRecipe recipe, PoseStack poseStack, int x, int y) {
+        Minecraft minecraft = Minecraft.getInstance();
+        Font fontRenderer = minecraft.font;
+        fontRenderer.draw(poseStack, Lang.translateDirect("create_mechanical_extruder.goggles.bonks",recipe.getRequiredBonks()), x, y, 0xFF808080);
     }
 }

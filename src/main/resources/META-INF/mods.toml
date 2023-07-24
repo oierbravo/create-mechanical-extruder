@@ -27,7 +27,19 @@ versionRange="[43.0.0,)"
 [[dependencies.create_mechanical_extruder]]
     modId = "create"
     mandatory = true
-    versionRange="[0.5.1.b,)"
+    versionRange="[0.5.1.c,)"
     ordering = "AFTER"
     side = "BOTH"
 
+[[dependencies.createsifter]]
+    modId = "kubejs"
+    mandatory = false
+    versionRange = "[1902.6.1-build.300,)"
+    ordering = "AFTER"
+    side = "BOTH"
+[[dependencies.createsifter]]
+    modId = "kubejs_create"
+    mandatory = false
+    versionRange = "[1902.2.4-build.20,)"
+    ordering = "AFTER"
+    side = "BOTH"
