@@ -15,6 +15,7 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 
 public class ExtrudingCategory extends CreateRecipeCategory<ExtrudingRecipe> {
@@ -52,15 +53,15 @@ public class ExtrudingCategory extends CreateRecipeCategory<ExtrudingRecipe> {
     }
 
 
-    public void draw(ExtrudingRecipe recipe, IRecipeSlotsView iRecipeSlotsView, PoseStack matrixStack, double mouseX, double mouseY) {
-        AllGuiTextures.JEI_ARROW.render(matrixStack, 80, 32); //Output arrow
-        extruder.draw(matrixStack, 53, 55);
-        drawBonks(recipe, matrixStack, 65,55);
+    public void draw(ExtrudingRecipe recipe, IRecipeSlotsView iRecipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY) {
+        AllGuiTextures.JEI_ARROW.render(graphics, 80, 32); //Output arrow
+        extruder.draw(graphics, 53, 55);
+        drawBonks(recipe, graphics, 65,55);
 
     }
-    protected void drawBonks(ExtrudingRecipe recipe, PoseStack poseStack, int x, int y) {
+    protected void drawBonks(ExtrudingRecipe recipe, GuiGraphics guiGraphics, int x, int y) {
         Minecraft minecraft = Minecraft.getInstance();
         Font fontRenderer = minecraft.font;
-        fontRenderer.draw(poseStack, Lang.translateDirect("create_mechanical_extruder.goggles.bonks",recipe.getRequiredBonks()), x, y, 0xFF808080);
+        guiGraphics.drawString(fontRenderer,  Lang.translateDirect("create_mechanical_extruder.goggles.bonks",recipe.getRequiredBonks()), x, y, 0xFF808080, false);
     }
 }

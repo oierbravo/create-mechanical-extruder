@@ -5,8 +5,7 @@ import com.jozufozu.flywheel.api.MaterialManager;
 import com.jozufozu.flywheel.api.instance.DynamicInstance;
 import com.jozufozu.flywheel.core.Materials;
 import com.jozufozu.flywheel.core.materials.oriented.OrientedData;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import com.oierbravo.createmechanicalextruder.register.ModPartials;
 import com.simibubi.create.AllPartialModels;
 import com.simibubi.create.content.kinetics.base.ShaftInstance;
@@ -17,6 +16,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import org.joml.Quaternionf;
 
 public class ExtruderInstance extends ShaftInstance<ExtruderBlockEntity> implements DynamicInstance {
     private final OrientedData extruderPole;
@@ -31,7 +31,7 @@ public class ExtruderInstance extends ShaftInstance<ExtruderBlockEntity> impleme
                 .getModel(ModPartials.MECHANICAL_EXTRUDER_POLE, blockState)
                 .createInstance();
 
-        Quaternion q = Vector3f.YP
+        Quaternionf q = Axis.YP
                 .rotationDegrees(AngleHelper.horizontalAngle(blockState.getValue(ExtruderBlock.HORIZONTAL_FACING)));
         extruderPole.setRotation(q);
 

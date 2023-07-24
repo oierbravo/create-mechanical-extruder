@@ -1,10 +1,10 @@
 package com.oierbravo.createmechanicalextruder.compat.jei;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.foundation.gui.CustomLightingSettings;
 import com.simibubi.create.foundation.gui.ILightingSettings;
 import com.simibubi.create.foundation.gui.element.GuiGameElement;
 import mezz.jei.api.gui.drawable.IDrawable;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidStack;
@@ -47,7 +47,8 @@ public class IngredientBlock implements IDrawable {
     }
 
     @Override
-    public void draw(PoseStack poseStack, int xOffset, int yOffset) {
+    public void draw(GuiGraphics guiGraphics, int xOffset, int yOffset) {
 
     }
+
 }

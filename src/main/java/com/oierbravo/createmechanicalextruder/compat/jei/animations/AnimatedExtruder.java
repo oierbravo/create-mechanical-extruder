@@ -1,20 +1,23 @@
 package com.oierbravo.createmechanicalextruder.compat.jei.animations;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import com.oierbravo.createmechanicalextruder.register.ModBlocks;
 import com.oierbravo.createmechanicalextruder.register.ModPartials;
 import com.simibubi.create.compat.jei.category.animations.AnimatedKinetics;
 import com.simibubi.create.foundation.utility.AnimationTickHolder;
+import net.minecraft.client.gui.GuiGraphics;
 
 public class AnimatedExtruder extends AnimatedKinetics {
     public int offset = 5;
     @Override
-    public void draw(PoseStack matrixStack, int xOffset, int yOffset) {
+    public void draw(GuiGraphics guiGraphics, int xOffset, int yOffset) {
+        PoseStack matrixStack = guiGraphics.pose();
+
         matrixStack.pushPose();
         matrixStack.translate(xOffset, yOffset, 200);
-        matrixStack.mulPose(Vector3f.XP.rotationDegrees(-15.5f));
-        matrixStack.mulPose(Vector3f.YP.rotationDegrees(180.0f));
+        matrixStack.mulPose(Axis.XP.rotationDegrees(-15.5f));
+        matrixStack.mulPose(Axis.YP.rotationDegrees(180.0f));
         int scale = 24;
 
         /*blockElement(shaft(Direction.Axis.Z))
@@ -24,12 +27,12 @@ public class AnimatedExtruder extends AnimatedKinetics {
 
         blockElement(ModBlocks.MECHANICAL_EXTRUDER.getDefaultState())
                 .scale(scale)
-                .render(matrixStack);
+                .render(guiGraphics);
 
         blockElement(ModPartials.MECHANICAL_EXTRUDER_POLE)
                 .atLocal(0, -getAnimatedHeadOffset() - 0.44f, 0)
                 .scale(scale)
-                .render(matrixStack);
+                .render(guiGraphics);
 
         matrixStack.popPose();
     }

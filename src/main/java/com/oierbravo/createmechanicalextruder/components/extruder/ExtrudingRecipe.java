@@ -8,6 +8,7 @@ import com.simibubi.create.foundation.blockEntity.behaviour.filtering.FilteringB
 import com.simibubi.create.foundation.fluid.FluidIngredient;
 import com.simibubi.create.foundation.recipe.IRecipeTypeInfo;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -48,6 +49,11 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
     @Override
     public boolean matches(SimpleContainer pContainer, Level pLevel) {
         return false;
+    }
+
+    @Override
+    public ItemStack assemble(SimpleContainer pContainer, RegistryAccess pRegistryAccess) {
+        return result.rollOutput();
     }
 
     /**
@@ -129,17 +135,16 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
     }
 
     @Override
-    public ItemStack assemble(SimpleContainer pContainer) {
-        return result.rollOutput();
-    }
-
-    @Override
     public boolean canCraftInDimensions(int pWidth, int pHeight) {
         return true;
     }
 
-
     @Override
+    public ItemStack getResultItem(RegistryAccess pRegistryAccess) {
+        return null;
+    }
+
+
     public ItemStack getResultItem() {
         return result.getStack();
     }
