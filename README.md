@@ -14,7 +14,7 @@
 [![Modrinth](https://modrinth-utils.vercel.app/api/badge/downloads?id=hGAlcCDJ&logo=true)][MODRINTH]
 <!-- modrinth_exclude.end -->
 
-[![](https://img.shields.io/badge/REQUIRES%20CREATE%20v0.5.0e-gold?logo=curseforge&labelColor=gray&style=for-the-badge)][CREATE]
+[![](https://img.shields.io/badge/REQUIRES%20CREATE%20v0.5.1c%20for%201.18.2%2F1.19.2-gold?logo=curseforge&labelColor=gray&style=for-the-badge)][CREATE]
 
 A mechanical extruder block. Can be used to generate any block or item from adjacent blocks/fluids.
 This mod it's meant to be used in modpacks. Only contains very basic recipes.
@@ -32,6 +32,7 @@ Heavily inspired on Thermal Expansions Igneous Extruder.
 ## Extruding recipes
 - Left and right blocks/fluids are `ingredients` in any order.
 - `results` is an Item or Block
+- Required bonks can be specified with `requiredBonks`
 CobbleGen example (already in the mod)
 ```
 {
@@ -73,6 +74,28 @@ BasaltGen example (already in the mod)
   }
 }
 ```
+Required Bonks example
+```
+{
+  "type": "create_mechanical_extruder:extruding",
+  "ingredients": [
+    {
+      "fluid": "minecraft:lava",
+      "amount": 1000
+    },
+    {
+      "item": "minecraft:blue_ice"
+    }
+  ],
+  "catalyst": {
+    "item": "minecraft:soul_sand"
+  },
+  "result": {
+    "item": "minecraft:basalt"
+  },
+  requiredBonks:10
+}
+```
 
 ### KubeJS integration:
 
@@ -83,6 +106,8 @@ BasaltGen example (already in the mod)
 event.recipes.createMechanicalExtruderExtruding(Item.of('minecraft:sand'),[Item.of('minecraft:cobblestone'),Item.of('minecraft:stone')])
 //With catalyst
 event.recipes.createMechanicalExtruderExtruding(Item.of('minecraft:dirt'),[Item.of('minecraft:sand'),Item.of('minecraft:stone')]).withCatalyst('minecraft:clay')
+// With bonks 
+event.recipes.createMechanicalExtruderExtruding(Item.of('minecraft:dirt'),[Fluid.of('minecraft:lava'),Item.of('minecraft:stone')]).withCatalyst('minecraft:clay').requiredBonks(10)
 ```
 
 **Thanks to the Creators of Create.**
