@@ -33,6 +33,7 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
     private ProcessingOutput result;
 
     private int requiredBonks;
+    private BiomeCondition biomeCondition;
 
     public ExtrudingRecipe(ExtrudingRecipeBuilder.ExtrudingRecipeParams params) {
         this.id = params.id;
@@ -41,6 +42,7 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
         this.fluidIngredients = params.fluidIngredients;
         this.catalyst = params.catalyst;
         this.requiredBonks = params.requiredBonks;
+        this.biomeCondition = params.biome;
     }
 
 
@@ -74,6 +76,8 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
         return true;
     }
     public static boolean match(ExtruderBlockEntity extruderBlockEntity, ExtrudingRecipe recipe){
+        if(!recipe.getBiome().test(extruderBlockEntity.getLevel().getBiome(extruderBlockEntity.getBlockPos()).value(),extruderBlockEntity.getLevel()))
+            return false;
         FilteringBehaviour filter = extruderBlockEntity.getFilter();
         if (filter == null)
             return false;
@@ -154,7 +158,9 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
     public int getRequiredBonks() {
         return requiredBonks;
     }
-
+    public BiomeCondition getBiome(){
+        return biomeCondition;
+    }
     @Override
     public ResourceLocation getId() {
         return id;
@@ -188,6 +194,7 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
             ProcessingOutput result = ProcessingOutput.EMPTY;
             ItemStack catalyst = ItemStack.EMPTY;
             int requiredBonks = 1;
+            BiomeCondition biomeCondition = BiomeCondition.EMPTY;
 
 
             for (JsonElement je : GsonHelper.getAsJsonArray(json, "ingredients")) {
@@ -206,11 +213,17 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
                 requiredBonks = GsonHelper.getAsInt(json,"requiredBonks");
             }
 
+            if(GsonHelper.isValidNode(json,"biome")){
+                biomeCondition = BiomeCondition.deserialize(json.get("biome"));
+            }
+
             builder.withItemIngredients(itemIngredients)
                     .withSingleItemOutput(result)
                     .withFluidIngredients(fluidIngredients)
                     .withCatalyst(catalyst)
-                    .requiredBonks(requiredBonks);
+                    .requiredBonks(requiredBonks)
+                    .withBiomeCondition(biomeCondition);
+
             return builder.build();
         }
 
@@ -222,6 +235,7 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
             ProcessingOutput result = ProcessingOutput.EMPTY;
             ItemStack catalyst = ItemStack.EMPTY;
             int requiredBonks = 1;
+            BiomeCondition biomeCondition = BiomeCondition.EMPTY;
 
 
             int size = buffer.readVarInt();
@@ -236,12 +250,14 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
             catalyst = buffer.readItem();
             requiredBonks = buffer.readInt();
 
+            biomeCondition = BiomeCondition.read(buffer);
 
             builder.withItemIngredients(itemIngredients)
                     .withSingleItemOutput(result)
                     .withFluidIngredients(fluidIngredients)
                     .withCatalyst(catalyst)
-                    .requiredBonks(requiredBonks);
+                    .requiredBonks(requiredBonks)
+                    .withBiomeCondition(biomeCondition);
             return builder.build();
         }
 
@@ -253,7 +269,7 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
             ItemStack catalyst = recipe.catalyst;
             int requiredBonks = recipe.requiredBonks;
 
-
+            BiomeCondition biomeCondition = recipe.biomeCondition;
 
             buffer.writeVarInt(itemIngredients.size());
             itemIngredients.forEach(i -> i.toNetwork(buffer));

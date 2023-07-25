@@ -13,5 +13,8 @@
   ],
   "result": {
     "item": "minecraft:stone"
+  },
+  "biome": {
+    "tag": "forge:is_plains"
   }
 }

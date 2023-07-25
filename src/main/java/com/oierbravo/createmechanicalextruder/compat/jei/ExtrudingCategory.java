@@ -56,11 +56,17 @@ public class ExtrudingCategory extends CreateRecipeCategory<ExtrudingRecipe> {
         AllGuiTextures.JEI_ARROW.render(matrixStack, 80, 32); //Output arrow
         extruder.draw(matrixStack, 53, 55);
         drawBonks(recipe, matrixStack, 65,55);
+        drawBiome(recipe, matrixStack, 65,65);
 
     }
     protected void drawBonks(ExtrudingRecipe recipe, PoseStack poseStack, int x, int y) {
         Minecraft minecraft = Minecraft.getInstance();
         Font fontRenderer = minecraft.font;
         fontRenderer.draw(poseStack, Lang.translateDirect("create_mechanical_extruder.goggles.bonks",recipe.getRequiredBonks()), x, y, 0xFF808080);
+    }
+    protected void drawBiome(ExtrudingRecipe recipe, PoseStack poseStack, int x, int y) {
+        Minecraft minecraft = Minecraft.getInstance();
+        Font fontRenderer = minecraft.font;
+        fontRenderer.draw(poseStack, recipe.getBiome().toString(), x, y, 0xFF808080);
     }
 }

@@ -18,6 +18,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.AirBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
@@ -179,9 +180,25 @@ public class ExtruderBlockEntity extends KineticBlockEntity implements Extruding
         int currentBonks = extrudingBehaviour.getBonks();
         Lang.translate("create_mechanical_extruder.goggles.bonks",currentBonks)
                 .forGoggles(tooltip, 1);
+        //if(!getRecipe().isPresent())
+         //   return tooltip;
+        //if(extrudingBehaviour.getBiomeCondition().test(this.getBiome(),this.getLevel())){
+            //TooltipHelper.addHint(tooltip,"Required biome:" + getRecipe().get().getBiome().toString() );
+            Lang.text("Required biome:" + extrudingBehaviour.getBiomeCondition().toString()).forGoggles(tooltip);
+        //    return true;
+        //}
         return true;
     }
+    @Override
+    public boolean addToTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
+        boolean added = super.addToTooltip(tooltip, isPlayerSneaking);
 
+        //if(getRecipe().get().getBiome().test(this.getBiome(),this.getLevel())){
+            //Lang.text("Required biome:" + extrudingBehaviour.getBiomeCondition().toString()).addTo(tooltip);
+            return true;
+        //}
+        //return added;
+    }
     @Override
     protected void read(CompoundTag compound, boolean clientPacket) {
         super.read(compound, clientPacket);
@@ -295,6 +312,11 @@ public class ExtruderBlockEntity extends KineticBlockEntity implements Extruding
     }
 
 
+
+
+    private Biome getBiome() {
+        return this.getLevel().getBiome(this.getBlockPos()).value();
+    }
 
     private class ExtruderInventoryHandler extends CombinedInvWrapper {
 
