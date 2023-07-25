@@ -1,6 +1,7 @@
 package com.oierbravo.createmechanicalextruder.register;
 
 import com.oierbravo.createmechanicalextruder.components.extruder.ExtruderBlock;
+import com.oierbravo.createmechanicalextruder.components.extruder.ExtruderConfig;
 import com.simibubi.create.content.kinetics.BlockStressDefaults;
 import com.simibubi.create.foundation.data.BlockStateGen;
 import com.simibubi.create.foundation.data.SharedProperties;
@@ -27,7 +28,7 @@ public class ModBlocks {
             .properties(p -> p.mapColor(MapColor.METAL))
             .transform(pickaxeOnly())
             .blockstate(BlockStateGen.horizontalBlockProvider(true))
-            .transform(BlockStressDefaults.setImpact(4.0))
+            .transform(BlockStressDefaults.setImpact(ExtruderConfig.STRESS_IMPACT.get()))
             .item()
             .transform(customItemModel())
             .register();

@@ -31,6 +31,7 @@ public class CreateMechanicalExtruder
         REGISTRATE.registerEventListeners(modEventBus);
 
         MinecraftForge.EVENT_BUS.register(this);
+        ModConfigs.register();
 
         ModBlocks.register();
         ModBlockEntities.register();
