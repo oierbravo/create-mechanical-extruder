@@ -49,7 +49,7 @@ public class BiomeCondition {
             return tagCondition;
         }
 
-        BiomeCondition condition = new BiomeCondition();
+        BiomeCondition condition = new BiomeTagCondition();
         ResourceLocation id = new ResourceLocation(biome);
         condition.biome = ForgeRegistries.BIOMES.getValue(id);
         return condition;
@@ -97,9 +97,7 @@ public class BiomeCondition {
     protected boolean testInternal(Biome b, LevelAccessor pLevel){
         if(biome == null)
             return false;
-        if (biome.toString() != b.toString())
-            return false;
-        return true;
+        return new BiomeTagCondition().test(b, pLevel);
     };
 
     public void write(FriendlyByteBuf buffer) {

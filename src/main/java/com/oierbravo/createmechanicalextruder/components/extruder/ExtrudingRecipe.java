@@ -278,6 +278,7 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
             result.write(buffer);
             buffer.writeItemStack(catalyst, false);
             buffer.writeInt(requiredBonks);
+            biomeCondition.write(buffer);
         }
 
 

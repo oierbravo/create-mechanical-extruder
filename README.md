@@ -114,3 +114,7 @@ event.recipes.createMechanicalExtruderExtruding(Item.of('minecraft:dirt'),[Fluid
 
 Code inspiration from the [Create](https://www.curseforge.com/minecraft/mc-mods/create "Create") mod itself.
 
+**Thanks to all the translators.**
+- `zh_tw`: EvanHsieh0415
+- `zh_cn`: Hydrogen897
+- `ko_kr`: AsseyGithub
