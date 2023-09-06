@@ -18,6 +18,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.AirBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
@@ -95,7 +96,7 @@ public class ExtruderBlockEntity extends KineticBlockEntity implements Extruding
         if(outputInv.getStackInSlot(0).getCount() == outputInv.getStackInSlot(0).getMaxStackSize()){
             return false;
         }
-        if(!outputInv.getStackInSlot(0).isEmpty() && !outputInv.getStackInSlot(0).is(recipe.get().getResultItem().getItem())){
+        if(!outputInv.getStackInSlot(0).isEmpty() && !outputInv.getStackInSlot(0).is(recipe.get().getResult().getStack().getItem())){
             return false;
         }
         if(simulate)
@@ -113,7 +114,7 @@ public class ExtruderBlockEntity extends KineticBlockEntity implements Extruding
         if(outputInv.getStackInSlot(0).isEmpty()){
 
             outputInv.setStackInSlot(0, output);
-        } else if(outputInv.getStackInSlot(0).is(recipe.get().getResultItem().getItem())) {
+        } else if(outputInv.getStackInSlot(0).is(recipe.get().getResult().getStack().getItem())) {
             outputInv.getStackInSlot(0).grow(output.getCount());
         }
         return true;
@@ -295,6 +296,11 @@ public class ExtruderBlockEntity extends KineticBlockEntity implements Extruding
     }
 
 
+
+
+    private Biome getBiome() {
+        return this.getLevel().getBiome(this.getBlockPos()).value();
+    }
 
     private class ExtruderInventoryHandler extends CombinedInvWrapper {
 

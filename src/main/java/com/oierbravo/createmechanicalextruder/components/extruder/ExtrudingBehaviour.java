@@ -26,6 +26,7 @@ public class ExtrudingBehaviour extends BlockEntityBehaviour {
 	public float headOffset = 0.44f;
 
 	public int bonks;
+	private BiomeCondition biomeCondition = BiomeCondition.EMPTY;
 
 	public interface ExtrudingBehaviourSpecifics {
 
@@ -45,6 +46,7 @@ public class ExtrudingBehaviour extends BlockEntityBehaviour {
 		finished = compound.getBoolean("Finished");
 		prevRunningTicks = runningTicks = compound.getInt("Ticks");
 		bonks = compound.getInt("Bonks");
+		biomeCondition = BiomeCondition.fromString(compound.getString("Biome"));
 		super.read(compound, clientPacket);
 
 	}
@@ -55,6 +57,7 @@ public class ExtrudingBehaviour extends BlockEntityBehaviour {
 		compound.putBoolean("Finished", finished);
 		compound.putInt("Ticks", runningTicks);
 		compound.putInt("Bonks", bonks);
+		compound.putString("Biome", biomeCondition.toString());
 		super.write(compound, clientPacket);
 
 	}
@@ -86,6 +89,10 @@ public class ExtrudingBehaviour extends BlockEntityBehaviour {
 		return bonks;
 	}
 
+	public BiomeCondition getBiomeCondition(){
+		return biomeCondition;
+
+	}
 	@Override
 	public BehaviourType<?> getType() {
 		return TYPE;

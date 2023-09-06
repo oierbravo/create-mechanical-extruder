@@ -107,8 +107,4 @@ public class ExtruderBlock extends HorizontalKineticBlock implements IBE<Extrude
     public boolean isPathfindable(BlockState state, BlockGetter reader, BlockPos pos, PathComputationType type) {
         return false;
     }
-    @Override
-    public SpeedLevel getMinimumRequiredSpeedLevel() {
-        return SpeedLevel.of(ExtruderConfig.MINIMUM_SPEED.get().floatValue());
-    }
 }
