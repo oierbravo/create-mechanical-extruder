@@ -118,3 +118,4 @@ Code inspiration from the [Create](https://www.curseforge.com/minecraft/mc-mods/
 - `zh_tw`: EvanHsieh0415
 - `zh_cn`: Hydrogen897
 - `ko_kr`: AsseyGithub
+- `ja_jp`: u7f8au7fbd
