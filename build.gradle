@@ -15,9 +15,7 @@ buildscript {
 }
 
 plugins {
-    id 'com.matthewprenger.cursegradle' version "${cursegradle_version}"
-    id "com.modrinth.minotaur" version "2.+"
-
+    id "me.shedaniel.unified-publishing" version "0.1.+"
 }
 
 apply plugin: 'net.minecraftforge.gradle'
@@ -183,25 +181,7 @@ jar {
         ])
     }
 }
-if(System.getenv('MODRINTH_TOKEN') != null) {
 
-    modrinth {
-        token = System.getenv("MODRINTH_TOKEN")
-        projectId = "create-mechanical-extruder"
-        versionNumber = "${version}"
-        versionName = "${display_name} - v${mod_version} for Mc ${minecraft_version}"
-        versionType = "release" // This is the default -- can also be `beta` or `alpha`
-        uploadFile = tasks.jar // With Loom, this MUST be set to `remapJar` instead of `jar`!
-        gameVersions = ["${minecraft_version}"] // Must be an array, even with only one version
-        loaders = ["forge"] // Must also be an array - no need to specify this if you're using Loom or ForgeGradle
-        dependencies { // A special DSL for creating dependencies
-            optional.project "kubejs"
-            optional.project "jei"
-            required.project "create"
-        }
-        changelog = rootProject.file("changes/${minecraft_version}-${mod_version}.md").text
-    }
-}
 mixin {
     add sourceSets.main, "${modid}.refmap.json"
 }
@@ -213,3 +193,48 @@ task deobfJar(type: Jar) {
 build.dependsOn deobfJar
 
 jar.finalizedBy('reobfJar')
+
+
+unifiedPublishing {
+    project {
+        displayName = "${archivesBaseName}-${version}"
+        changelog = rootProject.file("changes/${minecraft_version}-${mod_version}.md").text // Optional, in markdown format
+        releaseType = "release" // Optional, use "release", "beta" or "alpha"
+        gameVersions = ["${minecraft_version}"]
+        gameLoaders = ["forge"]
+
+        mainPublication tasks.jar // Declares the publicated jar
+
+        var cfToken = System.getenv("CF_TOKEN")
+        if(cfToken != null) {
+            curseforge {
+                token = cfToken
+                id = "${curseforge_id}" // Required, must be a string, ID of CurseForge project
+                //id = "661938" // Required, must be a string, ID of CurseForge project
+                //gameVersions.addAll "Java 17"
+                relations {
+                    depends "create"
+                    optional "jei"
+                    optional "kubejs"
+                    optional "crafttweaker"
+                }
+            }
+        }
+
+        var mrToken = System.getenv("MODRINTH_TOKEN")
+        if(mrToken != null) {
+            modrinth {
+                token = mrToken
+
+                //id = "r018adCw"// Required, must be a string, ID of Modrinth project
+                id = "${modrinth_id}"// Required, must be a string, ID of Modrinth project
+                relations {
+                    depends "create"
+                    optional "jei"
+                    optional "kubejs"
+                    optional "crafttweaker"
+                }
+            }
+        }
+    }
+}
