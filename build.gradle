@@ -197,7 +197,7 @@ jar.finalizedBy('reobfJar')
 
 unifiedPublishing {
     project {
-        displayName = "${archivesBaseName}-${version}"
+        displayName = "${archivesBaseName}-${project.version}"
         changelog = rootProject.file("changes/${minecraft_version}-${mod_version}.md").text // Optional, in markdown format
         releaseType = "release" // Optional, use "release", "beta" or "alpha"
         gameVersions = ["${minecraft_version}"]
