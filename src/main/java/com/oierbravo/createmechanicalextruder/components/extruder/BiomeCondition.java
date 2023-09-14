@@ -189,6 +189,8 @@ public class BiomeCondition {
 
         @Override
         protected String toStringInternal(){
+            if(this.tag == null)
+                return "Any";
             return "#" + tag.location().toString();
         }
     }
