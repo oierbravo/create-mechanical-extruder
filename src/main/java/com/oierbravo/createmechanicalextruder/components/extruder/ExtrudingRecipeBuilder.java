@@ -57,9 +57,9 @@ public class ExtrudingRecipeBuilder {
         return new ExtrudingRecipe(params);
     }
 
-    public void withBiomeCondition(BiomeCondition biomeCondition) {
+    /*public void withBiomeCondition(BiomeCondition biomeCondition) {
         params.biome = biomeCondition;
-    }
+    }*/
 
 
     public static class ExtrudingRecipeParams {
@@ -72,7 +72,7 @@ public class ExtrudingRecipeBuilder {
 
         protected int requiredBonks;
 
-        protected BiomeCondition biome;
+        //protected BiomeCondition biome;
         protected ExtrudingRecipeParams(ResourceLocation id) {
             this.id = id;
             itemIngredients = NonNullList.create();
@@ -80,7 +80,7 @@ public class ExtrudingRecipeBuilder {
             fluidIngredients = NonNullList.create();
             catalyst = ItemStack.EMPTY;
             requiredBonks = 1;
-            biome = BiomeCondition.EMPTY;
+            //biome = BiomeCondition.EMPTY;
         }
 
     }

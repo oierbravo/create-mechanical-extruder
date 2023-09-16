@@ -13,8 +13,5 @@
   ],
   "result": {
     "item": "minecraft:cobblestone"
-  },
-  "biome": {
-    "tag": "minecraft:is_forest"
   }
 }
