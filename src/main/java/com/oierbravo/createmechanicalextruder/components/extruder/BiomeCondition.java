@@ -92,8 +92,6 @@ public class BiomeCondition {
     public boolean test(Biome b, LevelAccessor pLevel) {
         if (b == null)
             throw new IllegalArgumentException("Biome cannot be null");
-        if (biome == null)
-            return true;
         return testInternal(b, pLevel);
     }
     protected boolean testInternal(Biome b, LevelAccessor pLevel){
@@ -191,6 +189,8 @@ public class BiomeCondition {
 
         @Override
         protected String toStringInternal(){
+            if(this.tag == null)
+                return "Any";
             return "#" + tag.location().toString();
         }
     }

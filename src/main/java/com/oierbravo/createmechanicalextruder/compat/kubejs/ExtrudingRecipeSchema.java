@@ -17,19 +17,18 @@ import net.minecraft.world.level.biome.Biome;
 public interface ExtrudingRecipeSchema {
     RecipeKey<Either<InputFluid, InputItem>[]> INGREDIENTS = FluidComponents.INPUT_OR_ITEM_ARRAY.key("ingredients");
     RecipeKey<OutputItem> RESULT = ItemComponents.OUTPUT.key("result");
-    //RecipeKey<Block> CATALYST = BlockComponent.INPUT.key("catalyst").optional(Blocks.AIR).allowEmpty();
     RecipeKey<InputItem> CATALYST = ItemComponents.INPUT.key("catalyst").defaultOptional().allowEmpty();
     RecipeKey<Integer> REQUIRED_BONKS = NumberComponent.INT.key("requiredBonks").optional(1);
 
     //TagKeyComponent<TagKey<Biome>> BIOME
-    RecipeKey<BiomeCondition> BIOME = BiomeConditionComponent.BIOME_CONDITION.key("biome").allowEmpty().defaultOptional();
+    //RecipeKey<BiomeCondition> BIOME = BiomeConditionComponent.BIOME_CONDITION.key("biome").allowEmpty().defaultOptional();
     public class ExtrudingRecipe extends RecipeJS {
         public RecipeJS withCatalyst(InputItem item) {
             return setValue(CATALYST, item);
         }
 
     }
-    public class BiomeConditionComponent implements RecipeComponent<BiomeCondition> {
+    /*public class BiomeConditionComponent implements RecipeComponent<BiomeCondition> {
         public static final RecipeComponent<BiomeCondition> BIOME_CONDITION= new BiomeConditionComponent();
 
         public ComponentRole role() {
@@ -67,7 +66,7 @@ public interface ExtrudingRecipeSchema {
                 return BiomeCondition.fromString(String.valueOf(from));
             }
         }
-    }
-    RecipeSchema SCHEMA = new RecipeSchema(ExtrudingRecipe.class, ExtrudingRecipe::new, RESULT, INGREDIENTS, CATALYST, REQUIRED_BONKS,BIOME);
+    }*/
+    RecipeSchema SCHEMA = new RecipeSchema(ExtrudingRecipe.class, ExtrudingRecipe::new, RESULT, INGREDIENTS, CATALYST, REQUIRED_BONKS);
 
 }
