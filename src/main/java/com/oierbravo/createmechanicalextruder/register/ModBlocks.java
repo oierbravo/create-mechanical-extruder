@@ -15,7 +15,7 @@ import static com.simibubi.create.foundation.data.TagGen.pickaxeOnly;
 public class ModBlocks {
 
 
-    static { REGISTRATE.useCreativeTab(ModCreativeTabs.MAIN_TAB); }
+    static { REGISTRATE.setCreativeTab(ModCreativeTabs.MAIN_TAB); }
 
 
 
