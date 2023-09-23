@@ -21,7 +21,6 @@ public class ModBlocks {
 
     public static void register() {
 
-       //Create.REGISTRATE.addToSection(MECHANICAL_EXTRUDER, AllSections.KINETICS);
     }
     public static final BlockEntry<ExtruderBlock> MECHANICAL_EXTRUDER = REGISTRATE.block("mechanical_extruder", ExtruderBlock::new)
             .initialProperties(SharedProperties::stone)
