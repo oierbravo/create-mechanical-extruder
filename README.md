@@ -144,7 +144,12 @@ Code inspiration from the [Create](https://www.curseforge.com/minecraft/mc-mods/
 
 **Thanks to all the translators.**
 
-- `zh_tw`: @EvanHsieh0415
-- `zh_cn`: @Hydrogen897, @EvanHsieh0415
-- `ko_kr`: @AsseyGithub
-- `ja_jp`: @u7f8au7fbd
+[EvanHsieh0415]: https://www.github.com/EvanHsieh0415
+[Hydrogen897]: https://www.github.com/Hydrogen897
+[AsseyGithub]: https://www.github.com/AsseyGithub
+[u7f8au7fbd]: https://www.github.com/u7f8au7fbd
+
+- `zh_tw`: [@EvanHsieh0415][EvanHsieh0415]
+- `zh_cn`: [@Hydrogen897][Hydrogen897], [@EvanHsieh0415][EvanHsieh0415]
+- `ko_kr`: [@AsseyGithub][AsseyGithub]
+- `ja_jp`: [@u7f8au7fbd][u7f8au7fbd]
