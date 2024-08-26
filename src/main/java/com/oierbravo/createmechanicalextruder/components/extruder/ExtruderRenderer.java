@@ -27,20 +27,20 @@ public class ExtruderRenderer extends KineticBlockEntityRenderer<ExtruderBlockEn
     @Override
     protected void renderSafe(ExtruderBlockEntity be, float partialTicks, PoseStack ms, MultiBufferSource buffer,
                               int light, int overlay) {
+
+        //super.renderSafe(be, partialTicks, ms, buffer, light, overlay);
+
+
         FilteringRenderer.renderOnBlockEntity(be, partialTicks, ms, buffer, light, overlay);
+
         if (Backend.canUseInstancing(be.getLevel()))
             return;
 
         VertexConsumer vb = buffer.getBuffer(RenderType.solid());
 
-        FilteringRenderer.renderOnBlockEntity(be, partialTicks, ms, buffer, light, overlay);
-
-
-
         BlockState blockState = be.getBlockState();
 
-        SuperByteBuffer superBuffer = CachedBufferer.partial(AllPartialModels.SHAFT_HALF, blockState);
-        standardKineticRotationTransform(superBuffer, be, light).renderInto(ms, vb);
+
 
         ExtrudingBehaviour extrudingBehaviour = be.getExtrudingBehaviour();
         float renderedHeadOffset =
@@ -51,5 +51,36 @@ public class ExtruderRenderer extends KineticBlockEntityRenderer<ExtruderBlockEn
         poleRender.translate(0, -renderedHeadOffset + extrudingBehaviour.headOffset, 0)
                 .light(light)
                 .renderInto(ms, vb);
+
+        SuperByteBuffer superBuffer = CachedBufferer.partialFacing(AllPartialModels.SHAFT_HALF, blockState, blockState.getValue(HORIZONTAL_FACING).getOpposite());
+        standardKineticRotationTransform(superBuffer, be, light).renderInto(ms, vb);
+        //kineticRotationTransform(superBuffer, be, blockState.getValue(HORIZONTAL_FACING).getAxis(), 90,light).renderInto(ms, vb);
+
+        //KineticBlockEntityRenderer.renderRotatingBuffer(be, getRotatedModel(be, be.getBlockState()), ms,
+        //        buffer.getBuffer(RenderType.solid()), light);
+        //CachedBufferer.partial(AllPartialModels.SHAFT_HALF, blockState);
+        //standardKineticRotationTransform(superBuffer, be, light).renderInto(ms, vb);
+        //KineticBlockEntityRenderer.renderRotatingBuffer( be, superBuffer, ms, buffer,light)
+        //super.renderSafe(be, partialTicks, ms, buffer, light, overlay);
+        //KineticBlockEntityRenderer.
     }
+    /*protected SuperByteBuffer getRotatedModel(ExtruderBlockEntity be) {
+        BlockState state = be.getBlockState();
+        if (state.getValue(HORIZONTAL_FACING)
+                .getAxis()
+                .isHorizontal())
+            return CachedBufferer.partialFacing(AllPartialModels.SHAFT_HALF,
+                    state.rotate(be.getLevel(), be.getBlockPos(), Rotation.CLOCKWISE_180));
+        return CachedBufferer.block(KineticBlockEntityRenderer.KINETIC_BLOCK,
+                getRenderedBlockState(be));
+    }*/
+   /* @Override
+    protected BlockState getRenderedBlockState(ExtruderBlockEntity be) {
+        return AllBlocks.HALF.getDefaultState()
+                .setValue(BlockStateProperties.AXIS, getRotationAxisOf(be));
+    }*/
+   @Override
+   protected SuperByteBuffer getRotatedModel(ExtruderBlockEntity be, BlockState state) {
+       return CachedBufferer.partial(AllPartialModels.SHAFT_HALF, state);
+   }
 }
