@@ -16,5 +16,6 @@
       ],
       "rolls": 1.0
     }
-  ]
+  ],
+  "random_sequence": "create_mechanical_extruder:blocks/mechanical_extruder"
 }

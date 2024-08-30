@@ -38,7 +38,7 @@ minecraft {
         mappings channel: 'official', version: "${minecraft_version}"
     }
 
-    //accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
     runs {
         client {
@@ -70,14 +70,17 @@ minecraft {
 
         data {
             workingDirectory project.file('run')
-            property 'forge.logging.markers', 'REGISTRIES,REGISTRYDUMP'
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+            property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
-            args '--mod', 'createsifter', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources')
+
+            args "--mod", modid, "--all", "--output", file('src/generated/resources/'), "--existing", file('src/main/resources/')
+
             mods {
                 "${modid}" {
                     source sourceSets.main
                 }
-
             }
         }
         gameTestServer {

@@ -1,0 +1,6 @@
+// 1.20.1	2024-08-28T15:23:53.390684514	Mechanical extruders's extruding recipes.
+7285ec473903e7c41d0ef9fd5b79179b51fafaf1 data/create_mechanical_extruder/recipes/extruding/basalt.json
+d0cc280b2ad4871985f8bf8517cf1e34f2d85312 data/create_mechanical_extruder/recipes/extruding/cobblestone.json
+f616658316fe4afbdf3a97dbfc7de60506dded80 data/create_mechanical_extruder/recipes/extruding/end_stone.json
+7bae50cc7c7f83480d6a946e9f954b00e2c69585 data/create_mechanical_extruder/recipes/extruding/netherrack.json
+fe1106ffa3631fd92ce27a3dc31b8d9d5c34c980 data/create_mechanical_extruder/recipes/extruding/stone.json

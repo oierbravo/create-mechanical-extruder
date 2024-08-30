@@ -1,7 +1,8 @@
 package com.oierbravo.createmechanicalextruder.components.extruder;
 
-import com.oierbravo.createmechanicalextruder.register.ModShapes;
 import com.oierbravo.createmechanicalextruder.register.ModBlockEntities;
+import com.oierbravo.createmechanicalextruder.register.ModShapes;
+import com.simibubi.create.AllShapes;
 import com.simibubi.create.content.kinetics.base.HorizontalKineticBlock;
 import com.simibubi.create.foundation.block.IBE;
 import com.simibubi.create.foundation.item.ItemHelper;
@@ -20,6 +21,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
@@ -47,8 +49,6 @@ public class ExtruderBlock extends HorizontalKineticBlock implements IBE<Extrude
                 inv.setStackInSlot(slot, ItemStack.EMPTY);
             }
 
-
-
             extruder.setChanged();
             extruder.sendData();
         });
@@ -65,7 +65,12 @@ public class ExtruderBlock extends HorizontalKineticBlock implements IBE<Extrude
     }
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
-        return ModShapes.EXTRUDER;
+        if (context instanceof EntityCollisionContext
+                && ((EntityCollisionContext) context).getEntity() instanceof Player)
+            return ModShapes.EXTRUDER;
+
+
+       return AllShapes.MECHANICAL_PROCESSOR_SHAPE;
     }
 
     @Override

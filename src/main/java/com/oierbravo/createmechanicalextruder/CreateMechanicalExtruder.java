@@ -1,5 +1,6 @@
 package com.oierbravo.createmechanicalextruder;
 
+import com.oierbravo.createmechanicalextruder.infrastructure.data.ModDataGen;
 import com.oierbravo.createmechanicalextruder.register.*;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import net.minecraft.resources.ResourceLocation;
@@ -39,6 +40,7 @@ public class CreateMechanicalExtruder
 
         ModRecipes.register(modEventBus);
         modEventBus.addListener(this::doClientStuff);
+        modEventBus.addListener(ModDataGen::gatherData);
 
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT,
                 () -> ModPartials::load);
@@ -55,6 +57,10 @@ public class CreateMechanicalExtruder
         registrate().addRawLang("create_mechanical_extruder.ponder.extruder.text_3", "When the process is done, the result can be obtained via Right-click");
         registrate().addRawLang("create_mechanical_extruder.ponder.extruder.text_4", "The outputs can also be extracted by automation");
 
+        registrate().addRawLang("create_mechanical_extruder.ui.recipe_condition.ingredients", "Missing ingredients");
+        registrate().addRawLang("create_mechanical_extruder.ui.recipe_condition.output", "Output full or incompatible");
+        registrate().addRawLang("create_mechanical_extruder.ui.recipe_condition.biome", "Incorrect biome");
+
     }
     private void doClientStuff(final FMLClientSetupEvent event) {
         event.enqueueWork(ModPonders::register);
@@ -67,5 +73,8 @@ public class CreateMechanicalExtruder
 
     public static ResourceLocation asResource(String path) {
         return new ResourceLocation(MODID, path);
+    }
+    public static Logger logger(){
+        return LOGGER;
     }
 }

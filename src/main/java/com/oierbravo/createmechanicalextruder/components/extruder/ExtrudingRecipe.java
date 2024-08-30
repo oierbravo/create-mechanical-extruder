@@ -1,5 +1,6 @@
 package com.oierbravo.createmechanicalextruder.components.extruder;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.oierbravo.createmechanicalextruder.CreateMechanicalExtruder;
@@ -16,14 +17,11 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.fluids.FluidStack;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
-public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo {
+public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo, IRecipeWithConditions {
     public static Comparator<? super ExtrudingRecipe> hasCatalyst;
     private ResourceLocation id;
     private NonNullList<Ingredient> itemIngredients;
@@ -34,7 +32,13 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
     private ProcessingOutput result;
 
     private int requiredBonks;
-    //private BiomeCondition biomeCondition;
+
+    private final Map<RecipeConditionType<?>, RecipeCondition> recipeConditions = new HashMap<>();
+
+
+    private static final List<RecipeConditionType<?>> enabledRecipeConditions = List.of(
+            BiomeRecipeCondition.TYPE
+    );
 
     public ExtrudingRecipe(ExtrudingRecipeBuilder.ExtrudingRecipeParams params) {
         this.id = params.id;
@@ -43,13 +47,17 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
         this.fluidIngredients = params.fluidIngredients;
         this.catalyst = params.catalyst;
         this.requiredBonks = params.requiredBonks;
-      //  this.biomeCondition = params.biome;
+
+        params.recipeConditions.forEach(
+                recipeCondition -> recipeConditions.put(recipeCondition.getType(), recipeCondition)
+        );
     }
 
 
 
     @Override
     public boolean matches(SimpleContainer pContainer, Level pLevel) {
+
         return false;
     }
 
@@ -58,32 +66,9 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
         return result.rollOutput();
     }
 
-    /**
-     * ToDO: Solved in a kind of dirty way!!!
-     * @param extruderBlockEntity
-     * @param recipe
-     * @return
-     */
-    public static boolean matchOLD(ExtruderBlockEntity extruderBlockEntity, ExtrudingRecipe recipe) {
-        FilteringBehaviour filter = extruderBlockEntity.getFilter();
-        if (filter == null)
-            return false;
 
-        boolean filterTest = filter.test(recipe.getResultItem(extruderBlockEntity.getLevel().registryAccess()));
-        if(!getAllIngredientsStringList(recipe).equals(extruderBlockEntity.getAllIngredientsStringList()))
-            return false;
-
-
-        if(!recipe.catalyst.isEmpty() && !recipe.catalyst.is(extruderBlockEntity.getCatalystItem()))
-            return false;
-
-        if (!filterTest)
-            return false;
-        return true;
-    }
     public static boolean match(ExtruderBlockEntity extruderBlockEntity, ExtrudingRecipe recipe){
-        //if(!recipe.getBiome().test(extruderBlockEntity.getLevel().getBiome(extruderBlockEntity.getBlockPos()).value(),extruderBlockEntity.getLevel()))
-        //    return false;
+
         FilteringBehaviour filter = extruderBlockEntity.getFilter();
         if (filter == null)
             return false;
@@ -98,7 +83,7 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
             return false;
         return true;
     }
-    private static boolean hasItemStack(ItemStack itemStack,List<Ingredient> itemIngredients){
+    /*private static boolean hasItemStack(ItemStack itemStack,List<Ingredient> itemIngredients){
         if(itemStack.isEmpty())
             return false;
         boolean hasItemStack = false;
@@ -117,7 +102,7 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
                 hasFluidStack = true;
         }
         return hasFluidStack;
-    }
+    }*/
     public boolean hasCatalyst() {
         return !this.getCatalyst().isEmpty();
     }
@@ -145,7 +130,7 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
     }
 
     @Override
-    public ItemStack getResultItem(RegistryAccess pRegistryAccess) {
+    public @NotNull ItemStack getResultItem(@NotNull RegistryAccess pRegistryAccess) {
         return result.rollOutput();
     }
 
@@ -163,9 +148,7 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
     public int getRequiredBonks() {
         return requiredBonks;
     }
-    /*public BiomeCondition getBiome(){
-        return biomeCondition;
-    }*/
+
     @Override
     public ResourceLocation getId() {
         return id;
@@ -180,11 +163,25 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
     public RecipeType<?> getType() {
         return Type.INSTANCE;
     }
+
+    public List<RecipeConditionType<?>> getEnabledConditions() {
+        return enabledRecipeConditions;
+    }
+
+    public Map<RecipeConditionType<?>, RecipeCondition> getRecipeConditions() {
+        return recipeConditions;
+    }
+
+    public <T extends RecipeCondition> T getCondition(RecipeConditionType<T> type) {
+        return (T) recipeConditions.get(type);
+    }
+
     public static class Type implements RecipeType<ExtrudingRecipe> {
         private Type() { }
         public static final Type INSTANCE = new Type();
         public static final String ID = "extruding";
     }
+
     public static class Serializer implements RecipeSerializer<ExtrudingRecipe> {
         public static final Serializer INSTANCE = new Serializer();
         public static final ResourceLocation ID =
@@ -199,8 +196,8 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
             ProcessingOutput result = ProcessingOutput.EMPTY;
             ItemStack catalyst = ItemStack.EMPTY;
             int requiredBonks = 1;
-            //BiomeCondition biomeCondition = BiomeCondition.EMPTY;
 
+            ArrayList<RecipeCondition> recipeConditions = new ArrayList<>();
 
             for (JsonElement je : GsonHelper.getAsJsonArray(json, "ingredients")) {
                 if (FluidIngredient.isFluidIngredient(je))
@@ -209,7 +206,7 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
                     itemIngredients.add(Ingredient.fromJson(je));
             }
             result = ProcessingOutput.deserialize(GsonHelper.getAsJsonObject(json, "result"));
-            //result = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, "result"));
+
             if(GsonHelper.isValidNode(json,"catalyst")){
                 catalyst = ShapedRecipe.itemStackFromJson( GsonHelper.getAsJsonObject(json, "catalyst"));
             }
@@ -217,19 +214,44 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
             if(GsonHelper.isValidNode(json,"requiredBonks")){
                 requiredBonks = GsonHelper.getAsInt(json,"requiredBonks");
             }
+            ExtrudingRecipe.enabledRecipeConditions.forEach(recipeConditionType -> {
+                if (GsonHelper.isValidNode(json, recipeConditionType.getId())) {
+                    recipeConditions.add(recipeConditionType.fromJson(json));
+                }
+            });
 
-            /*if(GsonHelper.isValidNode(json,"biome")){
-                biomeCondition = BiomeCondition.deserialize(json.get("biome"));
-            }*/
 
             builder.withItemIngredients(itemIngredients)
                     .withSingleItemOutput(result)
                     .withFluidIngredients(fluidIngredients)
                     .withCatalyst(catalyst)
-                    .requiredBonks(requiredBonks);
-                 //   .withBiomeCondition(biomeCondition);
+                    .requiredBonks(requiredBonks)
+                    .withConditions(recipeConditions);
 
             return builder.build();
+        }
+        public JsonObject toJson(JsonObject pJson, ExtrudingRecipe pRecipe) {
+            JsonArray jsonIngredients = new JsonArray();
+
+            pRecipe.itemIngredients.forEach(i -> jsonIngredients.add(i.toJson()));
+            pRecipe.fluidIngredients.forEach(i -> jsonIngredients.add(i.serialize()));
+
+            pJson.add("result", pRecipe.result.serialize());
+
+            pJson.add("ingredients", jsonIngredients);
+
+            if(pRecipe.hasCatalyst())
+                pJson.add("catalyst", new ProcessingOutput(pRecipe.getCatalyst(),1).serialize());
+
+            if (pRecipe.getRequiredBonks() > 1)
+                pJson.addProperty("requiredBonks", pRecipe.getRequiredBonks());
+
+            for (Map.Entry<RecipeConditionType<?>,RecipeCondition> entry : pRecipe.recipeConditions.entrySet()) {
+                pJson = entry.getKey().toJson(pJson, entry.getValue());
+            }
+
+
+            return pJson;
         }
 
         @Override
@@ -240,7 +262,8 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
             ProcessingOutput result = ProcessingOutput.EMPTY;
             ItemStack catalyst = ItemStack.EMPTY;
             int requiredBonks = 1;
-            //BiomeCondition biomeCondition = BiomeCondition.EMPTY;
+
+            List<RecipeCondition> recipeConditions = List.of();
 
 
             int size = buffer.readVarInt();
@@ -255,26 +278,26 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
             catalyst = buffer.readItem();
             requiredBonks = buffer.readInt();
 
-            //biomeCondition = BiomeCondition.read(buffer);
+            ExtrudingRecipe.enabledRecipeConditions.forEach(recipeConditionType -> {
+                recipeConditions.add(recipeConditionType.fromNetwork(buffer));
+            });
 
             builder.withItemIngredients(itemIngredients)
                     .withSingleItemOutput(result)
                     .withFluidIngredients(fluidIngredients)
                     .withCatalyst(catalyst)
-                    .requiredBonks(requiredBonks);
-                 //   .withBiomeCondition(biomeCondition);
+                    .requiredBonks(requiredBonks)
+                    .withConditions(recipeConditions);
             return builder.build();
         }
 
         @Override
-        public void toNetwork(FriendlyByteBuf buffer, ExtrudingRecipe recipe) {
-            NonNullList<Ingredient> itemIngredients = recipe.itemIngredients;
-            NonNullList<FluidIngredient> fluidIngredients = recipe.fluidIngredients;
-            ProcessingOutput result = recipe.result;
-            ItemStack catalyst = recipe.catalyst;
-            int requiredBonks = recipe.requiredBonks;
-
-            //BiomeCondition biomeCondition = recipe.biomeCondition;
+        public void toNetwork(FriendlyByteBuf buffer, ExtrudingRecipe pRecipe) {
+            NonNullList<Ingredient> itemIngredients = pRecipe.itemIngredients;
+            NonNullList<FluidIngredient> fluidIngredients = pRecipe.fluidIngredients;
+            ProcessingOutput result = pRecipe.result;
+            ItemStack catalyst = pRecipe.catalyst;
+            int requiredBonks = pRecipe.requiredBonks;
 
             buffer.writeVarInt(itemIngredients.size());
             itemIngredients.forEach(i -> i.toNetwork(buffer));
@@ -283,10 +306,12 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
             result.write(buffer);
             buffer.writeItemStack(catalyst, false);
             buffer.writeInt(requiredBonks);
-            //biomeCondition.write(buffer);
+
+            for (Map.Entry<RecipeConditionType<?>,RecipeCondition> entry : pRecipe.recipeConditions.entrySet()) {
+                entry.getKey().toNetwork(buffer, entry.getValue());
+            }
         }
-
-
     }
+
 
 }

@@ -1,0 +1,33 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_andesite_casing": {
+      "conditions": {
+        "items": [
+          {
+            "tag": "create:casing"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "create_mechanical_extruder:crafting/mechanical_extruder"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_andesite_casing",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "create_mechanical_extruder:crafting/mechanical_extruder"
+    ]
+  },
+  "sends_telemetry_event": false
+}

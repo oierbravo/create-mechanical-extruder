@@ -16,8 +16,8 @@ public class ExtruderFilterSlotPositioning extends ValueBoxTransform {
 
     @Override
     public Vec3 getLocalOffset(BlockState state) {
-        float y = 16.1f;
-        float z = 3.2f;
+        float y = 17f;
+        float z = 3f;
         return VecHelper.rotateCentered(VecHelper.voxelSpace(8, y, z), angleY(state), Direction.Axis.Y);
     }
 

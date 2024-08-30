@@ -1,0 +1,19 @@
+{
+  "type": "create_mechanical_extruder:extruding",
+  "biome": "minecraft:is_end",
+  "ingredients": [
+    {
+      "amount": 1000,
+      "fluid": "minecraft:lava",
+      "nbt": {}
+    },
+    {
+      "amount": 1000,
+      "fluid": "minecraft:water",
+      "nbt": {}
+    }
+  ],
+  "result": {
+    "item": "minecraft:end_stone"
+  }
+}

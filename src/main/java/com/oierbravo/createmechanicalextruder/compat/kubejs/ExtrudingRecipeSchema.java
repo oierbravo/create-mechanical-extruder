@@ -1,9 +1,6 @@
 package com.oierbravo.createmechanicalextruder.compat.kubejs;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Either;
-import com.oierbravo.createmechanicalextruder.components.extruder.BiomeCondition;
 import dev.latvian.mods.kubejs.fluid.InputFluid;
 import dev.latvian.mods.kubejs.item.InputItem;
 import dev.latvian.mods.kubejs.item.OutputItem;
@@ -11,8 +8,6 @@ import dev.latvian.mods.kubejs.recipe.RecipeJS;
 import dev.latvian.mods.kubejs.recipe.RecipeKey;
 import dev.latvian.mods.kubejs.recipe.component.*;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchema;
-import dev.latvian.mods.rhino.NativeObject;
-import net.minecraft.world.level.biome.Biome;
 
 public interface ExtrudingRecipeSchema {
     RecipeKey<Either<InputFluid, InputItem>[]> INGREDIENTS = FluidComponents.INPUT_OR_ITEM_ARRAY.key("ingredients");

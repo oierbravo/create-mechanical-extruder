@@ -36,8 +36,6 @@ public class ExtruderInstance extends ShaftInstance<ExtruderBlockEntity> impleme
         extruderPole.setRotation(q);
 
         transformModels();
-
-
     }
 
 
