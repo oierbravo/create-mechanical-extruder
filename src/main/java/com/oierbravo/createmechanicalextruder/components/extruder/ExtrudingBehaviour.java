@@ -16,7 +16,7 @@ import net.minecraft.world.phys.Vec3;
 
 public class ExtrudingBehaviour extends BlockEntityBehaviour {
 
-	public static final int CYCLE = 240;
+	public static final int CYCLE = ExtruderConfig.CYCLE.get();
 	public static final BehaviourType<ExtrudingBehaviour> TYPE = new BehaviourType<>();
 	public ExtrudingBehaviourSpecifics specifics;
 	public int prevRunningTicks;
