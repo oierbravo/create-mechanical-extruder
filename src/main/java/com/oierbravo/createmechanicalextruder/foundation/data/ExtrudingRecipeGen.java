@@ -1,8 +1,8 @@
 package com.oierbravo.createmechanicalextruder.foundation.data;
 
 import com.oierbravo.createmechanicalextruder.CreateMechanicalExtruder;
-import com.oierbravo.createmechanicalextruder.components.extruder.BiomeRecipeCondition;
-import com.oierbravo.createmechanicalextruder.components.extruder.ExtrudingRecipeBuilder;
+import com.oierbravo.createmechanicalextruder.components.extruder.recipe.ExtrudingRecipeBuilder;
+import com.oierbravo.createmechanicalextruder.foundation.recipe.requirements.BiomeRequirement;
 import com.simibubi.create.content.processing.recipe.ProcessingOutput;
 import com.simibubi.create.foundation.fluid.FluidIngredient;
 import net.minecraft.data.PackOutput;
@@ -29,7 +29,7 @@ public class ExtrudingRecipeGen extends RecipeProvider {
                         FluidIngredient.fromFluid(Fluids.LAVA,1000),
                         FluidIngredient.fromFluid(Fluids.WATER,1000)
                 )
-                .withBiomeCondition(BiomeRecipeCondition.of(BiomeTags.IS_OVERWORLD))
+                .withBiomeRequirement(BiomeRequirement.of(BiomeTags.IS_OVERWORLD))
                 .save(pWriter);
 
         create("stone", Items.STONE)
@@ -37,28 +37,13 @@ public class ExtrudingRecipeGen extends RecipeProvider {
                         FluidIngredient.fromFluid(Fluids.LAVA,1000),
                         FluidIngredient.fromFluid(Fluids.WATER,1000)
                 )
-                .withBiomeCondition(BiomeRecipeCondition.of(BiomeTags.IS_OVERWORLD))
+                .withBiomeRequirement(BiomeRequirement.of(BiomeTags.IS_OVERWORLD))
                 .save(pWriter);
 
         create("basalt", Items.BASALT)
                 .withFluidIngredients(FluidIngredient.fromFluid(Fluids.LAVA,1000))
                 .withItemIngredients(Ingredient.of(Items.BLUE_ICE))
                 .withCatalyst(Items.SOUL_SOIL)
-                .withCondition(BiomeRecipeCondition.of(BiomeTags.IS_NETHER))
-                .save(pWriter);
-
-        create("netherrack", Items.NETHERRACK)
-                .withFluidIngredients(FluidIngredient.fromFluid(Fluids.WATER,1000))
-                .withCondition(BiomeRecipeCondition.of(BiomeTags.IS_NETHER))
-                .withCatalyst(Items.OBSIDIAN)
-                .save(pWriter);
-
-        create("end_stone", Items.END_STONE)
-                .withFluidIngredients(
-                        FluidIngredient.fromFluid(Fluids.LAVA,1000),
-                        FluidIngredient.fromFluid(Fluids.WATER,1000)
-                )
-                .withCondition(BiomeRecipeCondition.of(BiomeTags.IS_END))
                 .save(pWriter);
 
     }

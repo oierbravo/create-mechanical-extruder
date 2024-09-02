@@ -2,12 +2,15 @@ package com.oierbravo.createmechanicalextruder.compat.jei;
 
 import com.oierbravo.createmechanicalextruder.CreateMechanicalExtruder;
 import com.oierbravo.createmechanicalextruder.compat.jei.animations.AnimatedExtruder;
-import com.oierbravo.createmechanicalextruder.components.extruder.BiomeRecipeCondition;
-import com.oierbravo.createmechanicalextruder.components.extruder.ExtrudingRecipe;
+import com.oierbravo.createmechanicalextruder.components.extruder.recipe.ExtrudingRecipe;
+import com.oierbravo.createmechanicalextruder.foundation.recipe.requirements.BiomeRequirement;
+import com.oierbravo.createmechanicalextruder.foundation.recipe.requirements.MaxHeightRequirement;
+import com.oierbravo.createmechanicalextruder.foundation.recipe.requirements.MinHeightRequirement;
+import com.oierbravo.createmechanicalextruder.foundation.recipe.requirements.SpeedRequirement;
+import com.oierbravo.createmechanicalextruder.foundation.utility.ModLang;
 import com.simibubi.create.compat.jei.category.CreateRecipeCategory;
 import com.simibubi.create.content.processing.recipe.ProcessingOutput;
 import com.simibubi.create.foundation.gui.AllGuiTextures;
-import com.simibubi.create.foundation.utility.Lang;
 import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
@@ -58,21 +61,69 @@ public class ExtrudingCategory extends CreateRecipeCategory<ExtrudingRecipe> {
         extruder.draw(graphics, 53, 55);
         drawBonks(recipe, graphics, 65,55);
         drawBiome(recipe, graphics, 65,65);
+        drawMinHeight(recipe, graphics, 65,13);
+        drawMaxHeight(recipe, graphics, 65,3);
+        drawMinSpeed(recipe, graphics, 90,3);
 
     }
     protected void drawBonks(ExtrudingRecipe recipe, GuiGraphics guiGraphics, int x, int y) {
         Minecraft minecraft = Minecraft.getInstance();
         Font fontRenderer = minecraft.font;
-        guiGraphics.drawString(fontRenderer,  Lang.translateDirect("create_mechanical_extruder.goggles.bonks",recipe.getRequiredBonks()), x, y, 0xFF808080, false);
+        guiGraphics.drawString(fontRenderer,  ModLang.translate("goggles.bonks",recipe.getRequiredBonks()).string(), x, y, 0xFF808080, false);
     }
     protected void drawBiome(ExtrudingRecipe recipe, GuiGraphics guiGraphics, int x, int y) {
         try {
-            BiomeRecipeCondition biomeRecipeCondition = recipe.getCondition(BiomeRecipeCondition.TYPE);
-            if(biomeRecipeCondition != null) {
+            BiomeRequirement biomeRequirement = recipe.getRequirement(BiomeRequirement.TYPE);
+            if(biomeRequirement != null) {
                 Minecraft minecraft = Minecraft.getInstance();
 
                 Font fontRenderer = minecraft.font;
-                guiGraphics.drawString(fontRenderer, biomeRecipeCondition.toString(), x, y, 0xFF808080, false);
+                guiGraphics.drawString(fontRenderer, biomeRequirement.toString(), x, y, 0xFF808080, false);
+            }
+        } catch (Exception ignored){
+
+        }
+
+
+    }
+    protected void drawMinHeight(ExtrudingRecipe recipe, GuiGraphics guiGraphics, int x, int y) {
+        try {
+            MinHeightRequirement minHeightRequirement = (MinHeightRequirement) recipe.getRequirement(MinHeightRequirement.TYPE);
+            if(minHeightRequirement != null) {
+                Minecraft minecraft = Minecraft.getInstance();
+
+                Font fontRenderer = minecraft.font;
+                guiGraphics.drawString(fontRenderer, ModLang.translate("ui.recipe_requirement.min_height", minHeightRequirement.toString()).string(), x, y, 0xFF808080, false);
+            }
+        } catch (Exception ignored){
+
+        }
+
+
+    }
+    protected void drawMaxHeight(ExtrudingRecipe recipe, GuiGraphics guiGraphics, int x, int y) {
+        try {
+            MaxHeightRequirement maxHeightRequirement = (MaxHeightRequirement) recipe.getRequirement(MaxHeightRequirement.TYPE);
+            if(maxHeightRequirement != null) {
+                Minecraft minecraft = Minecraft.getInstance();
+
+                Font fontRenderer = minecraft.font;
+                guiGraphics.drawString(fontRenderer, ModLang.translate("ui.recipe_requirement.max_height", maxHeightRequirement.toString()).string(), x, y, 0xFF808080, false);
+            }
+        } catch (Exception ignored){
+
+        }
+
+
+    }
+    protected void drawMinSpeed(ExtrudingRecipe recipe, GuiGraphics guiGraphics, int x, int y) {
+        try {
+            SpeedRequirement speedRequirement = (SpeedRequirement) recipe.getRequirement(SpeedRequirement.TYPE);
+            if(speedRequirement != null) {
+                Minecraft minecraft = Minecraft.getInstance();
+
+                Font fontRenderer = minecraft.font;
+                guiGraphics.drawString(fontRenderer, ModLang.translate("ui.recipe_requirement.min_speed", speedRequirement.toString()).string(), x, y, 0xFF808080, false);
             }
         } catch (Exception ignored){
 

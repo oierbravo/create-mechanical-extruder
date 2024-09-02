@@ -1,7 +1,7 @@
 {
   "block.create_mechanical_extruder.mechanical_extruder": "メカニカル押出機",
-  "create.create_mechanical_extruder.goggles.bonks": "%1$s bonks",
-  "create.recipe.extruding": "押出機のレシピ",
+  "create_mechanical_extruder.goggles.bonks": "%1$s bonks",
+  "create_mechanical_extruder.recipe.extruding": "押出機のレシピ",
   "create_mechanical_extruder.ponder.extruder.header": "ブロックの生成",
   "create_mechanical_extruder.ponder.extruder.text_1": "押出機は回転力を使用してブロックを生成します.",
   "create_mechanical_extruder.ponder.extruder.text_2": "生成は,ブロックの側面と下側に依存します.",

@@ -1,4 +1,4 @@
 {
   "block.create_mechanical_extruder.mechanical_extruder": "動力造石機",
-  "create.recipe.extruding": "造石配方"
+  "create_mechanical_extruder.recipe.extruding": "造石配方"
 }

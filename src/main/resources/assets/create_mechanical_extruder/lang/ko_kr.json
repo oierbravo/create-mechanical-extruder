@@ -1,7 +1,7 @@
 {
   "block.create_mechanical_extruder.mechanical_extruder": "압출기",
-  "create.create_mechanical_extruder.goggles.bonks": "%1$s 깡!",
-  "create.recipe.extruding": "압출",
+  "create_mechanical_extruder.goggles.bonks": "%1$s 깡!",
+  "create_mechanical_extruder.recipe.extruding": "압출",
   "create_mechanical_extruder.ponder.extruder.header": "블록 생성",
   "create_mechanical_extruder.ponder.extruder.text_1": "압출기는 동력을 이용해 블록을 만들어냅니다.",
   "create_mechanical_extruder.ponder.extruder.text_2": "생성되는 블록은 압출기 측면과 아래의 블록에 따라 달라집니다.",

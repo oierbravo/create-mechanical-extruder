@@ -1,9 +1,17 @@
-package com.oierbravo.createmechanicalextruder.components.extruder;
+package com.oierbravo.createmechanicalextruder.components.extruder.recipe;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.oierbravo.createmechanicalextruder.CreateMechanicalExtruder;
+import com.oierbravo.createmechanicalextruder.components.extruder.ExtruderBlockEntity;
+import com.oierbravo.createmechanicalextruder.foundation.recipe.RecipeRequirementType;
+import com.oierbravo.createmechanicalextruder.foundation.recipe.requirements.BiomeRequirement;
+import com.oierbravo.createmechanicalextruder.foundation.recipe.IRecipeWithRequirements;
+import com.oierbravo.createmechanicalextruder.foundation.recipe.RecipeRequirement;
+import com.oierbravo.createmechanicalextruder.foundation.recipe.requirements.MaxHeightRequirement;
+import com.oierbravo.createmechanicalextruder.foundation.recipe.requirements.MinHeightRequirement;
+import com.oierbravo.createmechanicalextruder.foundation.recipe.requirements.SpeedRequirement;
 import com.simibubi.create.content.processing.recipe.ProcessingOutput;
 import com.simibubi.create.foundation.blockEntity.behaviour.filtering.FilteringBehaviour;
 import com.simibubi.create.foundation.fluid.FluidIngredient;
@@ -21,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo, IRecipeWithConditions {
+public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo, IRecipeWithRequirements {
     public static Comparator<? super ExtrudingRecipe> hasCatalyst;
     private ResourceLocation id;
     private NonNullList<Ingredient> itemIngredients;
@@ -33,11 +41,14 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
 
     private int requiredBonks;
 
-    private final Map<RecipeConditionType<?>, RecipeCondition> recipeConditions = new HashMap<>();
+    private final Map<RecipeRequirementType<?>, RecipeRequirement> recipeRequirements = new HashMap<>();
 
 
-    private static final List<RecipeConditionType<?>> enabledRecipeConditions = List.of(
-            BiomeRecipeCondition.TYPE
+    private static final List<RecipeRequirementType<?>> enabledRecipeRequirements = List.of(
+            BiomeRequirement.TYPE,
+            MinHeightRequirement.TYPE,
+            MaxHeightRequirement.TYPE,
+            SpeedRequirement.TYPE
     );
 
     public ExtrudingRecipe(ExtrudingRecipeBuilder.ExtrudingRecipeParams params) {
@@ -48,8 +59,8 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
         this.catalyst = params.catalyst;
         this.requiredBonks = params.requiredBonks;
 
-        params.recipeConditions.forEach(
-                recipeCondition -> recipeConditions.put(recipeCondition.getType(), recipeCondition)
+        params.recipeRequirements.forEach(
+                recipeRequirement -> recipeRequirements.put(recipeRequirement.getType(), recipeRequirement)
         );
     }
 
@@ -83,26 +94,7 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
             return false;
         return true;
     }
-    /*private static boolean hasItemStack(ItemStack itemStack,List<Ingredient> itemIngredients){
-        if(itemStack.isEmpty())
-            return false;
-        boolean hasItemStack = false;
-        for(int i = 0; i< itemIngredients.size();i++){
-            if(itemIngredients.get(i).test(itemStack))
-                hasItemStack = true;
-        }
-        return hasItemStack;
-    }
-    private static boolean hasFluidStack(FluidStack fluidStack, List<FluidIngredient> fluidIngredients){
-        if(fluidStack.isEmpty())
-            return false;
-        boolean hasFluidStack = false;
-        for(int i = 0; i< fluidIngredients.size();i++){
-            if(fluidIngredients.get(i).test(fluidStack))
-                hasFluidStack = true;
-        }
-        return hasFluidStack;
-    }*/
+
     public boolean hasCatalyst() {
         return !this.getCatalyst().isEmpty();
     }
@@ -164,16 +156,16 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
         return Type.INSTANCE;
     }
 
-    public List<RecipeConditionType<?>> getEnabledConditions() {
-        return enabledRecipeConditions;
+    public List<RecipeRequirementType<?>> getEnabledRequirements() {
+        return enabledRecipeRequirements;
     }
 
-    public Map<RecipeConditionType<?>, RecipeCondition> getRecipeConditions() {
-        return recipeConditions;
+    public Map<RecipeRequirementType<?>, RecipeRequirement> getRecipeRequirements() {
+        return recipeRequirements;
     }
 
-    public <T extends RecipeCondition> T getCondition(RecipeConditionType<T> type) {
-        return (T) recipeConditions.get(type);
+    public <T extends RecipeRequirement> T getRequirement(RecipeRequirementType<T> type) {
+        return (T) recipeRequirements.get(type);
     }
 
     public static class Type implements RecipeType<ExtrudingRecipe> {
@@ -197,7 +189,7 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
             ItemStack catalyst = ItemStack.EMPTY;
             int requiredBonks = 1;
 
-            ArrayList<RecipeCondition> recipeConditions = new ArrayList<>();
+            ArrayList<RecipeRequirement> recipeRequirements = new ArrayList<>();
 
             for (JsonElement je : GsonHelper.getAsJsonArray(json, "ingredients")) {
                 if (FluidIngredient.isFluidIngredient(je))
@@ -214,21 +206,20 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
             if(GsonHelper.isValidNode(json,"requiredBonks")){
                 requiredBonks = GsonHelper.getAsInt(json,"requiredBonks");
             }
-            ExtrudingRecipe.enabledRecipeConditions.forEach(recipeConditionType -> {
-                if (GsonHelper.isValidNode(json, recipeConditionType.getId())) {
-                    recipeConditions.add(recipeConditionType.fromJson(json));
+            ExtrudingRecipe.enabledRecipeRequirements.forEach(recipeRequirementType -> {
+                if (GsonHelper.isValidNode(json, recipeRequirementType.getId())) {
+                    recipeRequirements.add(recipeRequirementType.fromJson(json));
                 }
             });
 
 
-            builder.withItemIngredients(itemIngredients)
+            return builder.withItemIngredients(itemIngredients)
                     .withSingleItemOutput(result)
                     .withFluidIngredients(fluidIngredients)
                     .withCatalyst(catalyst)
                     .requiredBonks(requiredBonks)
-                    .withConditions(recipeConditions);
-
-            return builder.build();
+                    .withRequirements(recipeRequirements)
+                    .build();
         }
         public JsonObject toJson(JsonObject pJson, ExtrudingRecipe pRecipe) {
             JsonArray jsonIngredients = new JsonArray();
@@ -246,7 +237,7 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
             if (pRecipe.getRequiredBonks() > 1)
                 pJson.addProperty("requiredBonks", pRecipe.getRequiredBonks());
 
-            for (Map.Entry<RecipeConditionType<?>,RecipeCondition> entry : pRecipe.recipeConditions.entrySet()) {
+            for (Map.Entry<RecipeRequirementType<?>, RecipeRequirement> entry : pRecipe.recipeRequirements.entrySet()) {
                 pJson = entry.getKey().toJson(pJson, entry.getValue());
             }
 
@@ -263,7 +254,7 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
             ItemStack catalyst = ItemStack.EMPTY;
             int requiredBonks = 1;
 
-            List<RecipeCondition> recipeConditions = List.of();
+            List<RecipeRequirement> recipeRequirements = List.of();
 
 
             int size = buffer.readVarInt();
@@ -278,17 +269,17 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
             catalyst = buffer.readItem();
             requiredBonks = buffer.readInt();
 
-            ExtrudingRecipe.enabledRecipeConditions.forEach(recipeConditionType -> {
-                recipeConditions.add(recipeConditionType.fromNetwork(buffer));
+            ExtrudingRecipe.enabledRecipeRequirements.forEach(recipeRequirementType -> {
+                recipeRequirements.add(recipeRequirementType.fromNetwork(buffer));
             });
 
-            builder.withItemIngredients(itemIngredients)
+            return builder.withItemIngredients(itemIngredients)
                     .withSingleItemOutput(result)
                     .withFluidIngredients(fluidIngredients)
                     .withCatalyst(catalyst)
                     .requiredBonks(requiredBonks)
-                    .withConditions(recipeConditions);
-            return builder.build();
+                    .withRequirements(recipeRequirements)
+                    .build();
         }
 
         @Override
@@ -307,7 +298,7 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
             buffer.writeItemStack(catalyst, false);
             buffer.writeInt(requiredBonks);
 
-            for (Map.Entry<RecipeConditionType<?>,RecipeCondition> entry : pRecipe.recipeConditions.entrySet()) {
+            for (Map.Entry<RecipeRequirementType<?>, RecipeRequirement> entry : pRecipe.recipeRequirements.entrySet()) {
                 entry.getKey().toNetwork(buffer, entry.getValue());
             }
         }

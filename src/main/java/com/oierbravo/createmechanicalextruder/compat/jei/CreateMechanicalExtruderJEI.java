@@ -1,7 +1,8 @@
 package com.oierbravo.createmechanicalextruder.compat.jei;
 
 import com.oierbravo.createmechanicalextruder.CreateMechanicalExtruder;
-import com.oierbravo.createmechanicalextruder.components.extruder.ExtrudingRecipe;
+import com.oierbravo.createmechanicalextruder.components.extruder.recipe.ExtrudingRecipe;
+import com.oierbravo.createmechanicalextruder.foundation.utility.ModLang;
 import com.oierbravo.createmechanicalextruder.register.ModBlocks;
 import com.simibubi.create.compat.jei.BlueprintTransferHandler;
 import com.simibubi.create.compat.jei.DoubleItemIcon;
@@ -9,7 +10,6 @@ import com.simibubi.create.compat.jei.EmptyBackground;
 import com.simibubi.create.compat.jei.ItemIcon;
 import com.simibubi.create.compat.jei.category.CreateRecipeCategory;
 import com.simibubi.create.foundation.config.ConfigBase;
-import com.simibubi.create.foundation.utility.Lang;
 import com.simibubi.create.infrastructure.config.AllConfigs;
 import com.simibubi.create.infrastructure.config.CRecipes;
 import mezz.jei.api.IModPlugin;
@@ -57,7 +57,6 @@ public class CreateMechanicalExtruderJEI implements IModPlugin {
         CreateRecipeCategory<?>
                 extruding = builder(ExtrudingRecipe.class)
                 .addRecipes( extrudingRecipes)
-                //.addTypedRecipes(ExtrudingRecipe.getTypeInfo())
                 .catalyst(ModBlocks.MECHANICAL_EXTRUDER::get)
                 .emptyBackground(177, 75)
                 .build("extruding", ExtrudingCategory::new);
@@ -83,8 +82,6 @@ public class CreateMechanicalExtruderJEI implements IModPlugin {
         ingredientManager = registration.getIngredientManager();
 
         modCategories.forEach(c -> c.registerRecipes(registration));
-
-        //registration.addRecipes(RecipeTypes.CRAFTING, ToolboxColoringRecipeMaker.createRecipes().toList());
     }
 
     @Override
@@ -125,10 +122,6 @@ public class CreateMechanicalExtruderJEI implements IModPlugin {
             return this;
         }
 
-        /*public CategoryBuilder<T> addRecipeListConsumer(Consumer<List<T>> consumer) {
-            recipeListConsumers.add(consumer);
-            return this;
-        }*/
         public CategoryBuilder<T> addRecipeListConsumer(Consumer<List<ExtrudingRecipe>> consumer) {
             recipeListConsumers.add(consumer);
             return this;
@@ -191,7 +184,7 @@ public class CreateMechanicalExtruderJEI implements IModPlugin {
 
             CreateRecipeCategory.Info<T> info = new CreateRecipeCategory.Info<>(
                     new mezz.jei.api.recipe.RecipeType<>(CreateMechanicalExtruder.asResource(name), recipeClass),
-                    Lang.translateDirect("recipe." + name), background, icon, recipesSupplier, catalysts);
+                    ModLang.translate("recipe." + name).component(), background, icon, recipesSupplier, catalysts);
             CreateRecipeCategory<T> category = factory.create(info);
             modCategories.add(category);
             return category;

@@ -1,5 +1,8 @@
 package com.oierbravo.createmechanicalextruder.components.extruder;
 
+import com.oierbravo.createmechanicalextruder.components.extruder.recipe.ExtrudingRecipe;
+import com.oierbravo.createmechanicalextruder.foundation.recipe.RecipeRequirementsBehaviour;
+import com.oierbravo.createmechanicalextruder.foundation.recipe.requirements.SpeedRequirement;
 import com.oierbravo.createmechanicalextruder.register.ModRecipes;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
@@ -32,14 +35,14 @@ import java.util.*;
 
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING;
 
-public class ExtruderBlockEntity extends KineticBlockEntity implements ExtrudingBehaviour.ExtrudingBehaviourSpecifics, RecipeConditionsBehaviour.RecipeConditionsSpecifics<ExtrudingRecipe> {
+public class ExtruderBlockEntity extends KineticBlockEntity implements ExtrudingBehaviour.ExtrudingBehaviourSpecifics, RecipeRequirementsBehaviour.RecipeRequirementsSpecifics<ExtrudingRecipe> {
     public ItemStackHandler outputInv;
     public LazyOptional<IItemHandler> capability;
     public int timer;
 
     private ExtrudingBehaviour extrudingBehaviour;
     private FilteringBehaviour filtering;
-    public RecipeConditionsBehaviour<ExtrudingRecipe> recipeConditionsBehaviour;
+    public RecipeRequirementsBehaviour<ExtrudingRecipe> recipeRequirementsBehaviour;
 
     public ExtruderBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -48,6 +51,17 @@ public class ExtruderBlockEntity extends KineticBlockEntity implements Extruding
         capability = LazyOptional.of(ExtruderInventoryHandler::new);
 
     }
+
+    @Override
+    public boolean isSpeedRequirementFulfilled() {
+        Optional<ExtrudingRecipe> recipe = getRecipe();
+        if(recipe.isEmpty())
+            return super.isSpeedRequirementFulfilled();
+        if(recipe.get().getRequirement(SpeedRequirement.TYPE).isPresent())
+            return recipe.get().getRequirement(SpeedRequirement.TYPE).test(level, this);
+        return super.isSpeedRequirementFulfilled();
+    }
+
     @Override
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
         super.addBehaviours(behaviours);
@@ -59,16 +73,16 @@ public class ExtruderBlockEntity extends KineticBlockEntity implements Extruding
         extrudingBehaviour = new ExtrudingBehaviour(this);
         behaviours.add(extrudingBehaviour);
 
-        recipeConditionsBehaviour = new RecipeConditionsBehaviour<ExtrudingRecipe>(this);
-        behaviours.add(recipeConditionsBehaviour);
+        recipeRequirementsBehaviour = new RecipeRequirementsBehaviour<ExtrudingRecipe>(this);
+        behaviours.add(recipeRequirementsBehaviour);
 
 
     }
     public ExtrudingBehaviour getExtrudingBehaviour() {
         return extrudingBehaviour;
     }
-    public RecipeConditionsBehaviour<ExtrudingRecipe> getRecipeConditionsBehaviour() {
-        return recipeConditionsBehaviour;
+    public RecipeRequirementsBehaviour<ExtrudingRecipe> getRecipeConditionsBehaviour() {
+        return recipeRequirementsBehaviour;
     }
 
     @Override
@@ -85,7 +99,7 @@ public class ExtruderBlockEntity extends KineticBlockEntity implements Extruding
     public boolean tryProcess(boolean simulate) {
         Optional<ExtrudingRecipe> recipe = getRecipe();
 
-        if(!recipeConditionsBehaviour.checkConditions(recipe, level, this))
+        if(!recipeRequirementsBehaviour.checkRequirements(recipe, level, this))
             return false;
 
         if(simulate)
@@ -186,8 +200,8 @@ public class ExtruderBlockEntity extends KineticBlockEntity implements Extruding
         }
 
 
-        boolean addedConditions = recipeConditionsBehaviour.addToGoggleTooltip(tooltip, isPlayerSneaking, added);
-        if(addedConditions)
+        boolean addedRequirements = recipeRequirementsBehaviour.addToGoggleTooltip(tooltip, isPlayerSneaking, added);
+        if(addedRequirements)
             added = true;
 
         return added;

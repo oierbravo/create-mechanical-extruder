@@ -47,19 +47,27 @@ public class CreateMechanicalExtruder
         generateLangEntries();
     }
     private void generateLangEntries(){
-        registrate().addRawLang("create.recipe.extruding", "Extruding recipe");
+        registrate().addRawLang("create_mechanical_extruder.recipe.extruding", "Extruding recipe");
         registrate().addRawLang("itemGroup.create_mechanical_extruder:main", DISPLAY_NAME);
 
-        registrate().addRawLang("create.create_mechanical_extruder.goggles.bonks", "%1$s bonks");
+        registrate().addRawLang("create_mechanical_extruder.goggles.bonks", "%1$s bonks");
         registrate().addRawLang("create_mechanical_extruder.ponder.extruder.header", "Block generation");
         registrate().addRawLang("create_mechanical_extruder.ponder.extruder.text_1", "The Extruder uses rotational force to generate blocks");
         registrate().addRawLang("create_mechanical_extruder.ponder.extruder.text_2", "Generation depends on side & below blocks.");
         registrate().addRawLang("create_mechanical_extruder.ponder.extruder.text_3", "When the process is done, the result can be obtained via Right-click");
         registrate().addRawLang("create_mechanical_extruder.ponder.extruder.text_4", "The outputs can also be extracted by automation");
 
-        registrate().addRawLang("create_mechanical_extruder.ui.recipe_condition.ingredients", "Missing ingredients");
-        registrate().addRawLang("create_mechanical_extruder.ui.recipe_condition.output", "Output full or incompatible");
-        registrate().addRawLang("create_mechanical_extruder.ui.recipe_condition.biome", "Incorrect biome");
+        registrate().addRawLang("create_mechanical_extruder.goggles.recipe_requirement.ingredients", "Missing ingredients");
+        registrate().addRawLang("create_mechanical_extruder.goggles.recipe_requirement.output", "Output full or incompatible");
+        registrate().addRawLang("create_mechanical_extruder.goggles.recipe_requirement.biome", "Incorrect biome");
+        registrate().addRawLang("create_mechanical_extruder.goggles.recipe_requirement.min_height", "Too low");
+        registrate().addRawLang("create_mechanical_extruder.goggles.recipe_requirement.max_height", "Too high");
+        registrate().addRawLang("create_mechanical_extruder.goggles.recipe_requirement.min_speed", "Not enough speed");
+
+        registrate().addRawLang("create_mechanical_extruder.ui.recipe_requirement.min_height", "Min Y: %s");
+        registrate().addRawLang("create_mechanical_extruder.ui.recipe_requirement.max_height", "Max Y: %s");
+        registrate().addRawLang("create_mechanical_extruder.ui.recipe_requirement.min_speed", "Min Speed: %s");
+
 
     }
     private void doClientStuff(final FMLClientSetupEvent event) {

@@ -1,6 +1,6 @@
 package com.oierbravo.createmechanicalextruder.compat.kubejs;
 
-import com.oierbravo.createmechanicalextruder.components.extruder.ExtrudingRecipe;
+import com.oierbravo.createmechanicalextruder.components.extruder.recipe.ExtrudingRecipe;
 import dev.latvian.mods.kubejs.KubeJSPlugin;
 import dev.latvian.mods.kubejs.recipe.schema.RegisterRecipeSchemasEvent;
 

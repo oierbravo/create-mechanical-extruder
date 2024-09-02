@@ -2,7 +2,7 @@ package com.oierbravo.createmechanicalextruder.register;
 
 import com.oierbravo.createmechanicalextruder.CreateMechanicalExtruder;
 import com.oierbravo.createmechanicalextruder.components.extruder.ExtruderBlockEntity;
-import com.oierbravo.createmechanicalextruder.components.extruder.ExtrudingRecipe;
+import com.oierbravo.createmechanicalextruder.components.extruder.recipe.ExtrudingRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.eventbus.api.IEventBus;

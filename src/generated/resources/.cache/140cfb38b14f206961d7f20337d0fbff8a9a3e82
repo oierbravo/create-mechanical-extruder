@@ -1,7 +1,7 @@
-// 1.20.1	2024-08-28T21:52:33.230933323	Registrate Provider for create_mechanical_extruder [Recipes, Advancements, Loot Tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), Blockstates, Item models, Lang (en_us/en_ud)]
+// 1.20.1	2024-09-02T13:51:50.590238395	Registrate Provider for create_mechanical_extruder [Recipes, Advancements, Loot Tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), Blockstates, Item models, Lang (en_us/en_ud)]
 f34bf825d2e5cb5deb151c503f031e4d924a3007 assets/create_mechanical_extruder/blockstates/mechanical_extruder.json
-f19327aad5ba8a1e5cbe979379fa7430a4e3d151 assets/create_mechanical_extruder/lang/en_ud.json
-f394ba72f8fcd7bf9496fc2af41742fd2a617e78 assets/create_mechanical_extruder/lang/en_us.json
+7b2f06d3df28a364de018beb011a8a1e84623735 assets/create_mechanical_extruder/lang/en_ud.json
+58f6e17d7dc92925f4b6bd16ed36c98d8443ed21 assets/create_mechanical_extruder/lang/en_us.json
 5042d1ae35c8c621d51a095b7f79b73a38945048 assets/create_mechanical_extruder/models/item/mechanical_extruder.json
 84dfc8f7410228dc92af7bc87f0af643b1e64fdd data/create_mechanical_extruder/advancements/recipes/misc/crafting/mechanical_extruder.json
 1c1062533a55b4dd96feb9823aea0b6a7d4f7d12 data/create_mechanical_extruder/loot_tables/blocks/mechanical_extruder.json
