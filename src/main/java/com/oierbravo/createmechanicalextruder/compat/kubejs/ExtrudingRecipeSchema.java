@@ -8,12 +8,18 @@ import dev.latvian.mods.kubejs.recipe.RecipeJS;
 import dev.latvian.mods.kubejs.recipe.RecipeKey;
 import dev.latvian.mods.kubejs.recipe.component.*;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchema;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.biome.Biome;
 
 public interface ExtrudingRecipeSchema {
     RecipeKey<Either<InputFluid, InputItem>[]> INGREDIENTS = FluidComponents.INPUT_OR_ITEM_ARRAY.key("ingredients");
     RecipeKey<OutputItem> RESULT = ItemComponents.OUTPUT.key("result");
     RecipeKey<InputItem> CATALYST = ItemComponents.INPUT.key("catalyst").defaultOptional().allowEmpty();
     RecipeKey<Integer> REQUIRED_BONKS = NumberComponent.INT.key("requiredBonks").optional(1);
+    RecipeKey<Float> MIN_SPEED = NumberComponent.FLOAT.key("min_speed").defaultOptional().allowEmpty();
+    RecipeKey<Integer> MIN_HEIGHT = NumberComponent.INT.key("min_height").defaultOptional().allowEmpty();
+    RecipeKey<Integer> MAX_HEIGHT = NumberComponent.INT.key("max_height").defaultOptional().allowEmpty();
+    RecipeKey<TagKey<Biome>> BIOME = TagKeyComponent.BIOME.key("biome").defaultOptional().allowEmpty();
 
     //TagKeyComponent<TagKey<Biome>> BIOME
     //RecipeKey<BiomeCondition> BIOME = BiomeConditionComponent.BIOME_CONDITION.key("biome").allowEmpty().defaultOptional();
@@ -22,46 +28,21 @@ public interface ExtrudingRecipeSchema {
             return setValue(CATALYST, item);
         }
 
+        public RecipeJS minHeight(int value) {
+            return setValue(MIN_HEIGHT, value);
+        }
+        public RecipeJS maxHeight(int value) {
+            return setValue(MAX_HEIGHT, value);
+        }
+        public RecipeJS minSpeed(float value) {
+            return setValue(MIN_SPEED, value);
+        }
+        /*public RecipeJS biome(TagKey<Biome> value) {
+            return setValue(BIOME, value);
+        }*/
+
     }
-    /*public class BiomeConditionComponent implements RecipeComponent<BiomeCondition> {
-        public static final RecipeComponent<BiomeCondition> BIOME_CONDITION= new BiomeConditionComponent();
 
-        public ComponentRole role() {
-            return ComponentRole.OTHER;
-        }
-
-        @Override
-        public Class<?> componentClass() {
-            return BiomeCondition.class;
-        }
-
-        @Override
-        public JsonElement write(RecipeJS recipe, BiomeCondition value) {
-            return value.serialize();
-        }
-
-        private BiomeCondition fromNativeObject(NativeObject nativeObject ){
-            if(nativeObject.containsKey("tag"))
-                return BiomeCondition.fromString("#" + nativeObject.get("tag"));
-            return BiomeCondition.fromString(nativeObject.get("name").toString());
-        }
-        @Override
-        public BiomeCondition read(RecipeJS recipe, Object from) {
-            if (from instanceof BiomeCondition bc) {
-                return bc;
-
-            } else if (from instanceof Biome b) {
-                return BiomeCondition.fromBiome(b);
-            } else if (from instanceof JsonObject je) {
-                return BiomeCondition.deserialize(je);
-            } else if(from instanceof NativeObject no){
-                return fromNativeObject(no);
-
-            } else {
-                return BiomeCondition.fromString(String.valueOf(from));
-            }
-        }
-    }*/
-    RecipeSchema SCHEMA = new RecipeSchema(ExtrudingRecipe.class, ExtrudingRecipe::new, RESULT, INGREDIENTS, CATALYST, REQUIRED_BONKS);
+    RecipeSchema SCHEMA = new RecipeSchema(ExtrudingRecipe.class, ExtrudingRecipe::new, RESULT, INGREDIENTS, CATALYST, REQUIRED_BONKS, MIN_SPEED, MIN_HEIGHT, MAX_HEIGHT, BIOME);
 
 }

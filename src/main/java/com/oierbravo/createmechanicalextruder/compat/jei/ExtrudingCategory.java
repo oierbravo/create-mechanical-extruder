@@ -59,11 +59,11 @@ public class ExtrudingCategory extends CreateRecipeCategory<ExtrudingRecipe> {
     public void draw(ExtrudingRecipe recipe, IRecipeSlotsView iRecipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY) {
         AllGuiTextures.JEI_ARROW.render(graphics, 80, 32); //Output arrow
         extruder.draw(graphics, 53, 55);
-        drawBonks(recipe, graphics, 65,55);
-        drawBiome(recipe, graphics, 65,65);
-        drawMinHeight(recipe, graphics, 65,13);
-        drawMaxHeight(recipe, graphics, 65,3);
-        drawMinSpeed(recipe, graphics, 90,3);
+        drawBonks(recipe, graphics, 55,55);
+        drawBiome(recipe, graphics, 55,65);
+        drawMinHeight(recipe, graphics, 55,13);
+        drawMaxHeight(recipe, graphics, 55,3);
+        drawMinSpeed(recipe, graphics, 100,55);
 
     }
     protected void drawBonks(ExtrudingRecipe recipe, GuiGraphics guiGraphics, int x, int y) {

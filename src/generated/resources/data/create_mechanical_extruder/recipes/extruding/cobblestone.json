@@ -1,6 +1,5 @@
 {
   "type": "create_mechanical_extruder:extruding",
-  "biome": "minecraft:is_overworld",
   "ingredients": [
     {
       "amount": 1000,
