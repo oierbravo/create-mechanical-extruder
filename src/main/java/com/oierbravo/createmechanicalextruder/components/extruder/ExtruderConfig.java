@@ -16,8 +16,8 @@ public class ExtruderConfig {
                 .comment("Minimum required speed")
                 .defineInRange("minimumSpeed", 0.0, 0.0, 254);
         CYCLE = COMMON_BUILDER
-                .comment("Minimum required speed")
-                .defineInRange("minimumSpeed", 200, 0, 1000);
+                .comment("Duration of the extrudding cycle. In ticks")
+                .defineInRange("cycle", 200, 0, 1000);
         COMMON_BUILDER.pop();
     }
 }
