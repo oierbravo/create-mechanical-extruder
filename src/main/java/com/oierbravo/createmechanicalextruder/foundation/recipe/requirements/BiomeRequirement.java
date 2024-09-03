@@ -7,12 +7,17 @@ import com.oierbravo.createmechanicalextruder.foundation.recipe.RecipeRequiremen
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Optional;
 
 import static java.lang.constant.ConstantDescs.NULL;
 
@@ -22,42 +27,69 @@ public class BiomeRequirement extends RecipeRequirement {
 
     public static final BiomeRequirement EMPTY = new BiomeRequirement();
 
-    protected TagKey<Biome> biome;
+    protected TagKey<Biome> biomeTagKey;
+
+    protected ResourceKey<Biome> biomeResourceKey;
 
     public BiomeRequirement() {
 
     }
     public BiomeRequirement(TagKey<Biome> tag) {
-        biome = tag;
+        biomeTagKey = tag;
+    }
+
+    public BiomeRequirement(ResourceKey<Biome> key, TagKey<Biome> tag) {
+        this.biomeResourceKey = key;
+        this.biomeTagKey = tag;
     }
 
     public static BiomeRequirement of(TagKey<Biome> tag) {
         return new BiomeRequirement(tag);
     }
+    public static BiomeRequirement of(ResourceKey<Biome> key, TagKey<Biome> tag) {
+        return new BiomeRequirement(key, tag);
+    }
 
     public boolean test(Level pLevel, BlockEntity pBlockEntity) {
-        if(biome == null)
+        if(biomeResourceKey == null && biomeTagKey == null)
             return true;
         Holder<Biome> blockEntityBiome = pLevel.getBiome(pBlockEntity.getBlockPos());
 
         if(pLevel.isClientSide()){
-            return pLevel.registryAccess().registryOrThrow(Registries.BIOME).getTag(biome).map(t -> t.contains(blockEntityBiome)).orElse(false);
+            return false;
         }
-        return pLevel.getServer().registryAccess().registryOrThrow(Registries.BIOME).getTag(biome).map(t ->
+
+
+        /*String biomeTagKeyLocationString = biomeTagKey.location().toString();
+        String blockEntityBiomeLocationString = blockEntityBiome.unwrapKey().get().location().toString();
+
+        if(blockEntityBiome.unwrapKey().isPresent() &&
+                biomeTagKeyLocationString.equals(blockEntityBiomeLocationString)
+        )
+            return true;*/
+
+        Optional<Holder.Reference<Biome>> requiredBiomeHolder = pLevel.getServer().registryAccess().registryOrThrow(Registries.BIOME).asLookup().get(biomeResourceKey);
+
+        if(requiredBiomeHolder.isPresent()
+           && blockEntityBiome.is(requiredBiomeHolder.get().key()))
+            return true;
+
+
+        return pLevel.getServer().registryAccess().registryOrThrow(Registries.BIOME).getTag(biomeTagKey).map(t ->
             t.contains(blockEntityBiome)
         ).orElse(false);
     }
 
     public boolean isPresent(){
-        if(biome == null)
+        if(biomeTagKey == null)
             return false;
         return true;
     }
 
     public String toString(){
-        if(biome == null)
+        if(biomeTagKey == null)
             return null;
-        return biome.location().toString();
+        return biomeTagKey.location().toString();
     }
 
 
@@ -79,7 +111,9 @@ public class BiomeRequirement extends RecipeRequirement {
         @Override
         public BiomeRequirement fromJson(JsonObject pJson) {
             if (GsonHelper.isValidNode(pJson, "biome")) {
-                return BiomeRequirement.of(TagKey.codec(Registries.BIOME).parse(JsonOps.INSTANCE, pJson.get("biome")).result().get());
+                ResourceKey<Biome> biomeResourceKey = ResourceKey.codec(Registries.BIOME).parse(JsonOps.INSTANCE, pJson.get("biome")).result().get();
+                TagKey<Biome> biomeTag = TagKey.codec(Registries.BIOME).parse(JsonOps.INSTANCE, pJson.get("biome")).result().get();
+                return BiomeRequirement.of(biomeResourceKey,biomeTag);
             }
             return BiomeRequirement.EMPTY;
         }
@@ -103,7 +137,7 @@ public class BiomeRequirement extends RecipeRequirement {
         @Override
         public void toNetwork(FriendlyByteBuf buffer, RecipeRequirement pRecipeRequirement) {
             if(pRecipeRequirement instanceof BiomeRequirement){
-                TagKey<Biome> biome = ((BiomeRequirement) pRecipeRequirement).biome;
+                TagKey<Biome> biome = ((BiomeRequirement) pRecipeRequirement).biomeTagKey;
                 buffer.writeResourceLocation(biome != null ? biome.location() : null);
             }
 
