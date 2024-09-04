@@ -12,6 +12,7 @@
   "create_mechanical_extruder.ponder.extruder.text_2": "Generation depends on side & below blocks.",
   "create_mechanical_extruder.ponder.extruder.text_3": "When the process is done, the result can be obtained via Right-click",
   "create_mechanical_extruder.ponder.extruder.text_4": "The outputs can also be extracted by automation",
+  "create_mechanical_extruder.ponder.extruder.text_5": "When a conbination of ingredient has multiple possible outcomes, the filter slot can specify it",
   "create_mechanical_extruder.recipe.extruding": "Extruding recipe",
   "create_mechanical_extruder.ui.recipe_requirement.max_height": "Max Y: %s",
   "create_mechanical_extruder.ui.recipe_requirement.min_height": "Min Y: %s",

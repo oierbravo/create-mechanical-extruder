@@ -3,6 +3,10 @@ package com.oierbravo.createmechanicalextruder;
 import com.oierbravo.createmechanicalextruder.infrastructure.data.ModDataGen;
 import com.oierbravo.createmechanicalextruder.register.*;
 import com.simibubi.create.foundation.data.CreateRegistrate;
+import com.simibubi.create.foundation.item.ItemDescription;
+import com.simibubi.create.foundation.item.KineticStats;
+import com.simibubi.create.foundation.item.TooltipHelper;
+import com.simibubi.create.foundation.item.TooltipModifier;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -26,6 +30,12 @@ public class CreateMechanicalExtruder
 
     public static final CreateRegistrate REGISTRATE = CreateRegistrate.create(MODID);
 
+    static {
+        REGISTRATE.setTooltipModifierFactory(item -> {
+            return new ItemDescription.Modifier(item, TooltipHelper.Palette.STANDARD_CREATE)
+                    .andThen(TooltipModifier.mapNull(KineticStats.create(item)));
+        });
+    }
     public CreateMechanicalExtruder()
     {
         modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -56,6 +66,7 @@ public class CreateMechanicalExtruder
         registrate().addRawLang("create_mechanical_extruder.ponder.extruder.text_2", "Generation depends on side & below blocks.");
         registrate().addRawLang("create_mechanical_extruder.ponder.extruder.text_3", "When the process is done, the result can be obtained via Right-click");
         registrate().addRawLang("create_mechanical_extruder.ponder.extruder.text_4", "The outputs can also be extracted by automation");
+        registrate().addRawLang("create_mechanical_extruder.ponder.extruder.text_5", "When a conbination of ingredient has multiple possible outcomes, the filter slot can specify it");
 
         registrate().addRawLang("create_mechanical_extruder.goggles.recipe_requirement.ingredients", "Missing ingredients");
         registrate().addRawLang("create_mechanical_extruder.goggles.recipe_requirement.output", "Output full or incompatible");

@@ -18,16 +18,7 @@ public class PonderScenes {
         scene.title("extruder", "Block generation");
         scene.configureBasePlate(0, 0, 5);
         scene.world.showSection(util.select.layer(0), Direction.UP);
-        //scene.world.showSection(util.select.layer(2), Direction.UP);
-        //scene.world.showSection(util.select.fromTo(0, 0, 0, 5, 0, 5), Direction.UP);
-        for(int i = 0; i < 5;i++){
-            for(int j= 0; j < 5;j++){
-               // scene.world.showSection(util.select.position(i, 0, j), Direction.UP);
-               // scene.idle(5);
-            }
-        }
-        //scene.world.showSection(util.select.position(0, 0, 0), Direction.UP);
-        //scene.world.showSection(util.select.position(0, 0, 4), Direction.UP);
+
         //Cogs
         scene.idle(5);
         scene.world.showSection(util.select.position(2, 1, 5), Direction.DOWN); // back cog
@@ -69,9 +60,6 @@ public class PonderScenes {
                 .placeNearTarget();
         scene.idle(90);
 
-
-
-        //scene.idle(5);
 
         scene.world.showSection(util.select.position(3, 2, 4), Direction.DOWN);
         scene.world.showSection(util.select.position(4, 2, 3), Direction.DOWN);
@@ -123,6 +111,8 @@ public class PonderScenes {
         scene.idle(35);
         scene.world.createItemOnBelt(util.grid.at(2, 1, 2), Direction.UP, output);
 
+        scene.addKeyframe();
+        scene.idle(35);
         scene.overlay.showText(50)
                 .text("The outputs can also be extracted by automation")
                 .pointAt(util.vector.blockSurface(extruderPos, Direction.WEST)
@@ -142,20 +132,14 @@ public class PonderScenes {
         }*/
 
         scene.idle(10);
-
-
-        /*scene.overlay.showText(50)
-                .text("To manualy input items, drop Ingots or Plates on the top of the Mill")
-                .placeNearTarget()
-                .pointAt(util.vector.topOf(mill));
-        scene.idle(60);
-
-
-        scene.overlay.showControls(new InputWindowElement(util.vector.topOf(mill), Pointing.DOWN).rightClick(), 50);
-        scene.overlay.showText(50)
-                .text("Manualy retrieve the rolled output by R-clicking the Mill")
-                .placeNearTarget()
-                .pointAt(util.vector.topOf(mill));
-        scene.idle(60);*/
+        scene.idle(40);
+        Vec3 filter = util.vector.of(2.5, 3.1, 3.1);
+        scene.overlay.showFilterSlotInput(filter, Direction.UP, 80);
+        scene.overlay.showText(80)
+                .attachKeyFrame()
+                .text("When a conbination of ingredient has multiple possible outcomes, the filter slot can specify it")
+                .pointAt(filter)
+                .placeNearTarget();
+        scene.idle(110);
     }
 }
