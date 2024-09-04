@@ -198,9 +198,11 @@
 			"scale": [0.4, 0.4, 0.4]
 		},
 		"firstperson_righthand": {
+			"rotation": [0, 174, 0],
 			"scale": [0.4, 0.4, 0.4]
 		},
 		"firstperson_lefthand": {
+			"rotation": [0, 180, 0],
 			"scale": [0.4, 0.4, 0.4]
 		},
 		"ground": {
@@ -208,7 +210,7 @@
 		},
 		"gui": {
 			"rotation": [31, -140, 0],
-			"scale": [0.49, 0.49, 0.49]
+			"scale": [0.6, 0.6, 0.6]
 		}
 	},
 	"groups": [
