@@ -21,8 +21,6 @@ public interface ExtrudingRecipeSchema {
     RecipeKey<Integer> MAX_HEIGHT = NumberComponent.INT.key("max_height").defaultOptional().allowEmpty();
     RecipeKey<TagKey<Biome>> BIOME = TagKeyComponent.BIOME.key("biome").defaultOptional().allowEmpty();
 
-    //TagKeyComponent<TagKey<Biome>> BIOME
-    //RecipeKey<BiomeCondition> BIOME = BiomeConditionComponent.BIOME_CONDITION.key("biome").allowEmpty().defaultOptional();
     public class ExtrudingRecipe extends RecipeJS {
         public RecipeJS withCatalyst(InputItem item) {
             return setValue(CATALYST, item);
@@ -37,9 +35,6 @@ public interface ExtrudingRecipeSchema {
         public RecipeJS minSpeed(float value) {
             return setValue(MIN_SPEED, value);
         }
-        /*public RecipeJS biome(TagKey<Biome> value) {
-            return setValue(BIOME, value);
-        }*/
 
     }
 

@@ -11,9 +11,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 import java.util.Comparator;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 public class ModRecipes {
     public static final DeferredRegister<RecipeSerializer<?>> SERIALIZERS =
@@ -29,9 +27,12 @@ public class ModRecipes {
     public static Optional<ExtrudingRecipe> findExtruding(ExtruderBlockEntity extruder, Level level){
         if(level.isClientSide())
             return Optional.empty();
-        List<ExtrudingRecipe> allExtrudingRecipes = level.getRecipeManager().getAllRecipesFor(ExtrudingRecipe.Type.INSTANCE);
-        Stream<ExtrudingRecipe> allExtrudingRecipesFiltered = allExtrudingRecipes.stream().filter(extrudingRecipe -> extruder.matchIngredients(extrudingRecipe));
-        Stream<ExtrudingRecipe> allExtrudingRecipesFilteredSorted = allExtrudingRecipesFiltered.sorted(Comparator.comparing(ExtrudingRecipe::hasCatalyst,Comparator.reverseOrder()));
-        return allExtrudingRecipesFilteredSorted.findFirst();
+
+        return level.getRecipeManager().getAllRecipesFor(ExtrudingRecipe.Type.INSTANCE)
+                .stream()
+                    .filter(extruder::matchIngredients)
+                    .sorted(Comparator.comparing(ExtrudingRecipe::hasCatalyst,Comparator.reverseOrder()))
+                    .findFirst();
+
     }
 }

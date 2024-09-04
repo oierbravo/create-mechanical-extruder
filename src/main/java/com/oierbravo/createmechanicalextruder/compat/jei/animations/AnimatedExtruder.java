@@ -20,11 +20,6 @@ public class AnimatedExtruder extends AnimatedKinetics {
         matrixStack.mulPose(Axis.YP.rotationDegrees(180.0f));
         int scale = 24;
 
-        /*blockElement(shaft(Direction.Axis.Z))
-                .rotateBlock(0, 0, getCurrentAngle())
-                .scale(scale)
-                .render(matrixStack);*/
-
         blockElement(ModBlocks.MECHANICAL_EXTRUDER.getDefaultState())
                 .scale(scale)
                 .render(guiGraphics);

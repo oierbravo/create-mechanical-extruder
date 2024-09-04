@@ -184,7 +184,7 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
             ExtrudingRecipeBuilder builder = new ExtrudingRecipeBuilder(id);
             NonNullList<Ingredient> itemIngredients = NonNullList.create();
             NonNullList<FluidIngredient> fluidIngredients = NonNullList.create();
-            //ItemStack result = ItemStack.EMPTY;
+
             ProcessingOutput result = ProcessingOutput.EMPTY;
             ItemStack catalyst = ItemStack.EMPTY;
             int requiredBonks = 1;

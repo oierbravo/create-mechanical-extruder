@@ -239,32 +239,7 @@ public class ExtruderBlockEntity extends KineticBlockEntity implements Extruding
         BlockPos currentPos = this.getBlockPos();
         return this.level.getBlockState(currentPos.below()).getBlock();
     }
-    /*public NonNullList<ItemStack> getItemStacks() {
-        NonNullList<ItemStack> itemStacks = NonNullList.create();
-        Block leftBlock = getLeftBlock();
-        Block rightBlock = getRightBlock();
 
-        if(!(leftBlock instanceof LiquidBlock) && !(leftBlock instanceof AirBlock)){
-            itemStacks.add( new ItemStack(leftBlock.asItem()));
-        }
-        if(!(rightBlock instanceof LiquidBlock) && !(leftBlock instanceof AirBlock)){
-            itemStacks.add( new ItemStack(rightBlock.asItem()));
-        }
-        return itemStacks;
-    }
-    public NonNullList<FluidStack> getFluidStacks() {
-        NonNullList<FluidStack> fluidStacks = NonNullList.create();
-        Block leftBlock = getLeftBlock();
-        Block rightBlock = getRightBlock();
-
-        if((leftBlock instanceof LiquidBlock) && !(leftBlock instanceof AirBlock)){
-            fluidStacks.add( new FluidStack(((LiquidBlock) leftBlock).getFluid(),1000));
-        }
-        if((rightBlock instanceof LiquidBlock) && !(leftBlock instanceof AirBlock)){
-            fluidStacks.add( new FluidStack(((LiquidBlock) rightBlock).getFluid(),1000));
-        }
-        return fluidStacks;
-    }*/
     public NonNullList<Ingredient> getItemIngredients() {
         NonNullList<Ingredient> itemIngredients = NonNullList.create();
         Block leftBlock = getLeftBlock();
