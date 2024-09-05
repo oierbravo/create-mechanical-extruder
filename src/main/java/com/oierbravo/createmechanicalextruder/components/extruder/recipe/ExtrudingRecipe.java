@@ -254,7 +254,7 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
             ItemStack catalyst = ItemStack.EMPTY;
             int requiredBonks = 1;
 
-            List<RecipeRequirement> recipeRequirements = List.of();
+            ArrayList<RecipeRequirement> recipeRequirements = new ArrayList<>();
 
 
             int size = buffer.readVarInt();
@@ -298,9 +298,14 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
             buffer.writeItemStack(catalyst, false);
             buffer.writeInt(requiredBonks);
 
-            for (Map.Entry<RecipeRequirementType<?>, RecipeRequirement> entry : pRecipe.recipeRequirements.entrySet()) {
+
+            ExtrudingRecipe.enabledRecipeRequirements.forEach(recipeRequirementType -> {
+                recipeRequirementType.toNetwork(buffer,pRecipe.getRequirement(recipeRequirementType));
+            });
+            /*for (Map.Entry<RecipeRequirementType<?>, RecipeRequirement> entry : pRecipe.recipeRequirements.entrySet()) {
                 entry.getKey().toNetwork(buffer, entry.getValue());
-            }
+            }*/
+
         }
     }
 

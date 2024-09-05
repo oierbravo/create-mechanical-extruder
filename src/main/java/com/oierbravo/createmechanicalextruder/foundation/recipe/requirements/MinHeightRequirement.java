@@ -79,13 +79,21 @@ public class MinHeightRequirement extends RecipeRequirement {
 
         @Override
         public MinHeightRequirement fromNetwork(FriendlyByteBuf buffer) {
-            return of(buffer.readInt());
+            boolean hasRequirement = buffer.readBoolean();
+            if(hasRequirement) {
+                return of(buffer.readInt());
+            }
+            return MinHeightRequirement.EMPTY;
         }
 
         @Override
         public void toNetwork(FriendlyByteBuf buffer, RecipeRequirement pRecipeRequirement) {
+            if(pRecipeRequirement == null)
+                pRecipeRequirement = new MinHeightRequirement();
             if(pRecipeRequirement instanceof MinHeightRequirement){
-                buffer.writeInt(((MinHeightRequirement) pRecipeRequirement).getValue());
+                buffer.writeBoolean(pRecipeRequirement.isPresent());
+                if(pRecipeRequirement.isPresent())
+                    buffer.writeInt(((MinHeightRequirement) pRecipeRequirement).getValue());
             }
         }
     }

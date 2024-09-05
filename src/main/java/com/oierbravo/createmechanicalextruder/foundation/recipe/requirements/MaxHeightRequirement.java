@@ -76,13 +76,21 @@ public class MaxHeightRequirement extends RecipeRequirement {
 
         @Override
         public MaxHeightRequirement fromNetwork(FriendlyByteBuf buffer) {
-            return of(buffer.readInt());
+            boolean hasRequirement = buffer.readBoolean();
+            if(hasRequirement) {
+                return of(buffer.readInt());
+            }
+            return MaxHeightRequirement.EMPTY;
         }
 
         @Override
         public void toNetwork(FriendlyByteBuf buffer, RecipeRequirement pRecipeRequirement) {
+            if(pRecipeRequirement == null)
+                pRecipeRequirement = new MaxHeightRequirement();
             if(pRecipeRequirement instanceof MaxHeightRequirement){
-                buffer.writeInt(((MaxHeightRequirement) pRecipeRequirement).getValue());
+                buffer.writeBoolean(pRecipeRequirement.isPresent());
+                if(pRecipeRequirement.isPresent())
+                    buffer.writeInt(((MaxHeightRequirement) pRecipeRequirement).getValue());
             }
         }
     }

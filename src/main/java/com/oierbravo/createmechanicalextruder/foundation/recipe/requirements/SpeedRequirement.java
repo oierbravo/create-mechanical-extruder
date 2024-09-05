@@ -82,13 +82,21 @@ public class SpeedRequirement extends RecipeRequirement {
 
         @Override
         public SpeedRequirement fromNetwork(FriendlyByteBuf buffer) {
-            return of(buffer.readFloat());
+            boolean hasRequirement = buffer.readBoolean();
+            if(hasRequirement) {
+                return of(buffer.readFloat());
+            }
+            return SpeedRequirement.EMPTY;
         }
 
         @Override
         public void toNetwork(FriendlyByteBuf buffer, RecipeRequirement pRecipeRequirement) {
+            if(pRecipeRequirement == null)
+                pRecipeRequirement = new SpeedRequirement();
             if(pRecipeRequirement instanceof SpeedRequirement){
-                buffer.writeFloat(((SpeedRequirement) pRecipeRequirement).getValue());
+                buffer.writeBoolean(pRecipeRequirement.isPresent());
+                if(pRecipeRequirement.isPresent())
+                    buffer.writeFloat(((SpeedRequirement) pRecipeRequirement).getValue());
             }
 
         }

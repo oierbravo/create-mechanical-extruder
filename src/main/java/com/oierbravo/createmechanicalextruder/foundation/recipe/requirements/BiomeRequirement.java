@@ -14,8 +14,6 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.registries.ForgeRegistries;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
@@ -129,18 +127,25 @@ public class BiomeRequirement extends RecipeRequirement {
 
         @Override
         public BiomeRequirement fromNetwork(FriendlyByteBuf buffer) {
-            ResourceLocation rl = buffer.readResourceLocation();
-            if(NULL.equals(rl))return BiomeRequirement.EMPTY;
-            else return BiomeRequirement.of(TagKey.create(Registries.BIOME, rl));
-
+            boolean hasRequirement = buffer.readBoolean();
+            if(hasRequirement) {
+                ResourceLocation rl = buffer.readResourceLocation();
+                if (NULL.equals(rl)) return BiomeRequirement.EMPTY;
+                else return BiomeRequirement.of(TagKey.create(Registries.BIOME, rl));
+            }
+            return BiomeRequirement.EMPTY;
         }
         @Override
         public void toNetwork(FriendlyByteBuf buffer, RecipeRequirement pRecipeRequirement) {
+            if(pRecipeRequirement == null)
+                pRecipeRequirement = new BiomeRequirement();
             if(pRecipeRequirement instanceof BiomeRequirement){
-                TagKey<Biome> biome = ((BiomeRequirement) pRecipeRequirement).biomeTagKey;
-                buffer.writeResourceLocation(biome != null ? biome.location() : null);
+                buffer.writeBoolean(pRecipeRequirement.isPresent());
+                if(pRecipeRequirement.isPresent()) {
+                    TagKey<Biome> biome = ((BiomeRequirement) pRecipeRequirement).biomeTagKey;
+                    buffer.writeResourceLocation(biome.location());
+                }
             }
-
         }
     }
 }

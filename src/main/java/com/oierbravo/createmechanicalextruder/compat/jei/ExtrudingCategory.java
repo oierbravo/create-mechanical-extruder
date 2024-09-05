@@ -74,7 +74,7 @@ public class ExtrudingCategory extends CreateRecipeCategory<ExtrudingRecipe> {
     protected void drawBiome(ExtrudingRecipe recipe, GuiGraphics guiGraphics, int x, int y) {
         try {
             BiomeRequirement biomeRequirement = recipe.getRequirement(BiomeRequirement.TYPE);
-            if(biomeRequirement != null) {
+            if(biomeRequirement.isPresent()) {
                 Minecraft minecraft = Minecraft.getInstance();
 
                 Font fontRenderer = minecraft.font;
@@ -89,7 +89,7 @@ public class ExtrudingCategory extends CreateRecipeCategory<ExtrudingRecipe> {
     protected void drawMinHeight(ExtrudingRecipe recipe, GuiGraphics guiGraphics, int x, int y) {
         try {
             MinHeightRequirement minHeightRequirement = (MinHeightRequirement) recipe.getRequirement(MinHeightRequirement.TYPE);
-            if(minHeightRequirement != null) {
+            if(minHeightRequirement.isPresent()) {
                 Minecraft minecraft = Minecraft.getInstance();
 
                 Font fontRenderer = minecraft.font;
@@ -104,7 +104,7 @@ public class ExtrudingCategory extends CreateRecipeCategory<ExtrudingRecipe> {
     protected void drawMaxHeight(ExtrudingRecipe recipe, GuiGraphics guiGraphics, int x, int y) {
         try {
             MaxHeightRequirement maxHeightRequirement = (MaxHeightRequirement) recipe.getRequirement(MaxHeightRequirement.TYPE);
-            if(maxHeightRequirement != null) {
+            if(maxHeightRequirement.isPresent()) {
                 Minecraft minecraft = Minecraft.getInstance();
 
                 Font fontRenderer = minecraft.font;
@@ -119,7 +119,7 @@ public class ExtrudingCategory extends CreateRecipeCategory<ExtrudingRecipe> {
     protected void drawMinSpeed(ExtrudingRecipe recipe, GuiGraphics guiGraphics, int x, int y) {
         try {
             SpeedRequirement speedRequirement = (SpeedRequirement) recipe.getRequirement(SpeedRequirement.TYPE);
-            if(speedRequirement != null) {
+            if(speedRequirement.isPresent()) {
                 Minecraft minecraft = Minecraft.getInstance();
 
                 Font fontRenderer = minecraft.font;
