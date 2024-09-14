@@ -28,11 +28,18 @@ Heavily inspired on Thermal Expansions Igneous Extruder.
 - Shift+right click with empty hand to extract content.
 - Extraction via automation.
 - JEI integration.
+- Per recipe biome, minY, maxY, speed requirements.
 
 ## Extruding recipes
 - Left and right blocks/fluids are `ingredients` in any order.
-- `results` is an Item or Block
-- Required bonks can be specified with `requiredBonks`
+- `result` is an Item or Block
+- Required bonks can be specified with `requiredBonks` (int)
+- Required catalyst can be specified with `catalyst` (block)
+- Required biome can be specified with `biome` (resource)
+- Required minimum Y level can be specified with `min_height` (int)
+- Required maximum Y level can be specified with `max_height` (int)
+- Required speed can be specified with `min_speed` (float)
+
 CobbleGen example (already in the mod)
 ```
 {
@@ -77,26 +84,135 @@ BasaltGen example (already in the mod)
 Required Bonks example
 ```
 {
-  "type": "create_mechanical_extruder:extruding",
-  "ingredients": [
-    {
-      "fluid": "minecraft:lava",
-      "amount": 1000
+    "type": "create_mechanical_extruder:extruding",
+    "ingredients": [
+      {
+        "fluid": "minecraft:lava",
+        "amount": 1000
+      },
+      {
+        "item": "minecraft:blue_ice"
+      }
+    ],
+    "catalyst": {
+      "item": "minecraft:soul_sand"
     },
-    {
-      "item": "minecraft:blue_ice"
-    }
-  ],
-  "catalyst": {
-    "item": "minecraft:soul_sand"
-  },
-  "result": {
-    "item": "minecraft:basalt"
-  },
-  requiredBonks:10
+    "result": {
+      "item": "minecraft:basalt"
+    },
+    "requiredBonks":10
 }
 ```
 
+Required biome (Tag)
+```
+{
+  "type": "create_mechanical_extruder:extruding",
+  "biome": "minecraft:is_end",
+  "ingredients": [
+    {
+      "item": "minecraft:blue_ice"
+    },
+    {
+      "amount": 1000,
+      "fluid": "minecraft:lava",
+      "nbt": {}
+    }
+  ],
+  "result": {
+    "item": "minecraft:end_stone"
+  }
+}
+```
+
+Required biome (Id)
+```
+{
+    "type": "create_mechanical_extruder:extruding",
+    "ingredients": [
+      {
+        "fluid": "minecraft:lava",
+        "amount": 1000
+      },
+      {
+        "item": "minecraft:blue_ice"
+      }
+    ],
+    "result": {
+      "item": "minecraft:netherrack"
+    },
+    "biome":"is_nether"
+}
+```
+
+Required biome (Tag)
+```
+{
+    "type": "create_mechanical_extruder:extruding",
+    "ingredients": [
+      {
+        "fluid": "minecraft:lava",
+        "amount": 1000
+      },
+      {
+        "item": "minecraft:blue_ice"
+      }
+    ],
+    "result": {
+      "item": "minecraft:netherrack"
+    },
+    "biome":"is_nether"
+}
+```
+
+Required min/max height (Y level)
+```
+{
+  "type": "create_mechanical_extruder:extruding",
+  "ingredients": [
+    {
+      "amount": 1000,
+      "fluid": "minecraft:lava",
+      "nbt": {}
+    },
+    {
+      "amount": 1000,
+      "fluid": "minecraft:water",
+      "nbt": {}
+    }
+  ],
+  "max_height": "-10",
+  "min_height": "-50",
+  "result": {
+    "item": "minecraft:andesite"
+  }
+}
+```
+
+
+Required minimum speed.
+```
+{
+  "type": "create_mechanical_extruder:extruding",
+  "ingredients": [
+    {
+      "amount": 1000,
+      "fluid": "minecraft:lava",
+      "nbt": {}
+    },
+    {
+      "amount": 1000,
+      "fluid": "minecraft:water",
+      "nbt": {}
+    }
+  ],
+  "max_height": "64",
+  "min_speed": "128.0",
+  "result": {
+    "item": "minecraft:deepslate"
+  }
+}
+```
 ### KubeJS integration:
 
 ```

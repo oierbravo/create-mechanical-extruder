@@ -11,6 +11,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluids;
 
 import java.util.function.Consumer;
@@ -37,10 +38,43 @@ public class ExtrudingRecipeGen extends RecipeProvider {
                 .save(pWriter);
 
         create("basalt", Items.BASALT)
+                .withFluidIngredients(
+                        FluidIngredient.fromFluid(Fluids.LAVA,1000)
+                )
+                .withItemIngredients(Ingredient.of(Blocks.BLUE_ICE))
+                .withCatalyst(Blocks.SOUL_SOIL)
+                .save(pWriter);
+
+        /*create("netherrak", Items.NETHERRACK)
                 .withFluidIngredients(FluidIngredient.fromFluid(Fluids.LAVA,1000))
                 .withItemIngredients(Ingredient.of(Items.BLUE_ICE))
-                .withCatalyst(Items.SOUL_SOIL)
+                .withBiomeRequirement(BiomeRequirement.of(Biomes.IS_NETHER))
                 .save(pWriter);
+
+        create("end_stone", Items.END_STONE)
+                .withFluidIngredients(FluidIngredient.fromFluid(Fluids.LAVA,1000))
+                .withItemIngredients(Ingredient.of(Items.BLUE_ICE))
+                .withBiomeRequirement(BiomeRequirement.of(BiomeTags.IS_END))
+                .save(pWriter);*/
+
+        /*create("andesite", Items.ANDESITE)
+                .withFluidIngredients(
+                        FluidIngredient.fromFluid(Fluids.LAVA,1000),
+                        FluidIngredient.fromFluid(Fluids.WATER,1000)
+                )
+                .withRequirement(MinHeightRequirement.of(-50))
+                .withRequirement(MaxHeightRequirement.of(-10))
+                .save(pWriter);
+
+        create("deepslate", Items.DEEPSLATE)
+                .withFluidIngredients(
+                        FluidIngredient.fromFluid(Fluids.LAVA,1000),
+                        FluidIngredient.fromFluid(Fluids.WATER,1000)
+                )
+                .withRequirement(MaxHeightRequirement.of(64))
+                .withRequirement(SpeedRequirement.of(128))
+                .save(pWriter);*/
+
 
     }
 

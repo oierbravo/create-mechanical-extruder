@@ -36,11 +36,17 @@ public class BiomeRequirement extends RecipeRequirement {
         biomeTagKey = tag;
     }
 
+    public BiomeRequirement(ResourceKey<Biome> key) {
+        biomeResourceKey = key;
+    }
+
     public BiomeRequirement(ResourceKey<Biome> key, TagKey<Biome> tag) {
         this.biomeResourceKey = key;
         this.biomeTagKey = tag;
     }
-
+    public static BiomeRequirement of(ResourceKey<Biome> key) {
+        return new BiomeRequirement(key);
+    }
     public static BiomeRequirement of(TagKey<Biome> tag) {
         return new BiomeRequirement(tag);
     }
@@ -57,15 +63,6 @@ public class BiomeRequirement extends RecipeRequirement {
             return false;
         }
 
-
-        /*String biomeTagKeyLocationString = biomeTagKey.location().toString();
-        String blockEntityBiomeLocationString = blockEntityBiome.unwrapKey().get().location().toString();
-
-        if(blockEntityBiome.unwrapKey().isPresent() &&
-                biomeTagKeyLocationString.equals(blockEntityBiomeLocationString)
-        )
-            return true;*/
-
         Optional<Holder.Reference<Biome>> requiredBiomeHolder = pLevel.getServer().registryAccess().registryOrThrow(Registries.BIOME).asLookup().get(biomeResourceKey);
 
         if(requiredBiomeHolder.isPresent()
@@ -79,14 +76,16 @@ public class BiomeRequirement extends RecipeRequirement {
     }
 
     public boolean isPresent(){
-        if(biomeTagKey == null)
+        if(biomeTagKey == null && biomeResourceKey == null)
             return false;
         return true;
     }
 
     public String toString(){
-        if(biomeTagKey == null)
+        if(biomeTagKey == null && biomeResourceKey == null)
             return null;
+        if(biomeResourceKey != null)
+            return biomeResourceKey.location().toString();
         return biomeTagKey.location().toString();
     }
 
