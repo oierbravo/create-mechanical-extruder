@@ -1,20 +1,5 @@
-
 [CREATE]: https://www.curseforge.com/minecraft/mc-mods/create
-[DOWNLOAD]: https://www.curseforge.com/minecraft/mc-mods/create-mechanical-extruder/files
-[CURSEFORGE]: https://www.curseforge.com/minecraft/mc-mods/create-mechanical-extruder
-[MODRINTH]: https://modrinth.com/mod/create-mechanical-extruder
-[ISSUES]: https://github.com/oierbravo/create-mechanical-extruder/issues
-
-<!-- modrinth_exclude.start -->
 # Create Mechanical Extruder
-[![Release](https://img.shields.io/github/v/release/oierbravo/create-mechanical-extruder?label=Version&sort=semver)][DOWNLOAD]
-[![Downloads](http://cf.way2muchnoise.eu/full_686100_downloads.svg)][CURSEFORGE]
-[![Version](http://cf.way2muchnoise.eu/versions/686100.svg)][DOWNLOAD]
-[![Issues](https://img.shields.io/github/issues/oierbravo/create-mechanical-extruder?label=Issues)][ISSUES]
-[![Modrinth](https://modrinth-utils.vercel.app/api/badge/downloads?id=hGAlcCDJ&logo=true)][MODRINTH]
-<!-- modrinth_exclude.end -->
-
-[![](https://img.shields.io/badge/REQUIRES%20CREATE%20v0.5.1c%20for%201.18.2%2F1.19.2-gold?logo=curseforge&labelColor=gray&style=for-the-badge)][CREATE]
 
 A mechanical extruder block. Can be used to generate any block or item from adjacent blocks/fluids.
 This mod it's meant to be used in modpacks. Only contains very basic recipes.
@@ -141,7 +126,7 @@ Required biome (Id)
     "result": {
       "item": "minecraft:netherrack"
     },
-    "biome":"is_nether"
+    "biome":"minecraft:plains"
 }
 ```
 
