@@ -13,7 +13,7 @@ Gather blocks from fluid combinations.
 [[dependencies.create_mechanical_extruder]]
     modId = "forge"
     mandatory = true
-    versionRange="[47.0.0,)"
+    versionRange="[47.1.43,)"
     ordering = "NONE"
     side = "BOTH"
 
@@ -27,6 +27,6 @@ Gather blocks from fluid combinations.
 [[dependencies.create_mechanical_extruder]]
     modId = "create"
     mandatory = true
-    versionRange="[0.5.1.h,)"
+    versionRange="[0.5.1.i,)"
     ordering = "AFTER"
     side = "BOTH"

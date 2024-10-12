@@ -83,6 +83,21 @@ minecraft {
                 }
             }
         }
+        /*dataPack {
+            workingDirectory project.file('run')
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+
+            args "--mod", modid, "--all", "--output", file('src/datapack/resources/')
+
+            mods {
+                "${modid}" {
+                    source sourceSets.main
+                }
+            }
+        }*/
         gameTestServer {
             workingDirectory project.file('run/gametest')
             arg '-mixin.config=create.mixins.json'

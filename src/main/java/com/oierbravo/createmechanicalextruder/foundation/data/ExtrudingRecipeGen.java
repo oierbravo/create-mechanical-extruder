@@ -2,6 +2,8 @@ package com.oierbravo.createmechanicalextruder.foundation.data;
 
 import com.oierbravo.createmechanicalextruder.CreateMechanicalExtruder;
 import com.oierbravo.createmechanicalextruder.components.extruder.recipe.ExtrudingRecipeBuilder;
+import com.simibubi.create.AllFluids;
+import com.simibubi.create.content.decoration.palettes.AllPaletteStoneTypes;
 import com.simibubi.create.content.processing.recipe.ProcessingOutput;
 import com.simibubi.create.foundation.fluid.FluidIngredient;
 import net.minecraft.data.PackOutput;
@@ -11,6 +13,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluids;
 
@@ -45,6 +48,20 @@ public class ExtrudingRecipeGen extends RecipeProvider {
                 .withCatalyst(Blocks.SOUL_SOIL)
                 .save(pWriter);
 
+        create("limestone", AllPaletteStoneTypes.LIMESTONE.getBaseBlock().get())
+                .withFluidIngredients(
+                        FluidIngredient.fromFluid(Fluids.LAVA,1000),
+                        FluidIngredient.fromFluid(AllFluids.HONEY.get(), 1000)
+                )
+                .save(pWriter);
+
+        create("scoria", AllPaletteStoneTypes.SCORIA.getBaseBlock().get())
+                .withFluidIngredients(
+                        FluidIngredient.fromFluid(Fluids.LAVA,1000),
+                        FluidIngredient.fromFluid(AllFluids.CHOCOLATE.get(),1000)
+                )
+                .save(pWriter);
+
         /*create("netherrak", Items.NETHERRACK)
                 .withFluidIngredients(FluidIngredient.fromFluid(Fluids.LAVA,1000))
                 .withItemIngredients(Ingredient.of(Items.BLUE_ICE))
@@ -76,6 +93,11 @@ public class ExtrudingRecipeGen extends RecipeProvider {
                 .save(pWriter);*/
 
 
+    }
+
+    private ExtrudingRecipeBuilder create(String id, Block output){
+        return new ExtrudingRecipeBuilder(CreateMechanicalExtruder.asResource("extruding/" + id))
+                .withSingleItemOutput(new ProcessingOutput(new ItemStack(output),1));
     }
 
     private ExtrudingRecipeBuilder create(String id, Item output){
