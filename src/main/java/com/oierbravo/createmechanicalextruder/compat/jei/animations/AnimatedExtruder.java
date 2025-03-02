@@ -5,7 +5,7 @@ import com.mojang.math.Axis;
 import com.oierbravo.createmechanicalextruder.register.ModBlocks;
 import com.oierbravo.createmechanicalextruder.register.ModPartials;
 import com.simibubi.create.compat.jei.category.animations.AnimatedKinetics;
-import com.simibubi.create.foundation.utility.AnimationTickHolder;
+import net.createmod.catnip.animation.AnimationTickHolder;
 import net.minecraft.client.gui.GuiGraphics;
 
 public class AnimatedExtruder extends AnimatedKinetics {

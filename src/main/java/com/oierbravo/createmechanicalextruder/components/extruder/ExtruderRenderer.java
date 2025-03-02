@@ -1,14 +1,14 @@
 package com.oierbravo.createmechanicalextruder.components.extruder;
 
-import com.jozufozu.flywheel.backend.Backend;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.oierbravo.createmechanicalextruder.register.ModPartials;
 import com.simibubi.create.AllPartialModels;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntityRenderer;
 import com.simibubi.create.foundation.blockEntity.behaviour.filtering.FilteringRenderer;
-import com.simibubi.create.foundation.render.CachedBufferer;
-import com.simibubi.create.foundation.render.SuperByteBuffer;
+import dev.engine_room.flywheel.api.visualization.VisualizationManager;
+import net.createmod.catnip.render.CachedBuffers;
+import net.createmod.catnip.render.SuperByteBuffer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -30,7 +30,7 @@ public class ExtruderRenderer extends KineticBlockEntityRenderer<ExtruderBlockEn
 
         FilteringRenderer.renderOnBlockEntity(be, partialTicks, ms, buffer, light, overlay);
 
-        if (Backend.canUseInstancing(be.getLevel()))
+        if (VisualizationManager.supportsVisualization(be.getLevel()))
             return;
 
         VertexConsumer vb = buffer.getBuffer(RenderType.solid());
@@ -43,17 +43,17 @@ public class ExtruderRenderer extends KineticBlockEntityRenderer<ExtruderBlockEn
         float renderedHeadOffset =
                 extrudingBehaviour.getRenderedPoleOffset(partialTicks);
 
-        SuperByteBuffer poleRender = CachedBufferer.partialFacing(ModPartials.MECHANICAL_EXTRUDER_POLE, blockState,
+        SuperByteBuffer poleRender = CachedBuffers.partialFacing(ModPartials.MECHANICAL_EXTRUDER_POLE, blockState,
                 blockState.getValue(HORIZONTAL_FACING));
         poleRender.translate(0, -renderedHeadOffset + extrudingBehaviour.headOffset, 0)
                 .light(light)
                 .renderInto(ms, vb);
 
-        SuperByteBuffer superBuffer = CachedBufferer.partialFacing(AllPartialModels.SHAFT_HALF, blockState, blockState.getValue(HORIZONTAL_FACING).getOpposite());
+        SuperByteBuffer superBuffer = CachedBuffers.partialFacing(AllPartialModels.SHAFT_HALF, blockState, blockState.getValue(HORIZONTAL_FACING).getOpposite());
         standardKineticRotationTransform(superBuffer, be, light).renderInto(ms, vb);
     }
    @Override
    protected SuperByteBuffer getRotatedModel(ExtruderBlockEntity be, BlockState state) {
-       return CachedBufferer.partial(AllPartialModels.SHAFT_HALF, state);
+       return CachedBuffers.partial(AllPartialModels.SHAFT_HALF, state);
    }
 }

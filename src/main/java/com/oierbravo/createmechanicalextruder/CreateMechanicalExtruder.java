@@ -1,12 +1,16 @@
 package com.oierbravo.createmechanicalextruder;
 
 import com.oierbravo.createmechanicalextruder.infrastructure.data.ModDataGen;
+import com.oierbravo.createmechanicalextruder.ponder.ModPonderPlugin;
 import com.oierbravo.createmechanicalextruder.register.*;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.item.ItemDescription;
 import com.simibubi.create.foundation.item.KineticStats;
-import com.simibubi.create.foundation.item.TooltipHelper;
 import com.simibubi.create.foundation.item.TooltipModifier;
+import net.createmod.catnip.lang.FontHelper;
+import net.createmod.ponder.foundation.PonderIndex;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -31,10 +35,10 @@ public class CreateMechanicalExtruder
     public static final CreateRegistrate REGISTRATE = CreateRegistrate.create(MODID);
 
     static {
-        REGISTRATE.setTooltipModifierFactory(item -> {
-            return new ItemDescription.Modifier(item, TooltipHelper.Palette.STANDARD_CREATE)
-                    .andThen(TooltipModifier.mapNull(KineticStats.create(item)));
-        });
+        REGISTRATE.setTooltipModifierFactory(item ->
+                new ItemDescription.Modifier(item, FontHelper.Palette.STANDARD_CREATE)
+                        .andThen(TooltipModifier.mapNull(KineticStats.create(item)))
+        );
     }
     public CreateMechanicalExtruder()
     {
@@ -44,17 +48,25 @@ public class CreateMechanicalExtruder
         MinecraftForge.EVENT_BUS.register(this);
         ModConfigs.register();
 
+
         ModBlocks.register();
         ModBlockEntities.register();
         ModCreativeTabs.register(modEventBus);
 
         ModRecipes.register(modEventBus);
-        modEventBus.addListener(this::doClientStuff);
         modEventBus.addListener(ModDataGen::gatherData);
+        modEventBus.addListener(this::doClientStuff);
 
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT,
                 () -> ModPartials::load);
         generateLangEntries();
+    }
+    private void doClientStuff(final FMLClientSetupEvent event) {
+
+        PonderIndex.addPlugin(new ModPonderPlugin());
+        RenderType cutout = RenderType.cutoutMipped();
+
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.MECHANICAL_EXTRUDER.get(), cutout);
     }
     private void generateLangEntries(){
         registrate().addRawLang("create_mechanical_extruder.recipe.extruding", "Extruding recipe");
@@ -80,9 +92,6 @@ public class CreateMechanicalExtruder
         registrate().addRawLang("create_mechanical_extruder.ui.recipe_requirement.min_speed", "Min Speed: %s");
 
 
-    }
-    private void doClientStuff(final FMLClientSetupEvent event) {
-        event.enqueueWork(ModPonders::register);
     }
     public static CreateRegistrate registrate() {
         return REGISTRATE;

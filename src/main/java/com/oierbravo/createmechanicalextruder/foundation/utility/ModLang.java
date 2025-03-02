@@ -1,9 +1,9 @@
 package com.oierbravo.createmechanicalextruder.foundation.utility;
 
 import com.oierbravo.createmechanicalextruder.CreateMechanicalExtruder;
-import com.simibubi.create.foundation.utility.LangBuilder;
+import net.createmod.catnip.lang.LangBuilder;
 
-public class ModLang extends com.simibubi.create.foundation.utility.Lang {
+public class ModLang extends net.createmod.catnip.lang.Lang {
     public ModLang() {
         super();
     }

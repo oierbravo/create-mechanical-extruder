@@ -3,14 +3,14 @@ package com.oierbravo.createmechanicalextruder.components.extruder;
 import com.oierbravo.createmechanicalextruder.components.extruder.recipe.ExtrudingRecipe;
 import com.oierbravo.createmechanicalextruder.foundation.recipe.RecipeRequirementsBehaviour;
 import com.oierbravo.createmechanicalextruder.foundation.recipe.requirements.SpeedRequirement;
+import com.oierbravo.createmechanicalextruder.foundation.utility.ModLang;
 import com.oierbravo.createmechanicalextruder.register.ModRecipes;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.ValueBoxTransform;
 import com.simibubi.create.foundation.blockEntity.behaviour.filtering.FilteringBehaviour;
 import com.simibubi.create.foundation.fluid.FluidIngredient;
-import com.simibubi.create.foundation.utility.Lang;
-import com.simibubi.create.foundation.utility.VecHelper;
+import net.createmod.catnip.math.VecHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -194,7 +194,7 @@ public class ExtruderBlockEntity extends KineticBlockEntity implements Extruding
 
         int currentBonks = extrudingBehaviour.getBonks();
         if(currentBonks > 0){
-            Lang.translate("create_mechanical_extruder.goggles.bonks",currentBonks)
+            ModLang.translate("create_mechanical_extruder.goggles.bonks",currentBonks)
                     .forGoggles(tooltip, 1);
             added = true;
         }

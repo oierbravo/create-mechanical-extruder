@@ -1,0 +1,13 @@
+package com.oierbravo.createmechanicalextruder.ponder;
+
+import com.oierbravo.createmechanicalextruder.register.ModBlocks;
+import com.tterrag.registrate.util.entry.RegistryEntry;
+import net.createmod.ponder.api.registration.PonderTagRegistrationHelper;
+import net.minecraft.resources.ResourceLocation;
+import static com.simibubi.create.infrastructure.ponder.AllCreatePonderTags.KINETIC_APPLIANCES;
+public class ModPonderTags {
+    public static void register(PonderTagRegistrationHelper<ResourceLocation> helper) {
+        PonderTagRegistrationHelper<RegistryEntry<?>> TAG_HELPER = helper.withKeyFunction(RegistryEntry::getId);
+        TAG_HELPER.addToTag(KINETIC_APPLIANCES).add(ModBlocks.MECHANICAL_EXTRUDER);
+    }
+}

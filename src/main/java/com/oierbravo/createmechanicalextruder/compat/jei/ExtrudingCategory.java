@@ -50,7 +50,7 @@ public class ExtrudingCategory extends CreateRecipeCategory<ExtrudingRecipe> {
         ProcessingOutput output = recipe.getResult();
         builder.addSlot(RecipeIngredientRole.OUTPUT,  130,29)
                 .setBackground(getRenderedSlot(), -1, -1)
-                .addTooltipCallback(addStochasticTooltip(output))
+                .addRichTooltipCallback(addStochasticTooltip(output))
                 .addItemStack(recipe.getResultItem());
 
     }
