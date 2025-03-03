@@ -1,6 +1,8 @@
 apply plugin: 'java'
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+
+println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 java.withSourcesJar()
 java.withJavadocJar()
 
@@ -36,4 +38,8 @@ tasks.withType(GenerateModuleMetadata) {
 javadoc {
     // Suppress annoying warnings when generating JavaDoc files.
     options.addStringOption('Xdoclint:none', '-quiet')
+}
+
+compileJava {
+    options.compilerArgs = ['-Xdiags:verbose']
 }
