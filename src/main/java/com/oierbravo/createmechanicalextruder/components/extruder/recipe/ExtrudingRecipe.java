@@ -1,35 +1,37 @@
 package com.oierbravo.createmechanicalextruder.components.extruder.recipe;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.datafixers.util.Either;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.oierbravo.createmechanicalextruder.CreateMechanicalExtruder;
 import com.oierbravo.createmechanicalextruder.components.extruder.ExtruderBlockEntity;
-import com.oierbravo.createmechanicalextruder.foundation.recipe.RecipeRequirementType;
-import com.oierbravo.createmechanicalextruder.foundation.recipe.requirements.BiomeRequirement;
-import com.oierbravo.createmechanicalextruder.foundation.recipe.IRecipeWithRequirements;
-import com.oierbravo.createmechanicalextruder.foundation.recipe.RecipeRequirement;
-import com.oierbravo.createmechanicalextruder.foundation.recipe.requirements.MaxHeightRequirement;
-import com.oierbravo.createmechanicalextruder.foundation.recipe.requirements.MinHeightRequirement;
-import com.oierbravo.createmechanicalextruder.foundation.recipe.requirements.SpeedRequirement;
+import com.oierbravo.mechanical_lemon_lib.foundation.recipe.*;
+import com.oierbravo.mechanical_lemon_lib.foundation.recipe.requirements.SpeedRequirement;
 import com.simibubi.create.content.processing.recipe.ProcessingOutput;
 import com.simibubi.create.foundation.blockEntity.behaviour.filtering.FilteringBehaviour;
 import com.simibubi.create.foundation.fluid.FluidIngredient;
-import com.simibubi.create.foundation.recipe.IRecipeTypeInfo;
+import net.createmod.catnip.codecs.stream.CatnipStreamCodecBuilders;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.common.conditions.ConditionalOps;
+import net.neoforged.neoforge.common.conditions.ICondition;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo, IRecipeWithRequirements {
+public class ExtrudingRecipe extends BaseRecipe<RecipeInput, ExtrudingRecipe.ExtrudingRecipeParams> {
+
     public static Comparator<? super ExtrudingRecipe> hasCatalyst;
     private ResourceLocation id;
     private NonNullList<Ingredient> itemIngredients;
@@ -44,14 +46,15 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
     private final Map<RecipeRequirementType<?>, RecipeRequirement> recipeRequirements = new HashMap<>();
 
 
-    private static final List<RecipeRequirementType<?>> enabledRecipeRequirements = List.of(
-            BiomeRequirement.TYPE,
-            MinHeightRequirement.TYPE,
-            MaxHeightRequirement.TYPE,
+    public static final List<RecipeRequirementType<?>> enabledRecipeRequirements = List.of(
+         //   BiomeRequirement.TYPE,
+         //   MinHeightRequirement.TYPE,
+         //   MaxHeightRequirement.TYPE,
             SpeedRequirement.TYPE
     );
 
-    public ExtrudingRecipe(ExtrudingRecipeBuilder.ExtrudingRecipeParams params) {
+    public ExtrudingRecipe(ExtrudingRecipeParams params) {
+        super(params);
         this.id = params.id;
         this.result = params.result;
         this.itemIngredients = params.itemIngredients;
@@ -64,18 +67,6 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
         );
     }
 
-
-
-    @Override
-    public boolean matches(SimpleContainer pContainer, Level pLevel) {
-
-        return false;
-    }
-
-    @Override
-    public ItemStack assemble(SimpleContainer pContainer, RegistryAccess pRegistryAccess) {
-        return result.rollOutput();
-    }
 
 
     public static boolean match(ExtruderBlockEntity extruderBlockEntity, ExtrudingRecipe recipe){
@@ -117,14 +108,31 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
 
 
     @Override
+    public boolean matches(RecipeInput recipeInput, Level level) {
+        return false;
+    }
+
+    @Override
+    public ItemStack assemble(RecipeInput recipeInput, HolderLookup.Provider provider) {
+        return result.rollOutput();
+    }
+
+    @Override
     public boolean canCraftInDimensions(int pWidth, int pHeight) {
         return true;
     }
 
     @Override
-    public @NotNull ItemStack getResultItem(@NotNull RegistryAccess pRegistryAccess) {
+    public @NotNull ItemStack getResultItem(HolderLookup.Provider provider) {
         return result.rollOutput();
     }
+
+    @Override
+    public @NotNull RecipeSerializer<?> getSerializer() {
+        return Serializer.INSTANCE;
+
+    }
+
 
     public ItemStack getResultItem() {
         return result.rollOutput();
@@ -141,45 +149,172 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
         return requiredBonks;
     }
 
-    @Override
-    public ResourceLocation getId() {
-        return id;
-    }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
-        return Serializer.INSTANCE;
-    }
-
-    @Override
-    public RecipeType<?> getType() {
+    public @NotNull RecipeType<?> getType() {
         return Type.INSTANCE;
     }
 
-    public List<RecipeRequirementType<?>> getEnabledRequirements() {
-        return enabledRecipeRequirements;
-    }
-
-    public Map<RecipeRequirementType<?>, RecipeRequirement> getRecipeRequirements() {
+    public @NotNull Map<RecipeRequirementType<?>, RecipeRequirement> getRecipeRequirements() {
         return recipeRequirements;
     }
 
-    public <T extends RecipeRequirement> T getRequirement(RecipeRequirementType<T> type) {
-        return (T) recipeRequirements.get(type);
+    @Override
+    public boolean checkRequirements(Level level, BlockEntity blockEntity) {
+        return false;
+    }
+
+    public static <T> boolean hasCatalyst(RecipeHolder<ExtrudingRecipe> extrudingRecipeRecipeHolder) {
+        return !extrudingRecipeRecipeHolder.value().catalyst.isEmpty();
     }
 
     public static class Type implements RecipeType<ExtrudingRecipe> {
         private Type() { }
         public static final Type INSTANCE = new Type();
+        public static final RecipeType<ExtrudingRecipe> RECIPE_TYPE = new Type();
         public static final String ID = "extruding";
     }
 
-    public static class Serializer implements RecipeSerializer<ExtrudingRecipe> {
-        public static final Serializer INSTANCE = new Serializer();
+    public static class ExtrudingRecipeParams extends BaseRecipeParams{
+        protected NonNullList<Ingredient> itemIngredients;
+        protected ProcessingOutput result;
+        protected NonNullList<FluidIngredient> fluidIngredients;
+        protected ItemStack catalyst;
+
+        protected int requiredBonks;
+
+        //protected BiomeRequirement biome;
+
+        public ArrayList<RecipeRequirement> recipeRequirements;
+
+        protected ExtrudingRecipeParams(ResourceLocation id) {
+            super(id);
+            itemIngredients = NonNullList.create();
+            result = ProcessingOutput.EMPTY;
+            fluidIngredients = NonNullList.create();
+            catalyst = ItemStack.EMPTY;
+            requiredBonks = 1;
+            recipeRequirements = new ArrayList<>();
+        }
+
+    }
+    public static class Serializer extends BaseRecipeSerializer<ExtrudingRecipe, ExtrudingRecipeBuilder> implements RecipeSerializer<ExtrudingRecipe> {
+        public static final Serializer INSTANCE = new Serializer(ExtrudingRecipe.enabledRecipeRequirements);
+
+        public final StreamCodec<RegistryFriendlyByteBuf, ExtrudingRecipe> STREAM_CODEC = StreamCodec.of(this::toNetwork, this::fromNetwork);
+
+        private ExtrudingRecipe fromNetwork(RegistryFriendlyByteBuf buffer) {
+            ResourceLocation recipeId = ResourceLocation.STREAM_CODEC.decode(buffer);
+
+            NonNullList<Ingredient> ingredients = CatnipStreamCodecBuilders.nonNullList(Ingredient.CONTENTS_STREAM_CODEC).decode(buffer);
+            NonNullList<FluidIngredient> fluidIngredients = CatnipStreamCodecBuilders.nonNullList(FluidIngredient.STREAM_CODEC).decode(buffer);
+            ProcessingOutput result = ProcessingOutput.STREAM_CODEC.decode(buffer);
+            int requiredBonks = ByteBufCodecs.INT.decode(buffer);
+            //float requiredSpeed = ByteBufCodecs.FLOAT.decode(buffer);
+
+            return new ExtrudingRecipeBuilder(recipeId).withItemIngredients(ingredients)
+                    .withSingleItemOutput(result)
+                    .withFluidIngredients(fluidIngredients)
+                    .requiredBonks(requiredBonks)
+                    //.withRequirement(SpeedRequirement.of(requiredSpeed))
+                    .build();
+        }
+
+        private void toNetwork(RegistryFriendlyByteBuf buffer, ExtrudingRecipe extrudingRecipe) {
+            ResourceLocation.STREAM_CODEC.encode(buffer, extrudingRecipe.id);
+
+            CatnipStreamCodecBuilders.nonNullList(Ingredient.CONTENTS_STREAM_CODEC).encode(buffer, extrudingRecipe.itemIngredients);
+            CatnipStreamCodecBuilders.nonNullList(FluidIngredient.STREAM_CODEC).encode(buffer, extrudingRecipe.fluidIngredients);
+            ProcessingOutput.STREAM_CODEC.encode(buffer, extrudingRecipe.getResult());
+            ByteBufCodecs.INT.encode(buffer,extrudingRecipe.getRequiredBonks());
+            //ByteBufCodecs.FLOAT.encode(buffer,extrudingRecipe.getSpeedRequirement())
+            ;
+        }
+        //public static final MapCodec<ExtrudingRecipe> CODEC = AllRecipeTypes.CODEC.dispatchMap(ExtrudingRecipe::getId, ExtrudingCodec);
+
+        public static final MapCodec<ExtrudingRecipe> CODEC = RecordCodecBuilder.mapCodec(
+                instance -> instance
+                        .group(
+                                Codec.either(Ingredient.CODEC, FluidIngredient.CODEC).listOf().fieldOf("ingredients").forGetter(i -> {
+                                    List<Either<Ingredient, FluidIngredient>> list = new ArrayList<>();
+                                    i.getIngredients().forEach(o -> list.add(Either.left(o)));
+                                    i.getFluidIngredients().forEach(o -> list.add(Either.right(o)));
+                                    return list;
+                                }),
+
+                                ProcessingOutput.CODEC.fieldOf("result").forGetter(ExtrudingRecipe::getResult),
+                                ItemStack.CODEC.optionalFieldOf("catalyst", ItemStack.EMPTY).forGetter(ExtrudingRecipe::getCatalyst),
+                                Codec.INT.optionalFieldOf("requiredBonks",1).forGetter(ExtrudingRecipe::getRequiredBonks),
+                                //Codec.FLOAT.optionalFieldOf(SpeedRequirement.TYPE.getId(),1f).forGetter(ExtrudingRecipe::getSpeedRequirement),
+                                ICondition.LIST_CODEC.optionalFieldOf(ConditionalOps.DEFAULT_CONDITIONS_KEY, List.of()).forGetter(ExtrudingRecipe::getConditions)
+                        ).apply(instance, (ingredients, processingOutput, catalyst, requiredBonks/*, requiredSpeed,*/, iConditions) -> {
+                            String recipeId = instance.toString();
+                            ExtrudingRecipeBuilder builder = new ExtrudingRecipeBuilder(ResourceLocation.parse("create_mechanical_extruder:extruding"));
+
+                            NonNullList<Ingredient> ingredientList = NonNullList.create();
+                            NonNullList<FluidIngredient> fluidIngredientList = NonNullList.create();
+
+                            for (Either<Ingredient, FluidIngredient> either : ingredients) {
+                                either.left().ifPresent(ingredientList::add);
+                                either.right().ifPresent(fluidIngredientList::add);
+                            }
+
+                            builder
+                                    .withItemIngredients(ingredientList)
+                                    .withFluidIngredients(fluidIngredientList)
+                                    .withSingleItemOutput(processingOutput)
+                                    .requiredBonks(requiredBonks)
+                                    .withCatalyst(catalyst);
+                                 //   .withRequirement(SpeedRequirement.of(requiredSpeed));
+
+                            return builder.build();
+
+
+                        })
+        );
+
         public static final ResourceLocation ID =
-                new ResourceLocation(CreateMechanicalExtruder.MODID,"extruding");
+                ResourceLocation.fromNamespaceAndPath(CreateMechanicalExtruder.MODID,"extruding");
+
+        public Serializer(List<RecipeRequirementType<?>> pEnabledRecipeRequirements) {
+            super(pEnabledRecipeRequirements);
+        }
 
         @Override
+        protected ExtrudingRecipeBuilder readFromJson(ResourceLocation resourceLocation, JsonObject jsonObject) {
+            return null;
+        }
+
+        @Override
+        protected ExtrudingRecipeBuilder readFromBuffer(ResourceLocation resourceLocation, FriendlyByteBuf friendlyByteBuf) {
+            return null;
+        }
+
+        @Override
+        protected void writeToJson(JsonObject jsonObject, ExtrudingRecipe extrudingRecipe) {
+
+        }
+
+        @Override
+        protected void writeToBuffer(FriendlyByteBuf friendlyByteBuf, ExtrudingRecipe extrudingRecipe) {
+
+        }
+
+        @Override
+        public @NotNull MapCodec<ExtrudingRecipe> codec() {
+            return CODEC;
+        }
+
+        /*@Override
+                public @NotNull MapCodec<ExtrudingRecipe> codec() {
+                    return CODEC;
+                }
+        */
+        @Override
+        public @NotNull StreamCodec<RegistryFriendlyByteBuf, ExtrudingRecipe> streamCodec() {
+            return STREAM_CODEC;
+        }
+        /*@Override
         public ExtrudingRecipe fromJson(ResourceLocation id, JsonObject json) {
             ExtrudingRecipeBuilder builder = new ExtrudingRecipeBuilder(id);
             NonNullList<Ingredient> itemIngredients = NonNullList.create();
@@ -302,12 +437,30 @@ public class ExtrudingRecipe implements Recipe<SimpleContainer>, IRecipeTypeInfo
             ExtrudingRecipe.enabledRecipeRequirements.forEach(recipeRequirementType -> {
                 recipeRequirementType.toNetwork(buffer,pRecipe.getRequirement(recipeRequirementType));
             });
-            /*for (Map.Entry<RecipeRequirementType<?>, RecipeRequirement> entry : pRecipe.recipeRequirements.entrySet()) {
-                entry.getKey().toNetwork(buffer, entry.getValue());
-            }*/
 
-        }
+        }*/
+
+
     }
 
+    private ResourceLocation getId() {
+        return id;
+    }
+
+    private Float getSpeedRequirement() {
+        @NotNull Map<RecipeRequirementType<?>, RecipeRequirement> reqs =  this.getRecipeRequirements();
+        SpeedRequirement sp = (SpeedRequirement) this.getRequirement(SpeedRequirement.TYPE);
+        //if(this.getRecipeRequirements().get(SpeedRequirement.TYPE).isPresent())
+        //    return (Float) this.getRecipeRequirements().get(SpeedRequirement.TYPE).getValue();
+        return SpeedRequirement.EMPTY.getValue();
+    }
+
+   /* private List<RecipeRequirement> getRecipeRequirementsList() {
+        List<RecipeRequirement> recipeRequirements = List.of();
+        ExtrudingRecipe.enabledRecipeRequirements.forEach(recipeRequirementType -> {
+            recipeRequirements.add(getRequirement(recipeRequirementType));
+        });
+        return recipeRequirements;
+    }*/
 
 }

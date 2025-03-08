@@ -215,3 +215,7 @@ event.recipes.createMechanicalExtruderExtruding(Item.of('minecraft:dirt'),[Fluid
 
 Code inspiration from the [Create](https://www.curseforge.com/minecraft/mc-mods/create "Create") mod itself.
 
+## License
+Create Mechanical Extruder is licensed under the LGPL license. See [LICENSE](LICENSE) for more information.
+
+Certain sections of the code are from the Create mod, which is licensed under the MIT license. See [Create's license](https://github.com/Creators-of-Create/Create/blob/mc1.18/dev/LICENSE) for more information.

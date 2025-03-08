@@ -1,13 +1,13 @@
 package com.oierbravo.createmechanicalextruder.components.extruder;
 
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class ExtruderConfig {
-    public static ForgeConfigSpec.DoubleValue STRESS_IMPACT;
-    public static ForgeConfigSpec.DoubleValue MINIMUM_SPEED;
-    public static ForgeConfigSpec.IntValue CYCLE;
+    public static ModConfigSpec.DoubleValue STRESS_IMPACT;
+    public static ModConfigSpec.DoubleValue MINIMUM_SPEED;
+    public static ModConfigSpec.IntValue CYCLE;
 
-    public static void registerCommonConfig(ForgeConfigSpec.Builder COMMON_BUILDER) {
+    public static void registerCommonConfig(ModConfigSpec.Builder COMMON_BUILDER) {
         COMMON_BUILDER.comment("Settings for the mechanical extruder").push("mechanical_extruder");
         STRESS_IMPACT = COMMON_BUILDER
                 .comment("Stress impact")

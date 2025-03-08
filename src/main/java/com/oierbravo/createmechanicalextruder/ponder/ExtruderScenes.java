@@ -84,7 +84,7 @@ public class ExtruderScenes {
                 .start());
         ItemStack output = new ItemStack(Blocks.COBBLESTONE);
         scene.world().modifyBlockEntity(extruderPos, ExtruderBlockEntity.class,
-                ms -> ms.outputInv.setStackInSlot(0, output));
+                ms -> ms.outputInventory.setStackInSlot(0, output));
 
         scene.overlay().showText(50)
                 .text("When the process is done, the result can be obtained via Right-click")

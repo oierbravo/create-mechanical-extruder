@@ -2,36 +2,32 @@ package com.oierbravo.createmechanicalextruder.compat.jei;
 
 import com.oierbravo.createmechanicalextruder.CreateMechanicalExtruder;
 import com.oierbravo.createmechanicalextruder.components.extruder.recipe.ExtrudingRecipe;
-import com.oierbravo.createmechanicalextruder.foundation.utility.ModLang;
-import com.oierbravo.createmechanicalextruder.register.ModBlocks;
 import com.simibubi.create.compat.jei.BlueprintTransferHandler;
 import com.simibubi.create.compat.jei.DoubleItemIcon;
 import com.simibubi.create.compat.jei.EmptyBackground;
 import com.simibubi.create.compat.jei.ItemIcon;
 import com.simibubi.create.compat.jei.category.CreateRecipeCategory;
-import com.simibubi.create.infrastructure.config.AllConfigs;
 import com.simibubi.create.infrastructure.config.CRecipes;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.gui.drawable.IDrawable;
-import mezz.jei.api.recipe.category.IRecipeCategory;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
 import mezz.jei.api.runtime.IIngredientManager;
 import net.createmod.catnip.config.ConfigBase;
-import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.ItemLike;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -48,11 +44,12 @@ public class CreateMechanicalExtruderJEI implements IModPlugin {
     private final List<CreateRecipeCategory<?>> modCategories = new ArrayList<>();
 
 
-    private void loadCategories() {
+    /*private void loadCategories() {
         this.modCategories.clear();
         RecipeManager rm = Objects.requireNonNull(Minecraft.getInstance().level).getRecipeManager();
 
-        List<ExtrudingRecipe> extrudingRecipes = rm.getAllRecipesFor(ExtrudingRecipe.Type.INSTANCE);
+        List<RecipeHolder<ExtrudingRecipe>> extrudingRecipes = rm.getAllRecipesFor(ExtrudingRecipe.Type.INSTANCE);
+        //List<ExtrudingRecipe> extrudingRecipes = new ArrayList<>();
 
         CreateRecipeCategory<?>
                 extruding = builder(ExtrudingRecipe.class)
@@ -60,7 +57,7 @@ public class CreateMechanicalExtruderJEI implements IModPlugin {
                 .catalyst(ModBlocks.MECHANICAL_EXTRUDER::get)
                 .emptyBackground(177, 75)
                 .build("extruding", ExtrudingCategory::new);
-    }
+    }*/
     private <T extends Recipe<?>> CategoryBuilder<T> builder(Class<? extends T> recipeClass) {
         return new CategoryBuilder<>(recipeClass);
     }
@@ -73,8 +70,8 @@ public class CreateMechanicalExtruderJEI implements IModPlugin {
 
     @Override
     public void registerCategories(IRecipeCategoryRegistration registration) {
-        loadCategories();
-        registration.addRecipeCategories(modCategories.toArray(IRecipeCategory[]::new));
+        //loadCategories();
+        //registration.addRecipeCategories(modCategories.toArray(IRecipeCategory[]::new));
     }
 
     @Override
@@ -129,7 +126,7 @@ public class CreateMechanicalExtruderJEI implements IModPlugin {
 
 
         public CategoryBuilder<T> addRecipes(Collection<ExtrudingRecipe> collection) {
-            return addRecipeListConsumer(recipes -> recipes.addAll(collection));
+            return addRecipeListConsumer(recipes -> recipes.addAll(collection.stream().toList()));
         }
 
 
@@ -169,7 +166,7 @@ public class CreateMechanicalExtruderJEI implements IModPlugin {
             return this;
         }
 
-        public CreateRecipeCategory<T> build(String name, CreateRecipeCategory.Factory<T> factory) {
+       /* public CreateRecipeCategory<T> build(String name, CreateRecipeCategory.Factory<T> factory) {
             Supplier<List<T>> recipesSupplier;
             if (predicate.test(AllConfigs.server().recipes)) {
                 recipesSupplier = () -> {
@@ -183,21 +180,21 @@ public class CreateMechanicalExtruderJEI implements IModPlugin {
             }
 
             CreateRecipeCategory.Info<T> info = new CreateRecipeCategory.Info<>(
-                    new mezz.jei.api.recipe.RecipeType<>(CreateMechanicalExtruder.asResource(name), recipeClass),
+                    new RecipeType<>(CreateMechanicalExtruder.asResource(name), recipeClass),
                     ModLang.translate("recipe." + name).component(), background, icon, recipesSupplier, catalysts);
             CreateRecipeCategory<T> category = factory.create(info);
             modCategories.add(category);
             return category;
-        }
+        }*/
     }
 
-    public static void consumeAllRecipes(Consumer<Recipe<?>> consumer) {
+    /*public static void consumeAllRecipes(Consumer<Recipe<?>> consumer) {
         Minecraft.getInstance()
                 .getConnection()
                 .getRecipeManager()
                 .getRecipes()
                 .forEach(consumer);
-    }
+    }*/
 
 
 

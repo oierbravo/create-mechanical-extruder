@@ -1,10 +1,11 @@
 package com.oierbravo.createmechanicalextruder.components.extruder;
 
 import com.oierbravo.createmechanicalextruder.components.extruder.recipe.ExtrudingRecipe;
-import com.oierbravo.createmechanicalextruder.foundation.recipe.RecipeRequirementsBehaviour;
-import com.oierbravo.createmechanicalextruder.foundation.recipe.requirements.SpeedRequirement;
 import com.oierbravo.createmechanicalextruder.foundation.utility.ModLang;
+import com.oierbravo.createmechanicalextruder.register.ModBlockEntities;
 import com.oierbravo.createmechanicalextruder.register.ModRecipes;
+import com.oierbravo.mechanical_lemon_lib.foundation.blockEntity.behaviour.RecipeRequirementsBehaviour;
+import com.oierbravo.mechanical_lemon_lib.foundation.recipe.requirements.SpeedRequirement;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.ValueBoxTransform;
@@ -13,31 +14,35 @@ import com.simibubi.create.foundation.fluid.FluidIngredient;
 import net.createmod.catnip.math.VecHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.items.wrapper.CombinedInvWrapper;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.common.util.Lazy;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.ItemStackHandler;
+import net.neoforged.neoforge.items.wrapper.CombinedInvWrapper;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING;
 
 public class ExtruderBlockEntity extends KineticBlockEntity implements ExtrudingBehaviour.ExtrudingBehaviourSpecifics, RecipeRequirementsBehaviour.RecipeRequirementsSpecifics<ExtrudingRecipe> {
-    public ItemStackHandler outputInv;
-    public LazyOptional<IItemHandler> capability;
+    public ItemStackHandler outputInventory;
+    public Lazy<IItemHandler> capability;
     public int timer;
 
     private ExtrudingBehaviour extrudingBehaviour;
@@ -47,11 +52,21 @@ public class ExtruderBlockEntity extends KineticBlockEntity implements Extruding
     public ExtruderBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
 
-        outputInv = new ItemStackHandler(1);
-        capability = LazyOptional.of(ExtruderInventoryHandler::new);
+        outputInventory = new ItemStackHandler(1);
+        capability = Lazy.of(ExtruderInventoryHandler::new);
 
     }
+    private @Nullable IItemHandler getItemHandler() {
+        return outputInventory;
+    }
+    public static void registerCapabilities(RegisterCapabilitiesEvent event) {
+        event.registerBlockEntity(
+                Capabilities.ItemHandler.BLOCK,
+                ModBlockEntities.MECHANICAL_EXTRUDER.get(),
+                (be, context) -> be.getItemHandler()
+        );
 
+    }
     @Override
     public boolean isSpeedRequirementFulfilled() {
         Optional<ExtrudingRecipe> recipe = getRecipe();
@@ -114,18 +129,20 @@ public class ExtruderBlockEntity extends KineticBlockEntity implements Extruding
         }
         extrudingBehaviour.resetBonks();
         ItemStack output = recipe.get().getResult().rollOutput();
-        if(outputInv.getStackInSlot(0).isEmpty()){
+        if(outputInventory.getStackInSlot(0).isEmpty()){
 
-            outputInv.setStackInSlot(0, output);
-        } else if(outputInv.getStackInSlot(0).is(recipe.get().getResult().getStack().getItem())) {
-            outputInv.getStackInSlot(0).grow(output.getCount());
+            outputInventory.setStackInSlot(0, output);
+        } else if(outputInventory.getStackInSlot(0).is(recipe.get().getResult().getStack().getItem())) {
+            outputInventory.getStackInSlot(0).grow(output.getCount());
         }
         return true;
     }
 
 
     public Optional<ExtrudingRecipe> getRecipe() {
-        return ModRecipes.findExtruding(this, level);
+        if(ModRecipes.findExtruding(this, level).isPresent())
+            return Optional.of(ModRecipes.findExtruding(this, level).get().value());
+        return Optional.empty();
     }
 
 
@@ -172,17 +189,19 @@ public class ExtruderBlockEntity extends KineticBlockEntity implements Extruding
     }
 
     @Override
-    public void write(CompoundTag compound, boolean clientPacket) {
-        super.write(compound, clientPacket);
+    public void write(CompoundTag compound, HolderLookup.Provider registries, boolean clientPacket) {
         compound.putInt("Timer", timer);
-        compound.put("OutputInventory", outputInv.serializeNBT());
+        compound.put("OutputInventory", outputInventory.serializeNBT(registries));
+        super.write(compound, registries, clientPacket);
+
     }
 
     @Override
-    protected void read(CompoundTag compound, boolean clientPacket) {
-        super.read(compound, clientPacket);
+    protected void read(CompoundTag compound, HolderLookup.Provider registries, boolean clientPacket) {
         timer = compound.getInt("Timer");
-        outputInv.deserializeNBT(compound.getCompound("OutputInventory"));
+        outputInventory.deserializeNBT(registries, compound.getCompound("OutputInventory"));
+        super.read(compound, registries, clientPacket);
+
     }
 
 
@@ -207,12 +226,12 @@ public class ExtruderBlockEntity extends KineticBlockEntity implements Extruding
         return added;
     }
 
-    @Override
-    public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
+   /* @Override
+    public <T> Lazy<T> getCapability(Capability<T> cap, Direction side) {
         if (isItemHandlerCap(cap))
             return capability.cast();
         return super.getCapability(cap, side);
-    }
+    }*/
     private final Map<Direction, Direction> directionLefttBlockMap =
             Map.of(Direction.NORTH, Direction.WEST,
                    Direction.SOUTH, Direction.EAST,
@@ -261,10 +280,10 @@ public class ExtruderBlockEntity extends KineticBlockEntity implements Extruding
         Block rightBlock = getRightBlock();
 
         if(leftBlock instanceof LiquidBlock){
-            fluidIngredients.add( FluidIngredient.fromFluid(((LiquidBlock) leftBlock).getFluid(),1000 ));
+            fluidIngredients.add( FluidIngredient.fromFluid(((LiquidBlock) leftBlock).fluid,1000 ));
         }
         if(rightBlock instanceof LiquidBlock){
-            fluidIngredients.add( FluidIngredient.fromFluid(((LiquidBlock) rightBlock).getFluid(),1000 ));
+            fluidIngredients.add( FluidIngredient.fromFluid(((LiquidBlock) rightBlock).fluid,1000 ));
         }
 
         return fluidIngredients;
@@ -285,10 +304,10 @@ public class ExtruderBlockEntity extends KineticBlockEntity implements Extruding
 
     @Override
     public boolean hasEnoughOutputSpace() {
-        if(outputInv.getStackInSlot(0).getCount() == outputInv.getStackInSlot(0).getMaxStackSize()){
+        if(outputInventory.getStackInSlot(0).getCount() == outputInventory.getStackInSlot(0).getMaxStackSize()){
             return false;
         }
-        if(!outputInv.getStackInSlot(0).isEmpty() && !outputInv.getStackInSlot(0).is(getRecipe().get().getResult().getStack().getItem())){
+        if(!outputInventory.getStackInSlot(0).isEmpty() && !outputInventory.getStackInSlot(0).is(getRecipe().get().getResult().getStack().getItem())){
             return false;
         }
         return true;
@@ -298,15 +317,20 @@ public class ExtruderBlockEntity extends KineticBlockEntity implements Extruding
     public boolean matchIngredients(ExtrudingRecipe extrudingRecipe) {
         return ExtrudingRecipe.match( this, extrudingRecipe);
     }
+
+    public boolean matchIngredients(RecipeHolder<ExtrudingRecipe> extrudingRecipeRecipeHolder) {
+        return ExtrudingRecipe.match( this, extrudingRecipeRecipeHolder.value());
+    }
+
     private class ExtruderInventoryHandler extends CombinedInvWrapper {
 
         public ExtruderInventoryHandler() {
-            super(outputInv);
+            super(outputInventory);
         }
 
         @Override
         public boolean isItemValid(int slot, ItemStack stack) {
-            if (outputInv == getHandlerFromIndex(getIndexForSlot(slot)))
+            if (outputInventory == getHandlerFromIndex(getIndexForSlot(slot)))
                 return false;
             return super.isItemValid(slot, stack);
         }

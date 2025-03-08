@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "create:casing"
+            "items": "#create:casing"
           }
         ]
       },
@@ -20,14 +20,13 @@
   },
   "requirements": [
     [
-      "has_andesite_casing",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_andesite_casing"
     ]
   ],
   "rewards": {
     "recipes": [
       "create_mechanical_extruder:crafting/mechanical_extruder"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

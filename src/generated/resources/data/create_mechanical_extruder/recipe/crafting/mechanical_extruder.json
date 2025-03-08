@@ -6,7 +6,7 @@
       "item": "create:andesite_casing"
     },
     "G": {
-      "tag": "forge:glass"
+      "tag": "c:glass_blocks"
     },
     "S": {
       "item": "create:shaft"
@@ -18,7 +18,7 @@
     " G "
   ],
   "result": {
-    "item": "create_mechanical_extruder:mechanical_extruder"
-  },
-  "show_notification": true
+    "count": 1,
+    "id": "create_mechanical_extruder:mechanical_extruder"
+  }
 }

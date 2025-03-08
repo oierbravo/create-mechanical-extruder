@@ -1,43 +1,43 @@
 package com.oierbravo.createmechanicalextruder.components.extruder.recipe;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.oierbravo.createmechanicalextruder.foundation.recipe.RecipeRequirement;
-import com.oierbravo.createmechanicalextruder.foundation.recipe.requirements.BiomeRequirement;
-import com.oierbravo.createmechanicalextruder.register.ModRecipes;
+import com.oierbravo.mechanical_lemon_lib.foundation.recipe.BaseRecipeBuilder;
 import com.simibubi.create.content.processing.recipe.ProcessingOutput;
 import com.simibubi.create.foundation.fluid.FluidIngredient;
+import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementRequirements;
+import net.minecraft.advancements.AdvancementRewards;
+import net.minecraft.advancements.Criterion;
+import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
 import net.minecraft.core.NonNullList;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
-import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.common.crafting.conditions.ICondition;
-import net.minecraftforge.common.crafting.conditions.ModLoadedCondition;
-import net.minecraftforge.common.crafting.conditions.NotCondition;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Consumer;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
-public class ExtrudingRecipeBuilder {
-    protected ExtrudingRecipeBuilder.ExtrudingRecipeParams params;
+public class ExtrudingRecipeBuilder extends BaseRecipeBuilder<ExtrudingRecipe, ExtrudingRecipe.ExtrudingRecipeParams> {
+    protected final Map<String, Criterion<?>> criteria = new LinkedHashMap<>();
 
-    protected List<RecipeRequirement> recipeRequirements;
+    public ExtrudingRecipeBuilder( ResourceLocation id) {
+        super(id);
+        params = new ExtrudingRecipe.ExtrudingRecipeParams(id);
 
-    protected List<ICondition> recipeConditions;
+    }
+
+  //  protected List<RecipeRequirement> recipeRequirements;
+
+//    protected List<ICondition> recipeConditions;
 
 
-    public ExtrudingRecipeBuilder(ResourceLocation recipeId) {
+    /*public ExtrudingRecipeBuilder(ResourceLocation recipeId) {
         params = new ExtrudingRecipeBuilder.ExtrudingRecipeParams(recipeId);
         recipeRequirements = new ArrayList<>();
         recipeConditions = new ArrayList<>();
-    }
+    }*/
     public ExtrudingRecipeBuilder withItemIngredients(Ingredient... itemIngredients) {
         return withItemIngredients(NonNullList.of(Ingredient.EMPTY, itemIngredients));
     }
@@ -80,18 +80,36 @@ public class ExtrudingRecipeBuilder {
         return this;
     }
     public ExtrudingRecipe build(){
-        return new ExtrudingRecipe(params);
+        return new ExtrudingRecipe(this.params);
     }
 
-    public void save(Consumer<FinishedRecipe> pFinishedRecipeConsumer){
-        pFinishedRecipeConsumer.accept(buildFinishedRecipe());
+    public ExtrudingRecipeBuilder withSingleItemOutput(NonNullList<ProcessingOutput> results) {
+        if(results.stream().findFirst().isPresent())
+            params.result = results.stream().findFirst().get();
+        return this;
     }
 
-    private FinishedRecipe buildFinishedRecipe() {
-        return new FinishedExtrudingRecipe(build(), recipeConditions);
+
+    public void save(RecipeOutput recipeOutput, ResourceLocation resourceLocation) {
+        Advancement.Builder advancement = recipeOutput.advancement()
+                .addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(resourceLocation))
+                .rewards(AdvancementRewards.Builder.recipe(resourceLocation))
+                .requirements(AdvancementRequirements.Strategy.OR);
+        this.criteria.forEach(advancement::addCriterion);
+
+        recipeOutput.accept(resourceLocation, build(), advancement.build(params.id.withPrefix("recipes/")));
     }
 
-    public ExtrudingRecipeBuilder withRequirement(RecipeRequirement requirement){
+    public void save(RecipeOutput recipeOutput) {
+        save(recipeOutput, params.id);
+    }
+
+    /*@Override
+    public @NotNull ExtrudingRecipeBuilder unlockedBy(@NotNull String name, @NotNull Criterion<?> criterion) {
+        this.criteria.put(name, criterion);
+        return this;
+    }*/
+   /* public ExtrudingRecipeBuilder withRequirement(RecipeRequirement requirement){
         params.recipeRequirements.add(requirement);
         return this;
     }
@@ -99,26 +117,8 @@ public class ExtrudingRecipeBuilder {
     public ExtrudingRecipeBuilder withBiomeRequirement(BiomeRequirement biomeRequirement) {
         return withRequirement(biomeRequirement);
     }
-
-    public ExtrudingRecipeBuilder withRequirements(List<RecipeRequirement> recipeRequirements) {
-        recipeRequirements.forEach(this::withRequirement);
-        return this;
-    }
-
-    public ExtrudingRecipeBuilder whenModLoaded(String modid) {
-        return withCondition(new ModLoadedCondition(modid));
-    }
-
-    public ExtrudingRecipeBuilder whenModMissing(String modid) {
-        return withCondition(new NotCondition(new ModLoadedCondition(modid)));
-    }
-
-    public ExtrudingRecipeBuilder withCondition(ICondition condition) {
-        recipeConditions.add(condition);
-        return this;
-    }
-
-    public static class ExtrudingRecipeParams {
+    */
+    /*public static class ExtrudingRecipeParams {
         protected ResourceLocation id;
         protected NonNullList<Ingredient> itemIngredients;
         protected ProcessingOutput result;
@@ -143,8 +143,8 @@ public class ExtrudingRecipeBuilder {
             recipeRequirements = new ArrayList<>();
         }
 
-    }
-    protected static class FinishedExtrudingRecipe implements FinishedRecipe{
+    }*/
+    /*protected static class FinishedExtrudingRecipe implements FinishedRecipe{
 
         protected ResourceLocation id;
         protected ExtrudingRecipe recipe;
@@ -189,5 +189,5 @@ public class ExtrudingRecipeBuilder {
         public ResourceLocation getAdvancementId() {
             return null;
         }
-    }
+    }*/
 }

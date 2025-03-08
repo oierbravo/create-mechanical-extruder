@@ -6,6 +6,7 @@ import com.simibubi.create.foundation.blockEntity.behaviour.BehaviourType;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import net.createmod.catnip.math.VecHelper;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -40,22 +41,22 @@ public class ExtrudingBehaviour extends BlockEntityBehaviour {
 	}
 
 	@Override
-	public void read(CompoundTag compound, boolean clientPacket) {
+	public void read(CompoundTag compound, HolderLookup.Provider registries, boolean clientPacket) {
 		running = compound.getBoolean("Running");
 		finished = compound.getBoolean("Finished");
 		prevRunningTicks = runningTicks = compound.getInt("Ticks");
 		bonks = compound.getInt("Bonks");
-		super.read(compound, clientPacket);
+		super.read(compound, registries, clientPacket);
 
 	}
 
 	@Override
-	public void write(CompoundTag compound, boolean clientPacket) {
+	public void write(CompoundTag compound,HolderLookup.Provider registries, boolean clientPacket) {
 		compound.putBoolean("Running", running);
 		compound.putBoolean("Finished", finished);
 		compound.putInt("Ticks", runningTicks);
 		compound.putInt("Bonks", bonks);
-		super.write(compound, clientPacket);
+		super.write(compound, registries, clientPacket);
 
 	}
 

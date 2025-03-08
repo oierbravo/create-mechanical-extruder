@@ -1,8 +1,10 @@
 package com.oierbravo.createmechanicalextruder;
 
+import com.oierbravo.createmechanicalextruder.components.extruder.ExtruderBlockEntity;
 import com.oierbravo.createmechanicalextruder.infrastructure.data.ModDataGen;
 import com.oierbravo.createmechanicalextruder.ponder.ModPonderPlugin;
 import com.oierbravo.createmechanicalextruder.register.*;
+import com.oierbravo.mechanical_lemon_lib.register.LemonCreativeModeTabs;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.item.ItemDescription;
 import com.simibubi.create.foundation.item.KineticStats;
@@ -12,13 +14,10 @@ import net.createmod.ponder.foundation.PonderIndex;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -32,7 +31,7 @@ public class CreateMechanicalExtruder
     private static final Logger LOGGER = LogManager.getLogger(MODID);
     public static IEventBus modEventBus;
 
-    public static final CreateRegistrate REGISTRATE = CreateRegistrate.create(MODID);
+    public static final CreateRegistrate REGISTRATE = CreateRegistrate.create(MODID).defaultCreativeTab(LemonCreativeModeTabs.MAIN_TAB.getKey());
 
     static {
         REGISTRATE.setTooltipModifierFactory(item ->
@@ -40,28 +39,30 @@ public class CreateMechanicalExtruder
                         .andThen(TooltipModifier.mapNull(KineticStats.create(item)))
         );
     }
-    public CreateMechanicalExtruder()
+    public CreateMechanicalExtruder(IEventBus modEventBus, ModContainer modContainer)
     {
-        modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         REGISTRATE.registerEventListeners(modEventBus);
 
-        MinecraftForge.EVENT_BUS.register(this);
-        ModConfigs.register();
+        ModConfigs.register(modContainer);
 
 
         ModBlocks.register();
         ModBlockEntities.register();
-        ModCreativeTabs.register(modEventBus);
+        //ModCreativeTabs.register(modEventBus);
 
         ModRecipes.register(modEventBus);
         modEventBus.addListener(ModDataGen::gatherData);
+        modEventBus.addListener(this::registerCapabilities);
         modEventBus.addListener(this::doClientStuff);
 
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT,
-                () -> ModPartials::load);
         generateLangEntries();
     }
+    @net.neoforged.bus.api.SubscribeEvent
+    public void registerCapabilities(net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent event) {
+        ExtruderBlockEntity.registerCapabilities(event);
+    }
     private void doClientStuff(final FMLClientSetupEvent event) {
+        ModPartials.init();
 
         PonderIndex.addPlugin(new ModPonderPlugin());
         RenderType cutout = RenderType.cutoutMipped();
@@ -100,7 +101,7 @@ public class CreateMechanicalExtruder
 
 
     public static ResourceLocation asResource(String path) {
-        return new ResourceLocation(MODID, path);
+        return ResourceLocation.fromNamespaceAndPath(MODID, path);
     }
     public static Logger logger(){
         return LOGGER;

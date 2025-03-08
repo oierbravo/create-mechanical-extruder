@@ -1,50 +1,28 @@
 package com.oierbravo.createmechanicalextruder.register;
 
-import com.electronwill.nightconfig.core.file.CommentedFileConfig;
-import com.electronwill.nightconfig.core.io.WritingMode;
-import com.oierbravo.createmechanicalextruder.CreateMechanicalExtruder;
+import com.electronwill.nightconfig.core.ConfigSpec;
 import com.oierbravo.createmechanicalextruder.components.extruder.ExtruderConfig;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.loading.FMLPaths;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 //From https://github.com/McJty/TutorialV3/blob/1.19/src/main/java/com/example/tutorialv3/setup/Config.java
 public class ModConfigs {
-    public static ForgeConfigSpec COMMON;
-    public static void register() {
-        registerServerConfigs();
-        registerCommonConfigs();
-        registerClientConfigs();
-    }
-    private static void registerClientConfigs() {
-        ForgeConfigSpec.Builder CLIENT_BUILDER = new ForgeConfigSpec.Builder();
-        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, CLIENT_BUILDER.build());
+    public static ConfigSpec COMMON;
+    public static void register(ModContainer modContainer) {
+        registerServerConfigs(modContainer);
+        registerCommonConfigs(modContainer);
     }
 
-    private static void registerCommonConfigs() {
-        ForgeConfigSpec.Builder COMMON_BUILDER = new ForgeConfigSpec.Builder();
+    private static void registerCommonConfigs(ModContainer modContainer) {
+        ModConfigSpec.Builder COMMON_BUILDER = new ModConfigSpec.Builder();
         ExtruderConfig.registerCommonConfig(COMMON_BUILDER);
-        COMMON = COMMON_BUILDER.build();
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, COMMON);
-        ModConfigs.loadConfig(COMMON, FMLPaths.CONFIGDIR.get().resolve(CreateMechanicalExtruder.MODID + "-common.toml"));
-
+        modContainer.registerConfig(net.neoforged.fml.config.ModConfig.Type.COMMON, COMMON_BUILDER.build());
     }
 
-    private static void registerServerConfigs() {
-        ForgeConfigSpec.Builder SERVER_BUILDER = new ForgeConfigSpec.Builder();
+    private static void registerServerConfigs(ModContainer modContainer) {
+        ModConfigSpec.Builder SERVER_BUILDER = new ModConfigSpec.Builder();
 
-        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, SERVER_BUILDER.build());
+        modContainer.registerConfig(net.neoforged.fml.config.ModConfig.Type.SERVER, SERVER_BUILDER.build());
 
-    }
-    //from: https://github.com/mrh0/createaddition/blob/1.19.2/src/main/java/com/mrh0/createaddition/config/Config.java
-    public static void loadConfig(ForgeConfigSpec spec, java.nio.file.Path path) {
-        final CommentedFileConfig configData = CommentedFileConfig.builder(path)
-                .sync()
-                .autosave()
-                .writingMode(WritingMode.REPLACE)
-                .build();
-        configData.load();
-        spec.setConfig(configData);
     }
 }

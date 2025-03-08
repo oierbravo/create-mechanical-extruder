@@ -1,0 +1,19 @@
+{
+  "type": "create_mechanical_extruder:extruding",
+  "catalyst": {
+    "count": 1,
+    "id": "minecraft:soul_soil"
+  },
+  "ingredients": [
+    {
+      "type": "fluid_stack",
+      "amount": 1000,
+      "fluid": "minecraft:lava"
+    }
+  ],
+  "result": {
+    "item": {
+      "id": "minecraft:basalt"
+    }
+  }
+}

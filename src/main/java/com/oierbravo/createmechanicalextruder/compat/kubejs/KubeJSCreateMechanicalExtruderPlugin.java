@@ -1,14 +1,12 @@
 package com.oierbravo.createmechanicalextruder.compat.kubejs;
 
-import com.oierbravo.createmechanicalextruder.components.extruder.recipe.ExtrudingRecipe;
-import dev.latvian.mods.kubejs.KubeJSPlugin;
-import dev.latvian.mods.kubejs.recipe.schema.RegisterRecipeSchemasEvent;
+import dev.latvian.mods.kubejs.plugin.KubeJSPlugin;
+import dev.latvian.mods.kubejs.recipe.schema.RecipeSchemaRegistry;
 
-public class KubeJSCreateMechanicalExtruderPlugin extends KubeJSPlugin {
+public class KubeJSCreateMechanicalExtruderPlugin implements KubeJSPlugin {
 
 
-    @Override
-    public void registerRecipeSchemas(RegisterRecipeSchemasEvent event) {
-        event.register(ExtrudingRecipe.Serializer.ID, ExtrudingRecipeSchema.SCHEMA);
+    public void registerRecipeSchemas(RecipeSchemaRegistry registry) {
+        //registry.register(ExtrudingRecipe.Serializer.ID, ExtrudingRecipeSchema.SCHEMA);
     }
 }

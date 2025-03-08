@@ -11,17 +11,13 @@ import com.tterrag.registrate.util.entry.BlockEntry;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.world.level.material.MapColor;
-import net.minecraftforge.common.Tags;
+import net.neoforged.neoforge.common.Tags;
 
 import static com.oierbravo.createmechanicalextruder.CreateMechanicalExtruder.REGISTRATE;
 import static com.simibubi.create.foundation.data.ModelGen.customItemModel;
 import static com.simibubi.create.foundation.data.TagGen.pickaxeOnly;
 
 public class ModBlocks {
-
-
-    static { REGISTRATE.setCreativeTab(ModCreativeTabs.MAIN_TAB); }
-
 
 
     public static void register() {
@@ -37,7 +33,7 @@ public class ModBlocks {
             .recipe((c, p) -> ShapedRecipeBuilder.shaped(RecipeCategory.MISC, c.get())
                     .define('S', AllBlocks.SHAFT)
                     .define('A', AllBlocks.ANDESITE_CASING)
-                    .define('G', Tags.Items.GLASS)
+                    .define('G', Tags.Items.GLASS_BLOCKS)
                     .pattern(" S ")
                     .pattern("GAG")
                     .pattern(" G ")
