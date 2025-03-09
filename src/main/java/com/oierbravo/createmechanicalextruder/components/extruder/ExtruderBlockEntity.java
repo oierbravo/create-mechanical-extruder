@@ -313,7 +313,8 @@ public class ExtruderBlockEntity extends KineticBlockEntity implements Extruding
 
         @Override
         public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate) {
-            notifyUpdate();
+            if(!simulate)
+                notifyUpdate();
             return super.extractItem(slot, amount, simulate);
         }
 
