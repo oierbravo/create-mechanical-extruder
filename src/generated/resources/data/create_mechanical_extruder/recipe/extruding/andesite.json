@@ -1,0 +1,24 @@
+{
+  "type": "create_mechanical_extruder:extruding",
+  "blockIngredients": [
+    {
+      "blocks": "minecraft:water"
+    },
+    {
+      "blocks": "minecraft:lava"
+    }
+  ],
+  "requirements": [
+    {
+      "type": "mechanical_lemon_lib:min_y",
+      "value": -50
+    },
+    {
+      "type": "mechanical_lemon_lib:max_y",
+      "value": -10
+    }
+  ],
+  "result": {
+    "id": "minecraft:andesite"
+  }
+}

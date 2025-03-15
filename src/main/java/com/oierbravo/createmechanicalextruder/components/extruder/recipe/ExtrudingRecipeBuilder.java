@@ -2,12 +2,11 @@ package com.oierbravo.createmechanicalextruder.components.extruder.recipe;
 
 import com.oierbravo.mechanical_lemon_lib.foundation.recipe.BaseRecipeBuilder;
 import com.simibubi.create.content.processing.recipe.ProcessingOutput;
-import com.simibubi.create.foundation.fluid.FluidIngredient;
 import net.minecraft.advancements.critereon.BlockPredicate;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 
 public class ExtrudingRecipeBuilder extends BaseRecipeBuilder<ExtrudingRecipe, ExtrudingRecipe.ExtrudingRecipeParams> {
@@ -28,14 +27,50 @@ public class ExtrudingRecipeBuilder extends BaseRecipeBuilder<ExtrudingRecipe, E
         recipeRequirements = new ArrayList<>();
         recipeConditions = new ArrayList<>();
     }*/
-    public ExtrudingRecipeBuilder withItemIngredients(Ingredient... itemIngredients) {
-        return withItemIngredients(NonNullList.of(Ingredient.EMPTY, itemIngredients));
-    }
+    /*public ExtrudingRecipeBuilder withBlockIngredients(Block... blocks) {
 
-    public ExtrudingRecipeBuilder withItemIngredients(NonNullList<Ingredient> itemIngredients) {
-        params.itemIngredients = itemIngredients;
+        return withBlockIngredients(
+                NonNullList.of(blocks.
+                        BlockPredicate.Builder.block().build(),
+                        blocks..map(block -> BlockPredicate.Builder.block().of(block).build()).toList()
+                ));
+    }*/
+    /*public ExtrudingRecipeBuilder withBlockIngredient(FlowingFluid fluid) {
+        Block fluidBlock = fluid.
+        params.blockPredicateIngredients.add(BlockPredicate.Builder.block().of().build());
+        return this;
+    }*/
+    public ExtrudingRecipeBuilder withBlockIngredient(Block... blockIngredients) {
+        params.blockPredicateIngredients.add(BlockPredicate.Builder.block().of(blockIngredients).build());
         return this;
     }
+
+    public ExtrudingRecipeBuilder withBlockIngredient(BlockPredicate blockIngredient) {
+        params.blockPredicateIngredients.add(blockIngredient);
+        return this;
+    }
+
+    public ExtrudingRecipeBuilder withBlockIngredients(BlockPredicate... blockIngredients) {
+        return withBlockIngredients(NonNullList.of(BlockPredicate.Builder.block().build(), blockIngredients));
+    }
+    public ExtrudingRecipeBuilder withBlockIngredients(NonNullList<BlockPredicate> blockIngredients) {
+        params.blockPredicateIngredients = blockIngredients;
+        return this;
+    }
+    public ExtrudingRecipeBuilder withBlockIngredient(ResourceLocation resourceLocation) {
+        return withBlockIngredient(BuiltInRegistries.BLOCK.get(resourceLocation));
+    }
+    public ExtrudingRecipeBuilder withBlockIngredient(String resourceLocationString) {
+        return withBlockIngredient(ResourceLocation.parse(resourceLocationString));
+    }
+    /*public ExtrudingRecipeBuilder withBlockIngredient(ResourceLocation location) {
+
+    }*/
+
+    /*public ExtrudingRecipeBuilder withItemIngredients(NonNullList<Ingredient> itemIngredients) {
+        params.itemIngredients = itemIngredients;
+        return this;
+    }*/
     public ExtrudingRecipeBuilder withSingleItemOutput(ItemStack output) {
         params.result = new ProcessingOutput(output, 1.0F);
         return this;
@@ -52,14 +87,14 @@ public class ExtrudingRecipeBuilder extends BaseRecipeBuilder<ExtrudingRecipe, E
         params.catalyst = catalyst;
         return this;
     }
-    public ExtrudingRecipeBuilder withFluidIngredients(FluidIngredient... ingredients) {
+    /*public ExtrudingRecipeBuilder withFluidIngredients(FluidIngredient... ingredients) {
         return withFluidIngredients(NonNullList.of(FluidIngredient.EMPTY, ingredients));
     }
-
-    public ExtrudingRecipeBuilder withFluidIngredients(NonNullList<FluidIngredient> ingredients) {
+*/
+    /*public ExtrudingRecipeBuilder withFluidIngredients(NonNullList<FluidIngredient> ingredients) {
         params.fluidIngredients = ingredients;
         return this;
-    }
+    }*/
     public ExtrudingRecipeBuilder requiredBonks(int requiredBonks) {
         params.requiredBonks = requiredBonks;
         return this;
@@ -74,90 +109,7 @@ public class ExtrudingRecipeBuilder extends BaseRecipeBuilder<ExtrudingRecipe, E
         return this;
     }
 
-    /*@Override
-    public @NotNull ExtrudingRecipeBuilder unlockedBy(@NotNull String name, @NotNull Criterion<?> criterion) {
-        this.criteria.put(name, criterion);
-        return this;
-    }*/
-   /* public ExtrudingRecipeBuilder withRequirement(RecipeRequirement requirement){
-        params.recipeRequirements.add(requirement);
-        return this;
-    }
-
-    public ExtrudingRecipeBuilder withBiomeRequirement(BiomeRequirement biomeRequirement) {
-        return withRequirement(biomeRequirement);
-    }
-    */
-    /*public static class ExtrudingRecipeParams {
-        protected ResourceLocation id;
-        protected NonNullList<Ingredient> itemIngredients;
-        protected ProcessingOutput result;
-        protected NonNullList<FluidIngredient> fluidIngredients;
-        protected ItemStack catalyst;
-
-        protected int requiredBonks;
-
-        protected BiomeRequirement biome;
-
-        public ArrayList<RecipeRequirement> recipeRequirements;
-
-        protected ExtrudingRecipeParams(ResourceLocation id) {
-            assert id != null;
-            this.id = id;
-            itemIngredients = NonNullList.create();
-            result = ProcessingOutput.EMPTY;
-            fluidIngredients = NonNullList.create();
-            catalyst = ItemStack.EMPTY;
-            requiredBonks = 1;
-            biome = BiomeRequirement.EMPTY;
-            recipeRequirements = new ArrayList<>();
-        }
-
-    }*/
-    /*protected static class FinishedExtrudingRecipe implements FinishedRecipe{
-
-        protected ResourceLocation id;
-        protected ExtrudingRecipe recipe;
-        private List<ICondition> recipeConditions;
-
-
-        protected FinishedExtrudingRecipe(ExtrudingRecipe pRecipe , List<ICondition> pRecipeConditions){
-            this.recipe = pRecipe;
-            this.id = pRecipe.getId();
-            this.recipeConditions = pRecipeConditions;
-        }
-        @Override
-        public void serializeRecipeData(JsonObject pJson) {
-            ExtrudingRecipe.Serializer.INSTANCE.toJson(pJson, recipe);
-
-            if (recipeConditions.isEmpty())
-                return;
-
-            JsonArray conds = new JsonArray();
-            recipeConditions.forEach(c -> conds.add(CraftingHelper.serialize(c)));
-            pJson.add("conditions", conds);
-        }
-
-        @Override
-        public ResourceLocation getId() {
-            return id;
-        }
-
-        @Override
-        public RecipeSerializer<?> getType() {
-            return ModRecipes.EXTRUDING_SERIALIZER.get();
-        }
-
-        @Nullable
-        @Override
-        public JsonObject serializeAdvancement() {
-            return null;
-        }
-
-        @Nullable
-        @Override
-        public ResourceLocation getAdvancementId() {
-            return null;
-        }
+    /*public ExtrudingRecipeBuilder withBlockIngredient(TagKey<Fluid> tag) {
+        BlockPredicate.Builder.block().of(tag);
     }*/
 }

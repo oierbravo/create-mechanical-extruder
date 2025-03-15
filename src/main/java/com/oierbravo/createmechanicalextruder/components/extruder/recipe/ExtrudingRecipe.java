@@ -1,6 +1,5 @@
 package com.oierbravo.createmechanicalextruder.components.extruder.recipe;
 
-import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -13,7 +12,6 @@ import com.oierbravo.mechanical_lemon_lib.foundation.recipe.IRecipeRequirement;
 import com.oierbravo.mechanical_lemon_lib.foundation.recipe.requirements.SpeedRequirement;
 import com.simibubi.create.content.processing.recipe.ProcessingOutput;
 import com.simibubi.create.foundation.blockEntity.behaviour.filtering.FilteringBehaviour;
-import com.simibubi.create.foundation.fluid.FluidIngredient;
 import net.createmod.catnip.codecs.stream.CatnipStreamCodecBuilders;
 import net.minecraft.advancements.critereon.BlockPredicate;
 import net.minecraft.core.HolderLookup;
@@ -23,9 +21,11 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeInput;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.pattern.BlockInWorld;
 import net.neoforged.neoforge.common.conditions.ConditionalOps;
@@ -33,7 +33,6 @@ import net.neoforged.neoforge.common.conditions.ICondition;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -41,8 +40,8 @@ public class ExtrudingRecipe extends BaseRecipe<RecipeInput, ExtrudingRecipe.Ext
 
     public static Comparator<? super ExtrudingRecipe> hasCatalyst;
     private ResourceLocation id;
-    private NonNullList<Ingredient> itemIngredients;
-    private NonNullList<FluidIngredient> fluidIngredients;
+    private NonNullList<BlockPredicate> blockPredicateIngredients;
+
     private BlockPredicate catalyst;
     private ProcessingOutput result;
 
@@ -73,15 +72,26 @@ public class ExtrudingRecipe extends BaseRecipe<RecipeInput, ExtrudingRecipe.Ext
         super(params);
         this.id = params.id;
         this.result = params.result;
-        this.itemIngredients = params.itemIngredients;
-        this.fluidIngredients = params.fluidIngredients;
+        this.blockPredicateIngredients = params.blockPredicateIngredients;
         this.catalyst = params.catalyst;
         this.requiredBonks = params.requiredBonks;
         this.recipeRequirements.addAll(params.recipeRequirements);
     }
 
 
-
+    public static boolean matchIngredients(ExtruderBlockEntity extruderBlockEntity,List<BlockPredicate> blockIngredients){
+        List<BlockPredicate> matchedIngredients = new ArrayList<>();
+        List<BlockInWorld> sideBlocks = extruderBlockEntity.getSideBlocks();
+            for( BlockPredicate blockIngredient : blockIngredients ){
+                for(int i = 0; i < sideBlocks.size(); i++){
+                    if(blockIngredient.matches(sideBlocks.get(i))){
+                        matchedIngredients.add(blockIngredient);
+                        break;
+                    }
+                }
+            }
+        return matchedIngredients.size() == 2;
+    }
     public static boolean match(ExtruderBlockEntity extruderBlockEntity, ExtrudingRecipe recipe){
         if(extruderBlockEntity.getLevel().isClientSide)
             return false;
@@ -89,10 +99,10 @@ public class ExtrudingRecipe extends BaseRecipe<RecipeInput, ExtrudingRecipe.Ext
         if (filter == null)
             return false;
         boolean filterTest = filter.test(recipe.getResultItem(extruderBlockEntity.getLevel().registryAccess()));
-        if(!getAllIngredientsStringList(recipe).equals(extruderBlockEntity.getAllIngredientsStringList()))
+
+        if(!matchIngredients(extruderBlockEntity, recipe.getBlockIngredients()))
             return false;
-        BlockInWorld b = extruderBlockEntity.getCatalystBlock();
-        Block bb = extruderBlockEntity.getLevel().getBlockState(extruderBlockEntity.getBlockPos().below()).getBlock();
+
         if(recipe.catalyst.blocks().isPresent() && !recipe.catalyst.matches(extruderBlockEntity.getCatalystBlock()))
             return false;
 
@@ -103,22 +113,6 @@ public class ExtrudingRecipe extends BaseRecipe<RecipeInput, ExtrudingRecipe.Ext
 
     public boolean hasCatalyst() {
         return this.getCatalyst().blocks().isPresent();
-    }
-    public List<Ingredient> getItemIngredients() {
-        return itemIngredients;
-    }
-
-    public List<FluidIngredient> getFluidIngredients() {
-        return fluidIngredients;
-    }
-
-    public static List<String> getAllIngredientsStringList(ExtrudingRecipe recipe) {
-        List<String> list = new ArrayList<>();
-
-        recipe.getItemIngredients().forEach(ingredient -> list.add(ingredient.getItems()[0].getItem().toString()));
-        recipe.getFluidIngredients().forEach(ingredient -> list.add(ingredient.getMatchingFluidStacks().get(0).getFluid().getFluidType().getDescriptionId()));
-        Collections.sort(list);
-        return list;
     }
 
 
@@ -135,6 +129,10 @@ public class ExtrudingRecipe extends BaseRecipe<RecipeInput, ExtrudingRecipe.Ext
     @Override
     public boolean canCraftInDimensions(int pWidth, int pHeight) {
         return true;
+    }
+
+    public @NotNull NonNullList<BlockPredicate> getBlockIngredients(){
+        return blockPredicateIngredients;
     }
 
     @Override
@@ -170,13 +168,6 @@ public class ExtrudingRecipe extends BaseRecipe<RecipeInput, ExtrudingRecipe.Ext
         return Type.INSTANCE;
     }
 
-    /*@Override
-    public @NotNull Map<RecipeRequirementType<?>, IRecipeRequirement> getRecipeRequirements() {
-        return recipeRequirements;
-    }*/
-    /*public List<IRecipeRequirement> getRequirements(){
-        return getRecipeRequirements();
-    }*/
     @Override
     public boolean checkRequirements(Level level, BlockEntity blockEntity) {
         return false;
@@ -194,9 +185,8 @@ public class ExtrudingRecipe extends BaseRecipe<RecipeInput, ExtrudingRecipe.Ext
     }
 
     public static class ExtrudingRecipeParams extends BaseRecipeParams {
-        protected NonNullList<Ingredient> itemIngredients;
+        protected NonNullList<BlockPredicate> blockPredicateIngredients;
         protected ProcessingOutput result;
-        protected NonNullList<FluidIngredient> fluidIngredients;
         protected BlockPredicate catalyst;
 
 
@@ -206,9 +196,8 @@ public class ExtrudingRecipe extends BaseRecipe<RecipeInput, ExtrudingRecipe.Ext
 
         protected ExtrudingRecipeParams(ResourceLocation id) {
             super(id);
-            itemIngredients = NonNullList.create();
+            blockPredicateIngredients = NonNullList.create();
             result = ProcessingOutput.EMPTY;
-            fluidIngredients = NonNullList.create();
             catalyst = BlockPredicate.Builder.block().build();
             requiredBonks = 1;
             recipeRequirements = new ArrayList<>();
@@ -218,33 +207,32 @@ public class ExtrudingRecipe extends BaseRecipe<RecipeInput, ExtrudingRecipe.Ext
     public static class Serializer extends BaseRecipeSerializer<ExtrudingRecipe, ExtrudingRecipeBuilder> implements RecipeSerializer<ExtrudingRecipe> {
         public static final Serializer INSTANCE = new Serializer(ExtrudingRecipe.enabledRecipeRequirements);
 
+        public static final StreamCodec<RegistryFriendlyByteBuf, NonNullList<BlockPredicate>> STREAM_CODEC_BLOCK_PREDICATE_LIST = CatnipStreamCodecBuilders.nonNullList(BlockPredicate.STREAM_CODEC,2);//BlockPredicate.STREAM_CODEC.apply(ByteBufCodecs.list(2));
+        public static final Codec<NonNullList<BlockPredicate>> CODEC_BLOCK_PREDICATE_LIST = NonNullList.codecOf(BlockPredicate.CODEC);
+
+
         public final StreamCodec<RegistryFriendlyByteBuf, ExtrudingRecipe> STREAM_CODEC = StreamCodec.of(this::toNetwork, this::fromNetwork);
 
         private ExtrudingRecipe fromNetwork(RegistryFriendlyByteBuf buffer) {
             ResourceLocation recipeId = ResourceLocation.STREAM_CODEC.decode(buffer);
-
-            NonNullList<Ingredient> ingredients = CatnipStreamCodecBuilders.nonNullList(Ingredient.CONTENTS_STREAM_CODEC).decode(buffer);
-            NonNullList<FluidIngredient> fluidIngredients = CatnipStreamCodecBuilders.nonNullList(FluidIngredient.STREAM_CODEC).decode(buffer);
+            NonNullList<BlockPredicate> blockPredicateList = CatnipStreamCodecBuilders.nonNullList(BlockPredicate.STREAM_CODEC,2).decode(buffer);
             ProcessingOutput result = ProcessingOutput.STREAM_CODEC.decode(buffer);
             int requiredBonks = ByteBufCodecs.INT.decode(buffer);
             BlockPredicate catalystBlockPredicate = BlockPredicate.STREAM_CODEC.decode(buffer);
             List<IRecipeRequirement> recipeRequirements = IRecipeRequirement.LIST_STREAM_CODEC.decode(buffer);
 
-            return (ExtrudingRecipe) new ExtrudingRecipeBuilder(recipeId).withItemIngredients(ingredients)
+            return (ExtrudingRecipe) new ExtrudingRecipeBuilder(recipeId)
                     .withSingleItemOutput(result)
-                    .withFluidIngredients(fluidIngredients)
+                    .withBlockIngredients(blockPredicateList)
                     .requiredBonks(requiredBonks)
                     .withCatalyst(catalystBlockPredicate)
                     .withRequirements(recipeRequirements)
-                    //.withRequirement(SpeedRequirement.of(requiredSpeed))
                     .build();
         }
 
         private void toNetwork(RegistryFriendlyByteBuf buffer, ExtrudingRecipe extrudingRecipe) {
             ResourceLocation.STREAM_CODEC.encode(buffer, extrudingRecipe.id);
-
-            CatnipStreamCodecBuilders.nonNullList(Ingredient.CONTENTS_STREAM_CODEC).encode(buffer, extrudingRecipe.itemIngredients);
-            CatnipStreamCodecBuilders.nonNullList(FluidIngredient.STREAM_CODEC).encode(buffer, extrudingRecipe.fluidIngredients);
+            CatnipStreamCodecBuilders.nonNullList(BlockPredicate.STREAM_CODEC,2).encode(buffer, extrudingRecipe.getBlockPredicateIngredients());
             ProcessingOutput.STREAM_CODEC.encode(buffer, extrudingRecipe.getResult());
             ByteBufCodecs.INT.encode(buffer,extrudingRecipe.getRequiredBonks());
             BlockPredicate.STREAM_CODEC.encode(buffer, extrudingRecipe.getCatalyst());
@@ -254,35 +242,19 @@ public class ExtrudingRecipe extends BaseRecipe<RecipeInput, ExtrudingRecipe.Ext
         public static final MapCodec<ExtrudingRecipe> CODEC = RecordCodecBuilder.mapCodec(
                 instance -> instance
                         .group(
-                                Codec.either(Ingredient.CODEC, FluidIngredient.CODEC).listOf().fieldOf("ingredients").forGetter(i -> {
-                                    List<Either<Ingredient, FluidIngredient>> list = new ArrayList<>();
-                                    i.getIngredients().forEach(o -> list.add(Either.left(o)));
-                                    i.getFluidIngredients().forEach(o -> list.add(Either.right(o)));
-                                    return list;
-                                }),
-
+                                CODEC_BLOCK_PREDICATE_LIST.fieldOf("blockIngredients").forGetter(ExtrudingRecipe::getBlockPredicateIngredients),
                                 ProcessingOutput.CODEC.fieldOf("result").forGetter(ExtrudingRecipe::getResult),
                                 BlockPredicate.CODEC.optionalFieldOf("catalyst",BlockPredicate.Builder.block().build()).forGetter(ExtrudingRecipe::getCatalyst),
                                 Codec.INT.optionalFieldOf("requiredBonks",1).forGetter(ExtrudingRecipe::getRequiredBonks),
                                 IRecipeRequirement.LIST_CODEC.optionalFieldOf("requirements", List.of()).forGetter(ExtrudingRecipe::getRecipeRequirements),
                                 ICondition.LIST_CODEC.optionalFieldOf(ConditionalOps.DEFAULT_CONDITIONS_KEY, List.of()).forGetter(ExtrudingRecipe::getConditions)
-                        ).apply(instance, (ingredients, processingOutput, catalyst, requiredBonks, requirements, iConditions) -> {
-                        //).apply(instance, (ingredients, processingOutput, catalyst, catalystBlock, catalystBlockState, blockPredicate, requiredBonks, requirements, iConditions) -> {
+                        ).apply(instance, (blockIngredients, processingOutput, catalyst, requiredBonks, requirements, iConditions) -> {
                             ExtrudingRecipeBuilder builder = new ExtrudingRecipeBuilder(CreateMechanicalExtruder.asResource(Type.ID));
 
-                            NonNullList<Ingredient> ingredientList = NonNullList.create();
-                            NonNullList<FluidIngredient> fluidIngredientList = NonNullList.create();
-
-                            for (Either<Ingredient, FluidIngredient> either : ingredients) {
-                                either.left().ifPresent(ingredientList::add);
-                                either.right().ifPresent(fluidIngredientList::add);
-                            }
 
                             builder
-                                    .withItemIngredients(ingredientList)
-                                    .withFluidIngredients(fluidIngredientList)
+                                    .withBlockIngredients(blockIngredients)
                                     .withSingleItemOutput(processingOutput)
-                                    //.withCatalystPredicate(blockPredicate)
                                     .withCatalyst(catalyst)
                                     .requiredBonks(requiredBonks)
                                     .withRequirements(requirements)
@@ -309,7 +281,8 @@ public class ExtrudingRecipe extends BaseRecipe<RecipeInput, ExtrudingRecipe.Ext
         }
     }
 
-    private ResourceLocation getId() {
-        return id;
+    public NonNullList<BlockPredicate> getBlockPredicateIngredients() {
+        return blockPredicateIngredients;
     }
+
 }

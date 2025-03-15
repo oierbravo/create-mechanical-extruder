@@ -1,25 +1,11 @@
 {
   "type": "create_mechanical_extruder:extruding",
-  "ingredients": [
+  "blockIngredients": [
     {
-      "type": "fluid_stack",
-      "amount": 1000,
-      "fluid": "minecraft:lava"
+      "blocks": "create:honey"
     },
     {
-      "type": "fluid_stack",
-      "amount": 1000,
-      "fluid": "create:honey"
-    }
-  ],
-  "requirements": [
-    {
-      "type": "mechanical_lemon_lib:min_speed",
-      "value": 8.0
-    },
-    {
-      "type": "mechanical_lemon_lib:min_y",
-      "value": 100
+      "blocks": "minecraft:lava"
     }
   ],
   "result": {

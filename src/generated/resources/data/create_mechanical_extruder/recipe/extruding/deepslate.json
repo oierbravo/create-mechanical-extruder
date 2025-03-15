@@ -1,0 +1,24 @@
+{
+  "type": "create_mechanical_extruder:extruding",
+  "blockIngredients": [
+    {
+      "blocks": "minecraft:water"
+    },
+    {
+      "blocks": "minecraft:lava"
+    }
+  ],
+  "requirements": [
+    {
+      "type": "mechanical_lemon_lib:max_y",
+      "value": 0
+    },
+    {
+      "type": "mechanical_lemon_lib:min_speed",
+      "value": 128.0
+    }
+  ],
+  "result": {
+    "id": "minecraft:deepslate"
+  }
+}

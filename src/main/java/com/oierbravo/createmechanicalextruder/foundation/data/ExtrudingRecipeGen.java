@@ -2,12 +2,11 @@ package com.oierbravo.createmechanicalextruder.foundation.data;
 
 import com.oierbravo.createmechanicalextruder.CreateMechanicalExtruder;
 import com.oierbravo.createmechanicalextruder.components.extruder.recipe.ExtrudingRecipeBuilder;
+import com.oierbravo.mechanical_lemon_lib.foundation.recipe.requirements.MaxYRequirement;
 import com.oierbravo.mechanical_lemon_lib.foundation.recipe.requirements.MinYRequirement;
 import com.oierbravo.mechanical_lemon_lib.foundation.recipe.requirements.SpeedRequirement;
-import com.simibubi.create.AllFluids;
 import com.simibubi.create.content.decoration.palettes.AllPaletteStoneTypes;
 import com.simibubi.create.content.processing.recipe.ProcessingOutput;
-import com.simibubi.create.foundation.fluid.FluidIngredient;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -15,12 +14,9 @@ import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.material.Fluids;
 
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class ExtrudingRecipeGen extends RecipeProvider {
@@ -32,52 +28,30 @@ public class ExtrudingRecipeGen extends RecipeProvider {
     @Override
     protected void buildRecipes(RecipeOutput recipeOutput) {
         create("cobblestone", Items.COBBLESTONE)
-                .withFluidIngredients(
-                        FluidIngredient.fromFluid(Fluids.LAVA,1000),
-                        FluidIngredient.fromFluid(Fluids.WATER,1000)
-                )
+
+                .withBlockIngredient(Blocks.WATER)
+                .withBlockIngredient(Blocks.LAVA)
                 .save(recipeOutput);
 
         create("stone", Items.STONE)
-                .withFluidIngredients(
-                        FluidIngredient.fromFluid(Fluids.LAVA,1000),
-                        FluidIngredient.fromFluid(Fluids.WATER,1000)
-                )
+                .withBlockIngredient(Blocks.WATER)
+                .withBlockIngredient(Blocks.LAVA)
                 .save(recipeOutput);
 
         create("basalt", Items.BASALT)
-                .withFluidIngredients(
-                        FluidIngredient.fromFluid(Fluids.LAVA,1000)
-                )
-                .withItemIngredients(Ingredient.of(Blocks.BLUE_ICE))
+                .withBlockIngredient(Blocks.BLUE_ICE)
+                .withBlockIngredient(Blocks.LAVA)
                 .withCatalyst(Blocks.SOUL_SOIL)
                 .save(recipeOutput);
 
         create("limestone", AllPaletteStoneTypes.LIMESTONE.getBaseBlock().get())
-                .withFluidIngredients(
-                        FluidIngredient.fromFluid(Fluids.LAVA,1000),
-                        FluidIngredient.fromFluid(AllFluids.HONEY.get(), 1000)
-                )
-                .withRequirements(List.of(
-                        new SpeedRequirement(8f),
-                        new MinYRequirement(100)
-                ))
-
+                .withBlockIngredient("create:honey")
+                .withBlockIngredient(Blocks.LAVA)
                 .save(recipeOutput);
 
         create("scoria", AllPaletteStoneTypes.SCORIA.getBaseBlock().get())
-
-                .withFluidIngredients(
-                        FluidIngredient.fromFluid(Fluids.LAVA,1000),
-                        FluidIngredient.fromFluid(AllFluids.CHOCOLATE.get(),1000)
-                )
-               /* .withRequirements(List.of(
-                        new SpeedRequirement(8f),
-                        new MinYRequirement(100)
-                ))*/
-                /*.withRequirement(new SpeedRequirement(8f))*/
-                .withRequirement(new MinYRequirement(100))
-
+                .withBlockIngredient(Blocks.LAVA)
+                .withBlockIngredient("create:chocolate")
                 .save(recipeOutput);
 
         /*create("end_stone", Items.END_STONE)
@@ -85,24 +59,25 @@ public class ExtrudingRecipeGen extends RecipeProvider {
                 .withItemIngredients(Ingredient.of(Items.BLUE_ICE))
                 .withBiomeRequirement(BiomeRequirement.of(BiomeTags.IS_END))
                 .save(pWriter);*/
+        /*create("end_stone", Items.END_STONE)
+                .withFluidIngredients(FluidIngredient.fromFluid(Fluids.LAVA,1000))
+                .withItemIngredients(Ingredient.of(Items.BLUE_ICE))
+                .withBiomeRequirement(BiomeRequirement.of(BiomeTags.IS_END))
+                .save(pWriter);*/
 
-        /*create("andesite", Items.ANDESITE)
-                .withFluidIngredients(
-                        FluidIngredient.fromFluid(Fluids.LAVA,1000),
-                        FluidIngredient.fromFluid(Fluids.WATER,1000)
-                )
-                .withRequirement(MinHeightRequirement.of(-50))
-                .withRequirement(MaxHeightRequirement.of(-10))
-                .save(pWriter);
+        create("andesite", Items.ANDESITE)
+                .withBlockIngredient(Blocks.WATER)
+                .withBlockIngredient(Blocks.LAVA)
+                .withRequirement(MinYRequirement.of(-50))
+                .withRequirement(MaxYRequirement.of(-10))
+                .save(recipeOutput);
 
         create("deepslate", Items.DEEPSLATE)
-                .withFluidIngredients(
-                        FluidIngredient.fromFluid(Fluids.LAVA,1000),
-                        FluidIngredient.fromFluid(Fluids.WATER,1000)
-                )
-                .withRequirement(MaxHeightRequirement.of(64))
-                .withRequirement(SpeedRequirement.of(128))
-                .save(pWriter);*/
+                .withBlockIngredient(Blocks.WATER)
+                .withBlockIngredient(Blocks.LAVA)
+                .withRequirement(MaxYRequirement.of(0))
+                .withRequirement(SpeedRequirement.of(128f))
+                .save(recipeOutput);
 
 
     }

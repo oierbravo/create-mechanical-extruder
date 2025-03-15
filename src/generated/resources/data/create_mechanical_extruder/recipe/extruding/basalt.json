@@ -1,15 +1,16 @@
 {
   "type": "create_mechanical_extruder:extruding",
+  "blockIngredients": [
+    {
+      "blocks": "minecraft:blue_ice"
+    },
+    {
+      "blocks": "minecraft:lava"
+    }
+  ],
   "catalyst": {
     "blocks": "minecraft:soul_soil"
   },
-  "ingredients": [
-    {
-      "type": "fluid_stack",
-      "amount": 1000,
-      "fluid": "minecraft:lava"
-    }
-  ],
   "result": {
     "id": "minecraft:basalt"
   }

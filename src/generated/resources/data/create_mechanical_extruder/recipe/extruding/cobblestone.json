@@ -1,15 +1,11 @@
 {
   "type": "create_mechanical_extruder:extruding",
-  "ingredients": [
+  "blockIngredients": [
     {
-      "type": "fluid_stack",
-      "amount": 1000,
-      "fluid": "minecraft:lava"
+      "blocks": "minecraft:water"
     },
     {
-      "type": "fluid_stack",
-      "amount": 1000,
-      "fluid": "minecraft:water"
+      "blocks": "minecraft:lava"
     }
   ],
   "result": {

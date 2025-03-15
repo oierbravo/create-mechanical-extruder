@@ -13,7 +13,6 @@ import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.ValueBoxTransform;
 import com.simibubi.create.foundation.blockEntity.behaviour.filtering.FilteringBehaviour;
-import com.simibubi.create.foundation.fluid.FluidIngredient;
 import net.createmod.catnip.math.VecHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -22,7 +21,6 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -37,17 +35,17 @@ import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
-import net.neoforged.neoforge.items.wrapper.CombinedInvWrapper;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING;
 
 public class ExtruderBlockEntity extends KineticBlockEntity implements CycleBehavior.CycleBehaviourSpecifics, RecipeRequirementsBehaviour.RecipeRequirementsSpecifics<ExtrudingRecipe> {
 
-    public ItemStackHandler outputInventory;
+    //public ItemStackHandler outputInventory;
     public Lazy<IItemHandler> capability;
 
     private CycleBehavior extrudingBehaviour;
@@ -57,14 +55,21 @@ public class ExtruderBlockEntity extends KineticBlockEntity implements CycleBeha
 
     private BlockInWorld catalystBlock;
 
-
+    public final ItemStackHandler outputInventory = new ItemStackHandler(1) {
+        @Override
+        protected void onContentsChanged(int slot) {
+            setChanged();
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+        }
+    };
     public ExtruderBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
 
-        outputInventory = new ItemStackHandler(1);
-        capability = Lazy.of(ExtruderInventoryHandler::new);
+        //outputInventory = new ItemStackHandler(1);
+        //capability = Lazy.of(outputInventory);
         catalystBlock = getCatalystBlock();
     }
+
     private @Nullable IItemHandler getItemHandler() {
         return outputInventory;
     }
@@ -154,7 +159,7 @@ public class ExtruderBlockEntity extends KineticBlockEntity implements CycleBeha
     @Override
     public int getCycles() {
         if(!getRecipe().isPresent())
-            return 0;
+            return 1;
         return getRecipe().get().getRequiredBonks();
     }
 
@@ -178,7 +183,8 @@ public class ExtruderBlockEntity extends KineticBlockEntity implements CycleBeha
     @Override
     public void invalidate() {
         super.invalidate();
-        capability.invalidate();
+        invalidateCapabilities();
+
     }
 
     public FilteringBehaviour getFilter() {
@@ -206,8 +212,8 @@ public class ExtruderBlockEntity extends KineticBlockEntity implements CycleBeha
 
 
         int currentBonks = extrudingBehaviour.getCurrentCycle();
-        if(currentBonks > 0){
-            ModLang.translate("create_mechanical_extruder.goggles.bonks",currentBonks)
+        if(currentBonks > 0 && getCycles() > 1){
+            ModLang.translate("goggles.bonks",currentBonks)
                     .forGoggles(tooltip, 1);
             added = true;
         }
@@ -242,6 +248,17 @@ public class ExtruderBlockEntity extends KineticBlockEntity implements CycleBeha
         Direction localDir = this.getBlockState().getValue(HORIZONTAL_FACING);
         return this.level.getBlockState(currentPos.relative(directionRightBlockMap.get(localDir))).getBlock();
     }
+    public BlockInWorld getLeftBlockInWorld(){
+        BlockPos currentPos = this.getBlockPos();
+        Direction localDir = this.getBlockState().getValue(HORIZONTAL_FACING);
+        return new BlockInWorld(this.level,currentPos.relative(directionLefttBlockMap.get(localDir)), false);
+
+    }
+    private BlockInWorld getRightBlockInWorld(){
+        BlockPos currentPos = this.getBlockPos();
+        Direction localDir = this.getBlockState().getValue(HORIZONTAL_FACING);
+        return new BlockInWorld(this.level,currentPos.relative(directionRightBlockMap.get(localDir)), false);
+    }
     private Block getBelowBlock(){
         BlockPos currentPos = this.getBlockPos();
         return this.level.getBlockState(currentPos.below()).getBlock();
@@ -262,7 +279,7 @@ public class ExtruderBlockEntity extends KineticBlockEntity implements CycleBeha
         return itemIngredients;
     }
 
-    public NonNullList<FluidIngredient> getFluidIngredients() {
+    /*public NonNullList<FluidIngredient> getFluidIngredients() {
         NonNullList<FluidIngredient> fluidIngredients = NonNullList.create();
         Block leftBlock = getLeftBlock();
         Block rightBlock = getRightBlock();
@@ -275,24 +292,20 @@ public class ExtruderBlockEntity extends KineticBlockEntity implements CycleBeha
         }
 
         return fluidIngredients;
-    }
+    }*/
 
-    public Item getCatalystItem() {
-        Block below = getBelowBlock();
-        return below.asItem();
-    }
     public BlockInWorld getCatalystBlock() {
         assert this.level != null;
         return new BlockInWorld(this.level,this.getBlockPos().below(), false);
     }
 
-    public List<String> getAllIngredientsStringList() {
+    /*public List<String> getAllIngredientsStringList() {
         List<String> list = new ArrayList<>();
         getItemIngredients().forEach(ingredient -> list.add((!ingredient.isEmpty()) ? ingredient.getItems()[0].getItem().toString() : ItemStack.EMPTY.toString()));
         getFluidIngredients().forEach(ingredient -> list.add(ingredient.getMatchingFluidStacks().get(0).getFluid().getFluidType().getDescriptionId()));
         Collections.sort(list);
         return list;
-    }
+    }*/
 
     @Override
     public boolean hasEnoughOutputSpace() {
@@ -318,7 +331,14 @@ public class ExtruderBlockEntity extends KineticBlockEntity implements CycleBeha
         catalystBlock = getCatalystBlock();
     }
 
-    private class ExtruderInventoryHandler extends CombinedInvWrapper {
+    public List<BlockInWorld> getSideBlocks() {
+        return List.of(
+                this.getLeftBlockInWorld(),
+                this.getRightBlockInWorld()
+        );
+    }
+
+    /*private class ExtruderInventoryHandler extends CombinedInvWrapper {
 
         public ExtruderInventoryHandler() {
             super(outputInventory);
@@ -343,7 +363,7 @@ public class ExtruderBlockEntity extends KineticBlockEntity implements CycleBeha
         }
 
 
-    }
+    }*/
     class ExtruderValueBox extends ValueBoxTransform.Sided {
 
         @Override

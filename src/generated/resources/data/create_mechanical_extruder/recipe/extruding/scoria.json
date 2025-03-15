@@ -1,21 +1,11 @@
 {
   "type": "create_mechanical_extruder:extruding",
-  "ingredients": [
+  "blockIngredients": [
     {
-      "type": "fluid_stack",
-      "amount": 1000,
-      "fluid": "minecraft:lava"
+      "blocks": "minecraft:lava"
     },
     {
-      "type": "fluid_stack",
-      "amount": 1000,
-      "fluid": "create:chocolate"
-    }
-  ],
-  "requirements": [
-    {
-      "type": "mechanical_lemon_lib:min_y",
-      "value": 100
+      "blocks": "create:chocolate"
     }
   ],
   "result": {
