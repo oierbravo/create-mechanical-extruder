@@ -12,9 +12,17 @@
       "fluid": "create:honey"
     }
   ],
-  "result": {
-    "item": {
-      "id": "create:limestone"
+  "requirements": [
+    {
+      "type": "mechanical_lemon_lib:min_speed",
+      "value": 8.0
+    },
+    {
+      "type": "mechanical_lemon_lib:min_y",
+      "value": 100
     }
+  ],
+  "result": {
+    "id": "create:limestone"
   }
 }

@@ -12,9 +12,13 @@
       "fluid": "create:chocolate"
     }
   ],
-  "result": {
-    "item": {
-      "id": "create:scoria"
+  "requirements": [
+    {
+      "type": "mechanical_lemon_lib:min_y",
+      "value": 100
     }
+  ],
+  "result": {
+    "id": "create:scoria"
   }
 }

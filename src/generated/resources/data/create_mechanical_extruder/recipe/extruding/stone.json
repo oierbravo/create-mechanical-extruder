@@ -13,8 +13,6 @@
     }
   ],
   "result": {
-    "item": {
-      "id": "minecraft:stone"
-    }
+    "id": "minecraft:stone"
   }
 }

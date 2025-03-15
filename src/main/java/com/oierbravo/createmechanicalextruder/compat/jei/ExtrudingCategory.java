@@ -4,7 +4,13 @@ import com.oierbravo.createmechanicalextruder.CreateMechanicalExtruder;
 import com.oierbravo.createmechanicalextruder.compat.jei.animations.AnimatedExtruder;
 import com.oierbravo.createmechanicalextruder.components.extruder.recipe.ExtrudingRecipe;
 import com.oierbravo.createmechanicalextruder.foundation.utility.ModLang;
+import com.oierbravo.createmechanicalextruder.register.ModBlocks;
+import com.oierbravo.createmechanicalextruder.register.ModRecipes;
+import com.oierbravo.mechanical_lemon_lib.foundation.recipe.IRecipeRequirement;
 import com.oierbravo.mechanical_lemon_lib.foundation.recipe.requirements.SpeedRequirement;
+import com.oierbravo.mechanical_lemon_lib.register.MechanicalLemonRecipeRequirementTypes;
+import com.simibubi.create.compat.jei.EmptyBackground;
+import com.simibubi.create.compat.jei.ItemIcon;
 import com.simibubi.create.compat.jei.category.CreateRecipeCategory;
 import com.simibubi.create.content.processing.recipe.ProcessingOutput;
 import com.simibubi.create.foundation.gui.AllGuiTextures;
@@ -13,14 +19,34 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import mezz.jei.api.recipe.RecipeType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Supplier;
 
 public class ExtrudingCategory extends CreateRecipeCategory<ExtrudingRecipe> {
     private AnimatedExtruder extruder = new AnimatedExtruder();
-    public final static ResourceLocation UID = ResourceLocation.fromNamespaceAndPath(CreateMechanicalExtruder.MODID, "extruding");
+    public final static ResourceLocation UID = CreateMechanicalExtruder.asResource("extruding");
+    public final static RecipeType<ExtrudingRecipe>  TYPE = new mezz.jei.api.recipe.RecipeType<>(UID, ExtrudingRecipe.class);
+    public final static Supplier<List<RecipeHolder<ExtrudingRecipe>>> RECIPE_SUPPLIER = ModRecipes::getAllHolders;
+
+    public final static CreateRecipeCategory.Info<ExtrudingRecipe> INFO = new CreateRecipeCategory.Info<>(
+            TYPE,
+            ModLang.translate("recipe.extruding").component(),
+            new EmptyBackground(177, 75),
+            new ItemIcon(() -> new ItemStack(ModBlocks.MECHANICAL_EXTRUDER.asItem())),
+            ExtrudingCategory.RECIPE_SUPPLIER,
+            List.of(ModBlocks.MECHANICAL_EXTRUDER::asStack)
+    );
+
+
     public ExtrudingCategory(Info<ExtrudingRecipe> info) {
         super(info);
     }
@@ -39,10 +65,10 @@ public class ExtrudingCategory extends CreateRecipeCategory<ExtrudingRecipe> {
             builder.addSlot(RecipeIngredientRole.INPUT, initX + distance * slotIndex, initY).setBackground(getRenderedSlot(), -1, -1).addIngredients(NeoForgeTypes.FLUID_STACK,recipe.getFluidIngredients().get(i).getMatchingFluidStacks());
             slotIndex++;
         }
-        if(!recipe.getCatalyst().isEmpty())
+        /*if(recipe.getCatalyst().blocks().isPresent())
             builder.addSlot(RecipeIngredientRole.INPUT,  33,57)
                     .setBackground(getRenderedSlot(), -1, -1)
-                    .addItemStack(recipe.getCatalyst());
+                    .addItemStack(recipe.getCatalyst().blocks().get().get(0));*/
 
         ProcessingOutput output = recipe.getResult();
         builder.addSlot(RecipeIngredientRole.OUTPUT,  130,29)
@@ -115,8 +141,9 @@ public class ExtrudingCategory extends CreateRecipeCategory<ExtrudingRecipe> {
     }*/
     protected void drawMinSpeed(ExtrudingRecipe recipe, GuiGraphics guiGraphics, int x, int y) {
         try {
-            SpeedRequirement speedRequirement = (SpeedRequirement) recipe.getRequirement(SpeedRequirement.TYPE);
-            if(speedRequirement.isPresent()) {
+            Optional<IRecipeRequirement> iRecipeRequirement = recipe.getRequirement(MechanicalLemonRecipeRequirementTypes.SPEED.get());
+            if(iRecipeRequirement.isPresent()) {
+                SpeedRequirement speedRequirement = (SpeedRequirement) iRecipeRequirement.get();
                 Minecraft minecraft = Minecraft.getInstance();
 
                 Font fontRenderer = minecraft.font;

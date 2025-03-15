@@ -2,6 +2,8 @@ package com.oierbravo.createmechanicalextruder.foundation.data;
 
 import com.oierbravo.createmechanicalextruder.CreateMechanicalExtruder;
 import com.oierbravo.createmechanicalextruder.components.extruder.recipe.ExtrudingRecipeBuilder;
+import com.oierbravo.mechanical_lemon_lib.foundation.recipe.requirements.MinYRequirement;
+import com.oierbravo.mechanical_lemon_lib.foundation.recipe.requirements.SpeedRequirement;
 import com.simibubi.create.AllFluids;
 import com.simibubi.create.content.decoration.palettes.AllPaletteStoneTypes;
 import com.simibubi.create.content.processing.recipe.ProcessingOutput;
@@ -18,6 +20,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluids;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class ExtrudingRecipeGen extends RecipeProvider {
@@ -55,22 +58,29 @@ public class ExtrudingRecipeGen extends RecipeProvider {
                         FluidIngredient.fromFluid(Fluids.LAVA,1000),
                         FluidIngredient.fromFluid(AllFluids.HONEY.get(), 1000)
                 )
+                .withRequirements(List.of(
+                        new SpeedRequirement(8f),
+                        new MinYRequirement(100)
+                ))
+
                 .save(recipeOutput);
 
         create("scoria", AllPaletteStoneTypes.SCORIA.getBaseBlock().get())
+
                 .withFluidIngredients(
                         FluidIngredient.fromFluid(Fluids.LAVA,1000),
                         FluidIngredient.fromFluid(AllFluids.CHOCOLATE.get(),1000)
                 )
+               /* .withRequirements(List.of(
+                        new SpeedRequirement(8f),
+                        new MinYRequirement(100)
+                ))*/
+                /*.withRequirement(new SpeedRequirement(8f))*/
+                .withRequirement(new MinYRequirement(100))
+
                 .save(recipeOutput);
 
-        /*create("netherrak", Items.NETHERRACK)
-                .withFluidIngredients(FluidIngredient.fromFluid(Fluids.LAVA,1000))
-                .withItemIngredients(Ingredient.of(Items.BLUE_ICE))
-                .withBiomeRequirement(BiomeRequirement.of(Biomes.IS_NETHER))
-                .save(pWriter);
-
-        create("end_stone", Items.END_STONE)
+        /*create("end_stone", Items.END_STONE)
                 .withFluidIngredients(FluidIngredient.fromFluid(Fluids.LAVA,1000))
                 .withItemIngredients(Ingredient.of(Items.BLUE_ICE))
                 .withBiomeRequirement(BiomeRequirement.of(BiomeTags.IS_END))

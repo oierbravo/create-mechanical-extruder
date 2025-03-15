@@ -5,7 +5,6 @@ import com.oierbravo.createmechanicalextruder.register.ModPartials;
 import com.simibubi.create.AllPartialModels;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntityVisual;
 import com.simibubi.create.content.kinetics.base.RotatingInstance;
-import com.simibubi.create.content.kinetics.press.MechanicalPressBlock;
 import com.simibubi.create.foundation.render.AllInstanceTypes;
 import dev.engine_room.flywheel.api.instance.Instance;
 import dev.engine_room.flywheel.api.visual.DynamicVisual;
@@ -20,7 +19,7 @@ import org.joml.Quaternionf;
 
 import java.util.function.Consumer;
 
-import static net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING;
+import static com.simibubi.create.content.kinetics.base.HorizontalKineticBlock.HORIZONTAL_FACING;
 
 public class ExtruderVisual extends KineticBlockEntityVisual<ExtruderBlockEntity> implements SimpleDynamicVisual {
     private final OrientedInstance extruderPole;
@@ -47,7 +46,7 @@ public class ExtruderVisual extends KineticBlockEntityVisual<ExtruderBlockEntity
                 .createInstance();
 
         Quaternionf q = Axis.YP
-                .rotationDegrees(AngleHelper.horizontalAngle(blockState.getValue(MechanicalPressBlock.HORIZONTAL_FACING)));
+                .rotationDegrees(AngleHelper.horizontalAngle(blockState.getValue(HORIZONTAL_FACING)));
 
         extruderPole.rotation(q);
 
@@ -66,9 +65,8 @@ public class ExtruderVisual extends KineticBlockEntityVisual<ExtruderBlockEntity
     }
 
     private float getRenderedHeadOffset(float pt) {
-        ExtrudingBehaviour extrudingBehaviour = blockEntity.getExtrudingBehaviour();
-        return extrudingBehaviour.getRenderedPoleOffset(pt)
-                * extrudingBehaviour.headOffset;
+        return blockEntity.getRenderedPoleOffset(pt)
+                * blockEntity.headOffset;
 
     }
 

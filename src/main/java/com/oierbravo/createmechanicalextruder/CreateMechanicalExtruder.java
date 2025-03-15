@@ -1,9 +1,13 @@
 package com.oierbravo.createmechanicalextruder;
 
 import com.oierbravo.createmechanicalextruder.components.extruder.ExtruderBlockEntity;
+import com.oierbravo.createmechanicalextruder.infrastructure.config.ModConfigs;
 import com.oierbravo.createmechanicalextruder.infrastructure.data.ModDataGen;
 import com.oierbravo.createmechanicalextruder.ponder.ModPonderPlugin;
-import com.oierbravo.createmechanicalextruder.register.*;
+import com.oierbravo.createmechanicalextruder.register.ModBlockEntities;
+import com.oierbravo.createmechanicalextruder.register.ModBlocks;
+import com.oierbravo.createmechanicalextruder.register.ModPartials;
+import com.oierbravo.createmechanicalextruder.register.ModRecipes;
 import com.oierbravo.mechanical_lemon_lib.register.LemonCreativeModeTabs;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.item.ItemDescription;
@@ -16,6 +20,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import org.apache.logging.log4j.LogManager;
@@ -43,12 +48,13 @@ public class CreateMechanicalExtruder
     {
         REGISTRATE.registerEventListeners(modEventBus);
 
-        ModConfigs.register(modContainer);
+        ModLoadingContext modLoadingContext = ModLoadingContext.get();
 
 
         ModBlocks.register();
         ModBlockEntities.register();
         //ModCreativeTabs.register(modEventBus);
+        ModConfigs.register(modLoadingContext, modContainer);
 
         ModRecipes.register(modEventBus);
         modEventBus.addListener(ModDataGen::gatherData);

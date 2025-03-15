@@ -2,6 +2,7 @@ package com.oierbravo.createmechanicalextruder.register;
 
 import com.oierbravo.createmechanicalextruder.CreateMechanicalExtruder;
 import com.oierbravo.createmechanicalextruder.components.extruder.ExtruderBlock;
+import com.oierbravo.createmechanicalextruder.infrastructure.config.ModStress;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllTags;
 import com.simibubi.create.foundation.data.BlockStateGen;
@@ -29,7 +30,7 @@ public class ModBlocks {
             .properties(p -> p.mapColor(MapColor.METAL))
             .transform(pickaxeOnly())
             .blockstate(BlockStateGen.horizontalBlockProvider(true))
-            //.transform(CStress.setImpact(ExtruderConfig.STRESS_IMPACT.get()))
+            .transform(ModStress.setImpact(4.0))
             .recipe((c, p) -> ShapedRecipeBuilder.shaped(RecipeCategory.MISC, c.get())
                     .define('S', AllBlocks.SHAFT)
                     .define('A', AllBlocks.ANDESITE_CASING)

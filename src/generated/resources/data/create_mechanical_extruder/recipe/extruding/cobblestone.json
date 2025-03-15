@@ -13,8 +13,6 @@
     }
   ],
   "result": {
-    "item": {
-      "id": "minecraft:cobblestone"
-    }
+    "id": "minecraft:cobblestone"
   }
 }

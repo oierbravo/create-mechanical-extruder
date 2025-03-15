@@ -3,24 +3,14 @@ package com.oierbravo.createmechanicalextruder.components.extruder.recipe;
 import com.oierbravo.mechanical_lemon_lib.foundation.recipe.BaseRecipeBuilder;
 import com.simibubi.create.content.processing.recipe.ProcessingOutput;
 import com.simibubi.create.foundation.fluid.FluidIngredient;
-import net.minecraft.advancements.Advancement;
-import net.minecraft.advancements.AdvancementRequirements;
-import net.minecraft.advancements.AdvancementRewards;
-import net.minecraft.advancements.Criterion;
-import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
+import net.minecraft.advancements.critereon.BlockPredicate;
 import net.minecraft.core.NonNullList;
-import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.ItemLike;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
+import net.minecraft.world.level.block.Block;
 
 public class ExtrudingRecipeBuilder extends BaseRecipeBuilder<ExtrudingRecipe, ExtrudingRecipe.ExtrudingRecipeParams> {
-    protected final Map<String, Criterion<?>> criteria = new LinkedHashMap<>();
 
     public ExtrudingRecipeBuilder( ResourceLocation id) {
         super(id);
@@ -54,19 +44,14 @@ public class ExtrudingRecipeBuilder extends BaseRecipeBuilder<ExtrudingRecipe, E
         params.result = output;
         return this;
     }
-    public ExtrudingRecipeBuilder withCatalyst(ItemStack catalyst) {
+    public ExtrudingRecipeBuilder withCatalyst(Block catalyst) {
+        return withCatalyst(BlockPredicate.Builder.block().of(catalyst).build());
+    }
+
+    public ExtrudingRecipeBuilder withCatalyst(BlockPredicate catalyst) {
         params.catalyst = catalyst;
         return this;
     }
-    public ExtrudingRecipeBuilder withCatalyst(Item catalyst) {
-        params.catalyst = new ItemStack(catalyst, 1);
-        return this;
-    }
-    public ExtrudingRecipeBuilder withCatalyst(ItemLike catalyst) {
-        params.catalyst = new ItemStack(catalyst, 1);
-        return this;
-    }
-
     public ExtrudingRecipeBuilder withFluidIngredients(FluidIngredient... ingredients) {
         return withFluidIngredients(NonNullList.of(FluidIngredient.EMPTY, ingredients));
     }
@@ -87,21 +72,6 @@ public class ExtrudingRecipeBuilder extends BaseRecipeBuilder<ExtrudingRecipe, E
         if(results.stream().findFirst().isPresent())
             params.result = results.stream().findFirst().get();
         return this;
-    }
-
-
-    public void save(RecipeOutput recipeOutput, ResourceLocation resourceLocation) {
-        Advancement.Builder advancement = recipeOutput.advancement()
-                .addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(resourceLocation))
-                .rewards(AdvancementRewards.Builder.recipe(resourceLocation))
-                .requirements(AdvancementRequirements.Strategy.OR);
-        this.criteria.forEach(advancement::addCriterion);
-
-        recipeOutput.accept(resourceLocation, build(), advancement.build(params.id.withPrefix("recipes/")));
-    }
-
-    public void save(RecipeOutput recipeOutput) {
-        save(recipeOutput, params.id);
     }
 
     /*@Override

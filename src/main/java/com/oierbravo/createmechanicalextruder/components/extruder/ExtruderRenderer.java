@@ -3,6 +3,7 @@ package com.oierbravo.createmechanicalextruder.components.extruder;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.oierbravo.createmechanicalextruder.register.ModPartials;
+import com.oierbravo.mechanical_lemon_lib.foundation.blockEntity.behaviour.CycleBehavior;
 import com.simibubi.create.AllPartialModels;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntityRenderer;
 import com.simibubi.create.foundation.blockEntity.behaviour.filtering.FilteringRenderer;
@@ -39,13 +40,13 @@ public class ExtruderRenderer extends KineticBlockEntityRenderer<ExtruderBlockEn
 
 
 
-        ExtrudingBehaviour extrudingBehaviour = be.getExtrudingBehaviour();
+        CycleBehavior extrudingBehaviour = be.getExtrudingBehaviour();
         float renderedHeadOffset =
-                extrudingBehaviour.getRenderedPoleOffset(partialTicks);
+                be.getRenderedPoleOffset(partialTicks);
 
         SuperByteBuffer poleRender = CachedBuffers.partialFacing(ModPartials.MECHANICAL_EXTRUDER_POLE, blockState,
                 blockState.getValue(HORIZONTAL_FACING));
-        poleRender.translate(0, -renderedHeadOffset + extrudingBehaviour.headOffset, 0)
+        poleRender.translate(0, -renderedHeadOffset + be.headOffset, 0)
                 .light(light)
                 .renderInto(ms, vb);
 

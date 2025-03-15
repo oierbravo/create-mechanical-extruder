@@ -1,9 +1,9 @@
 package com.oierbravo.createmechanicalextruder.register;
 
 import com.oierbravo.createmechanicalextruder.CreateMechanicalExtruder;
-import com.oierbravo.createmechanicalextruder.components.extruder.ExtruderVisual;
-import com.oierbravo.createmechanicalextruder.components.extruder.ExtruderRenderer;
 import com.oierbravo.createmechanicalextruder.components.extruder.ExtruderBlockEntity;
+import com.oierbravo.createmechanicalextruder.components.extruder.ExtruderRenderer;
+import com.oierbravo.createmechanicalextruder.components.extruder.ExtruderVisual;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 
 

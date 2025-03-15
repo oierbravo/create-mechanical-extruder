@@ -3,11 +3,9 @@ package com.oierbravo.createmechanicalextruder.register;
 import com.oierbravo.createmechanicalextruder.CreateMechanicalExtruder;
 import com.oierbravo.createmechanicalextruder.components.extruder.ExtruderBlockEntity;
 import com.oierbravo.createmechanicalextruder.components.extruder.recipe.ExtrudingRecipe;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.SingleRecipeInput;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -31,14 +29,6 @@ public class ModRecipes {
 
         );
 
-
-    /*public static final Supplier<RecipeType<ExtrudingRecipe>> EXTRUDING_TYPE =
-            RECIPE_TYPES.register("extruding",() -> new RecipeType<>() {
-                @Override
-                public String toString() {
-                    return ExtrudingRecipe.Type.ID.toString();
-                }
-            });*/
     public static final Supplier<ExtrudingRecipe.Serializer> EXTRUDING_SERIALIZER =
             SERIALIZERS.register("extruding", () -> ExtrudingRecipe.Serializer.INSTANCE);
 
@@ -56,14 +46,19 @@ public class ModRecipes {
     public static Optional<RecipeHolder<ExtrudingRecipe>> findExtruding(ExtruderBlockEntity extruder, Level level){
         if(level.isClientSide())
             return Optional.empty();
-        List<RecipeHolder<ExtrudingRecipe>> recipes = level.getRecipeManager().getAllRecipesFor(ExtrudingRecipe.Type.INSTANCE);
 
-        //return Optional.empty();
         return level.getRecipeManager().getAllRecipesFor(ExtrudingRecipe.Type.INSTANCE)
                 .stream()
                     .filter(extruder::matchIngredients)
                     .sorted(Comparator.comparing(ExtrudingRecipe::hasCatalyst,Comparator.reverseOrder()))
                     .findFirst();
 
+    }
+
+    public static List<RecipeHolder<ExtrudingRecipe>> getAllHolders() {
+        RecipeManager rm = Minecraft.getInstance()
+                .getConnection()
+                .getRecipeManager();
+        return rm.getAllRecipesFor(ExtrudingRecipe.Type.INSTANCE);
     }
 }

@@ -1,8 +1,7 @@
 {
   "type": "create_mechanical_extruder:extruding",
   "catalyst": {
-    "count": 1,
-    "id": "minecraft:soul_soil"
+    "blocks": "minecraft:soul_soil"
   },
   "ingredients": [
     {
@@ -12,8 +11,6 @@
     }
   ],
   "result": {
-    "item": {
-      "id": "minecraft:basalt"
-    }
+    "id": "minecraft:basalt"
   }
 }
