@@ -5,20 +5,16 @@
       "blocks": "minecraft:water"
     },
     {
-      "blocks": "minecraft:lava"
+      "blocks": "minecraft:water"
     }
   ],
   "requirements": [
     {
       "type": "mechanical_lemon_lib:min_y",
-      "value": 0
-    },
-    {
-      "type": "mechanical_lemon_lib:max_y",
-      "value": 60
+      "value": 150
     }
   ],
   "result": {
-    "id": "minecraft:andesite"
+    "id": "minecraft:snow_block"
   }
 }

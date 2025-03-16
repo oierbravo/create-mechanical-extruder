@@ -17,29 +17,6 @@ public class ExtrudingRecipeBuilder extends BaseRecipeBuilder<ExtrudingRecipe, E
 
     }
 
-  //  protected List<RecipeRequirement> recipeRequirements;
-
-//    protected List<ICondition> recipeConditions;
-
-
-    /*public ExtrudingRecipeBuilder(ResourceLocation recipeId) {
-        params = new ExtrudingRecipeBuilder.ExtrudingRecipeParams(recipeId);
-        recipeRequirements = new ArrayList<>();
-        recipeConditions = new ArrayList<>();
-    }*/
-    /*public ExtrudingRecipeBuilder withBlockIngredients(Block... blocks) {
-
-        return withBlockIngredients(
-                NonNullList.of(blocks.
-                        BlockPredicate.Builder.block().build(),
-                        blocks..map(block -> BlockPredicate.Builder.block().of(block).build()).toList()
-                ));
-    }*/
-    /*public ExtrudingRecipeBuilder withBlockIngredient(FlowingFluid fluid) {
-        Block fluidBlock = fluid.
-        params.blockPredicateIngredients.add(BlockPredicate.Builder.block().of().build());
-        return this;
-    }*/
     public ExtrudingRecipeBuilder withBlockIngredient(Block... blockIngredients) {
         params.blockPredicateIngredients.add(BlockPredicate.Builder.block().of(blockIngredients).build());
         return this;
@@ -63,14 +40,7 @@ public class ExtrudingRecipeBuilder extends BaseRecipeBuilder<ExtrudingRecipe, E
     public ExtrudingRecipeBuilder withBlockIngredient(String resourceLocationString) {
         return withBlockIngredient(ResourceLocation.parse(resourceLocationString));
     }
-    /*public ExtrudingRecipeBuilder withBlockIngredient(ResourceLocation location) {
 
-    }*/
-
-    /*public ExtrudingRecipeBuilder withItemIngredients(NonNullList<Ingredient> itemIngredients) {
-        params.itemIngredients = itemIngredients;
-        return this;
-    }*/
     public ExtrudingRecipeBuilder withSingleItemOutput(ItemStack output) {
         params.result = new ProcessingOutput(output, 1.0F);
         return this;

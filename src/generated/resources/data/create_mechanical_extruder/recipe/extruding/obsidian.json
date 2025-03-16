@@ -10,15 +10,11 @@
   ],
   "requirements": [
     {
-      "type": "mechanical_lemon_lib:min_y",
-      "value": 0
-    },
-    {
-      "type": "mechanical_lemon_lib:max_y",
-      "value": 60
+      "type": "mechanical_lemon_lib:max_speed",
+      "value": 8.0
     }
   ],
   "result": {
-    "id": "minecraft:andesite"
+    "id": "minecraft:obsidian"
   }
 }

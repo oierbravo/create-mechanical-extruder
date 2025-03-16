@@ -9,7 +9,7 @@ import com.oierbravo.mechanical_lemon_lib.foundation.recipe.BaseRecipe;
 import com.oierbravo.mechanical_lemon_lib.foundation.recipe.BaseRecipeParams;
 import com.oierbravo.mechanical_lemon_lib.foundation.recipe.BaseRecipeSerializer;
 import com.oierbravo.mechanical_lemon_lib.foundation.recipe.IRecipeRequirement;
-import com.oierbravo.mechanical_lemon_lib.foundation.recipe.requirements.SpeedRequirement;
+import com.oierbravo.mechanical_lemon_lib.foundation.recipe.requirements.MinSpeedRequirement;
 import com.simibubi.create.content.processing.recipe.ProcessingOutput;
 import com.simibubi.create.foundation.blockEntity.behaviour.filtering.FilteringBehaviour;
 import net.createmod.catnip.codecs.stream.CatnipStreamCodecBuilders;
@@ -36,6 +36,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import static net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED;
+
 public class ExtrudingRecipe extends BaseRecipe<RecipeInput, ExtrudingRecipe.ExtrudingRecipeParams> {
 
     public static Comparator<? super ExtrudingRecipe> hasCatalyst;
@@ -54,7 +56,7 @@ public class ExtrudingRecipe extends BaseRecipe<RecipeInput, ExtrudingRecipe.Ext
          //   BiomeRequirement.TYPE,
          //   MinHeightRequirement.TYPE,
          //   MaxHeightRequirement.TYPE,
-            SpeedRequirement.ID
+            MinSpeedRequirement.ID
             //"min_speed"
     );
 
@@ -63,11 +65,11 @@ public class ExtrudingRecipe extends BaseRecipe<RecipeInput, ExtrudingRecipe.Ext
         return recipeRequirements;
     }
 
-    @Override
+    /*@Override
     public List<String> getEnabledRequirements() {
         return enabledRecipeRequirements;
     }
-
+*/
     public ExtrudingRecipe(ExtrudingRecipeParams params) {
         super(params);
         this.id = params.id;
@@ -83,12 +85,28 @@ public class ExtrudingRecipe extends BaseRecipe<RecipeInput, ExtrudingRecipe.Ext
         List<BlockPredicate> matchedIngredients = new ArrayList<>();
         List<BlockInWorld> sideBlocks = extruderBlockEntity.getSideBlocks();
             for( BlockPredicate blockIngredient : blockIngredients ){
-                for(int i = 0; i < sideBlocks.size(); i++){
-                    if(blockIngredient.matches(sideBlocks.get(i))){
+                for( BlockInWorld blockInWorld : sideBlocks){
+                    if(blockInWorld.getState().hasProperty(WATERLOGGED) && blockIngredient.blocks().isPresent()){
+                        boolean waterLogged = blockInWorld.getState().getValue(WATERLOGGED);
+                        boolean isWaterIngredient = blockIngredient.blocks().get().get(0).is(ResourceLocation.fromNamespaceAndPath("minecraft", "water"));
+                        if(waterLogged && isWaterIngredient){
+                            matchedIngredients.add(blockIngredient);
+                            break;
+                        }
+
+                    }
+                    if(blockIngredient.matches(blockInWorld)){
                         matchedIngredients.add(blockIngredient);
                         break;
                     }
                 }
+                /*for(int i = 0; i < sideBlocks.size(); i++){
+                    boolean waterLogged = sideBlocks.get(i).getState().getValue(WATERLOGGED);
+                    if(blockIngredient.matches(sideBlocks.get(i))){
+                        matchedIngredients.add(blockIngredient);
+                        break;
+                    }
+                }*/
             }
         return matchedIngredients.size() == 2;
     }
