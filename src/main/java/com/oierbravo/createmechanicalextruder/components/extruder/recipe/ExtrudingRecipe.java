@@ -47,6 +47,9 @@ public class ExtrudingRecipe extends BaseRecipe<RecipeInput, ExtrudingRecipe.Ext
     private ProcessingOutput result;
 
     private int requiredBonks;
+    private boolean isAdvanced;
+    private Couple<Boolean> consumeBlocks;
+
 
     @Override
     public ArrayList<IRecipeRequirement> getRecipeRequirements() {
@@ -60,6 +63,8 @@ public class ExtrudingRecipe extends BaseRecipe<RecipeInput, ExtrudingRecipe.Ext
         this.blockPredicateIngredients = params.blockPredicateIngredients;
         this.catalyst = params.catalyst;
         this.requiredBonks = params.requiredBonks;
+        this.isAdvanced = params.isAdvanced;
+        this.consumeBlocks = params.consumeBlocks;
         this.recipeRequirements.addAll(params.recipeRequirements);
     }
 
@@ -173,6 +178,26 @@ public class ExtrudingRecipe extends BaseRecipe<RecipeInput, ExtrudingRecipe.Ext
         return requiredBonks;
     }
 
+    public boolean isAdvanced(){
+        return isAdvanced;
+    }
+
+    public boolean notAdvanced(){
+        return !isAdvanced;
+    }
+
+    public Couple<Boolean> getConsumeBlocks(){
+        return consumeBlocks;
+    }
+    public List<BlockPredicate> getConsumeBlocksList(){
+        ArrayList<BlockPredicate> list = new ArrayList<>();
+        if(consumeBlocks.getFirst())
+            list.add(blockPredicateIngredients.getFirst());
+        if(consumeBlocks.getSecond())
+            list.add(blockPredicateIngredients.getSecond());
+        return list;
+    }
+
 
     @Override
     public @NotNull RecipeType<?> getType() {
@@ -197,6 +222,8 @@ public class ExtrudingRecipe extends BaseRecipe<RecipeInput, ExtrudingRecipe.Ext
 
 
         protected int requiredBonks;
+        protected boolean isAdvanced;
+        protected Couple<Boolean> consumeBlocks;
 
         public ArrayList<IRecipeRequirement> recipeRequirements;
 
@@ -206,6 +233,8 @@ public class ExtrudingRecipe extends BaseRecipe<RecipeInput, ExtrudingRecipe.Ext
             result = ProcessingOutput.EMPTY;
             catalyst = BlockPredicate.Builder.block().build();
             requiredBonks = 1;
+            isAdvanced = false;
+            consumeBlocks = Couple.create(false, false);
             recipeRequirements = new ArrayList<>();
         }
 
@@ -224,6 +253,8 @@ public class ExtrudingRecipe extends BaseRecipe<RecipeInput, ExtrudingRecipe.Ext
             Couple<BlockPredicate> blockPredicateList = Couple.streamCodec(BlockPredicate.STREAM_CODEC).decode(buffer);
             ProcessingOutput result = ProcessingOutput.STREAM_CODEC.decode(buffer);
             int requiredBonks = ByteBufCodecs.INT.decode(buffer);
+            boolean isAdvanced = ByteBufCodecs.BOOL.decode(buffer);
+            Couple<Boolean> consubleBlocks = Couple.streamCodec(ByteBufCodecs.BOOL).decode(buffer);
             BlockPredicate catalystBlockPredicate = BlockPredicate.STREAM_CODEC.decode(buffer);
             List<IRecipeRequirement> recipeRequirements = IRecipeRequirement.LIST_STREAM_CODEC.decode(buffer);
 
@@ -231,6 +262,8 @@ public class ExtrudingRecipe extends BaseRecipe<RecipeInput, ExtrudingRecipe.Ext
                     .withSingleItemOutput(result)
                     .withBlockIngredients(blockPredicateList)
                     .requiredBonks(requiredBonks)
+                    .isAdvanced(isAdvanced)
+                    .consumeBlocks(consubleBlocks)
                     .withCatalyst(catalystBlockPredicate)
                     .withRequirements(recipeRequirements)
                     .build();
@@ -241,6 +274,8 @@ public class ExtrudingRecipe extends BaseRecipe<RecipeInput, ExtrudingRecipe.Ext
             Couple.streamCodec(BlockPredicate.STREAM_CODEC).encode(buffer, extrudingRecipe.getBlockPredicateIngredients());
             ProcessingOutput.STREAM_CODEC.encode(buffer, extrudingRecipe.getResult());
             ByteBufCodecs.INT.encode(buffer,extrudingRecipe.getRequiredBonks());
+            ByteBufCodecs.BOOL.encode(buffer, extrudingRecipe.isAdvanced());
+            Couple.streamCodec(ByteBufCodecs.BOOL).encode(buffer, extrudingRecipe.getConsumeBlocks());
             BlockPredicate.STREAM_CODEC.encode(buffer, extrudingRecipe.getCatalyst());
             IRecipeRequirement.LIST_STREAM_CODEC.encode(buffer, extrudingRecipe.getRecipeRequirements());
         }
@@ -253,17 +288,20 @@ public class ExtrudingRecipe extends BaseRecipe<RecipeInput, ExtrudingRecipe.Ext
                                 ProcessingOutput.CODEC.fieldOf("result").forGetter(ExtrudingRecipe::getResult),
                                 BlockPredicate.CODEC.optionalFieldOf("catalyst",BlockPredicate.Builder.block().build()).forGetter(ExtrudingRecipe::getCatalyst),
                                 Codec.INT.optionalFieldOf("requiredBonks",1).forGetter(ExtrudingRecipe::getRequiredBonks),
+                                Codec.BOOL.optionalFieldOf("advanced", false).forGetter(ExtrudingRecipe::isAdvanced),
+                                Couple.codec(Codec.BOOL).fieldOf("consumeBlocks").forGetter(ExtrudingRecipe::getConsumeBlocks),
                                 IRecipeRequirement.LIST_CODEC.optionalFieldOf("requirements", List.of()).forGetter(ExtrudingRecipe::getRecipeRequirements),
                                 ICondition.LIST_CODEC.optionalFieldOf(ConditionalOps.DEFAULT_CONDITIONS_KEY, List.of()).forGetter(ExtrudingRecipe::getConditions)
-                        ).apply(instance, (blockIngredients, processingOutput, catalyst, requiredBonks, requirements, iConditions) -> {
+                        ).apply(instance, (blockIngredients, processingOutput, catalyst, requiredBonks, isAdvanced, consumeBlocks, requirements, iConditions) -> {
                             ExtrudingRecipeBuilder builder = new ExtrudingRecipeBuilder(CreateMechanicalExtruder.asResource(Type.ID));
-
 
                             builder
                                     .withBlockIngredients(blockIngredients)
                                     .withSingleItemOutput(processingOutput)
                                     .withCatalyst(catalyst)
                                     .requiredBonks(requiredBonks)
+                                    .isAdvanced(isAdvanced)
+                                    .consumeBlocks(consumeBlocks)
                                     .withRequirements(requirements)
                             ;
                             return builder.build();

@@ -86,17 +86,35 @@ public class ExtrudingRecipeGen extends RecipeProvider {
         create("deepslate", Items.DEEPSLATE)
                 .withBlockIngredients(Blocks.WATER, Blocks.LAVA)
                 .withRequirement(MaxYRequirement.of(0))
-                .withRequirement(MaxSpeedRequirement.of(32f))
+                .withRequirement(MaxSpeedRequirement.of(16f))
                 .save(recipeOutput);
 
         create("obsidian", Items.OBSIDIAN)
                 .withBlockIngredients(Blocks.WATER, Blocks.LAVA)
-                .withRequirement(MaxSpeedRequirement.of(8f))
+                .withRequirement(MaxSpeedRequirement.of(4f))
                 .save(recipeOutput);
 
         create("snow_block", Items.SNOW_BLOCK)
                 .withSingleBlockIngredient(Blocks.WATER)
                 .withRequirement(MinYRequirement.of(150))
+                .save(recipeOutput);
+
+        createAdvanced("advanced_obsidian", Items.OBSIDIAN)
+                .withBlockIngredients(Blocks.WATER, Blocks.LAVA)
+                .consumeBlocksSecondBlock()
+                .withCatalyst(Blocks.OBSIDIAN)
+                .save(recipeOutput);
+
+        createAdvanced("advanced_netherrack", Items.NETHERRACK)
+                .withBlockIngredients(Blocks.BLUE_ICE, Blocks.LAVA)
+                .consumeBlocksSecondBlock()
+                .withCatalyst(Blocks.NETHERRACK)
+                .save(recipeOutput);
+
+        createAdvanced("advanced_end_stone", Items.END_STONE)
+                .withBlockIngredients(Blocks.BLUE_ICE, Blocks.LAVA)
+                .consumeBlocksSecondBlock()
+                .withCatalyst(Blocks.END_STONE)
                 .save(recipeOutput);
 
 
@@ -115,6 +133,12 @@ public class ExtrudingRecipeGen extends RecipeProvider {
     private ExtrudingRecipeBuilder create(String id, Item output){
         return new ExtrudingRecipeBuilder(CreateMechanicalExtruder.asResource("extruding/" + id))
                 .withSingleItemOutput(new ProcessingOutput(new ItemStack(output),1));
+    }
+
+    private ExtrudingRecipeBuilder createAdvanced(String id, Item output){
+        return new ExtrudingRecipeBuilder(CreateMechanicalExtruder.asResource("extruding/" + id))
+                .withSingleItemOutput(new ProcessingOutput(new ItemStack(output),1))
+                .isAdvanced(true);
     }
 
 

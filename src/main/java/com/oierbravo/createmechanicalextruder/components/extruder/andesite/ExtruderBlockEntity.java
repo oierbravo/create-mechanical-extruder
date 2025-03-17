@@ -9,6 +9,11 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 public class ExtruderBlockEntity extends AbstractExtruderBlockEntity {
+    @Override
+    public boolean isAdvancedMachine() {
+        return false;
+    }
+
     public ExtruderBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
@@ -21,5 +26,6 @@ public class ExtruderBlockEntity extends AbstractExtruderBlockEntity {
         );
 
     }
+
 
 }

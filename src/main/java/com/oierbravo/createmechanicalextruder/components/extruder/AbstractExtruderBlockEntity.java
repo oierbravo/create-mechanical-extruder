@@ -14,6 +14,7 @@ import com.simibubi.create.foundation.blockEntity.behaviour.ValueBoxTransform;
 import com.simibubi.create.foundation.blockEntity.behaviour.filtering.FilteringBehaviour;
 import net.createmod.catnip.data.Couple;
 import net.createmod.catnip.math.VecHelper;
+import net.minecraft.advancements.critereon.BlockPredicate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -23,6 +24,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.pattern.BlockInWorld;
@@ -34,6 +36,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING;
@@ -47,6 +50,8 @@ public abstract class AbstractExtruderBlockEntity extends KineticBlockEntity imp
     private FilteringBehaviour filtering;
     public RecipeRequirementsBehaviour<ExtrudingRecipe> recipeRequirementsBehaviour;
     public float headOffset = 0.44f;
+
+    public abstract boolean isAdvancedMachine();
 
     public final ItemStackHandler outputInventory = new ItemStackHandler(1) {
         @Override
@@ -69,14 +74,7 @@ public abstract class AbstractExtruderBlockEntity extends KineticBlockEntity imp
         return outputInventory;
     }
 
-    /*public static void registerCapabilities(RegisterCapabilitiesEvent event) {
-        event.registerBlockEntity(
-                Capabilities.ItemHandler.BLOCK,
-                ModBlockEntities.MECHANICAL_EXTRUDER.get(),
-                (be, context) -> be.getItemHandler()
-        );
 
-    }*/
     @Override
     public boolean isSpeedRequirementFulfilled() {
         Optional<ExtrudingRecipe> recipe = getRecipe();
@@ -128,6 +126,8 @@ public abstract class AbstractExtruderBlockEntity extends KineticBlockEntity imp
         return getSpeed();
     }
 
+
+
     @Override
     public boolean tryProcess(boolean simulate) {
         Optional<ExtrudingRecipe> recipe = getRecipe();
@@ -150,7 +150,25 @@ public abstract class AbstractExtruderBlockEntity extends KineticBlockEntity imp
         } else if(outputInventory.getStackInSlot(0).is(extrudingRecipe.getResult().getStack().getItem())) {
             outputInventory.getStackInSlot(0).grow(output.getCount());
         }
+
+        if(isAdvancedMachine()){
+            for(BlockPredicate blockPredicate : extrudingRecipe.getConsumeBlocksList()){
+                if(blockPredicate.matches(getLeftBlockInWorld()))
+                    consumeBlock(getLeftBlockInWorld());
+                if(blockPredicate.matches(getRightBlockInWorld()))
+                    consumeBlock(getRightBlockInWorld());
+
+            }
+        }
+
+
         return true;
+    }
+
+    private void consumeBlock(BlockInWorld blockInWorld) {
+        if(Objects.requireNonNull(this.getLevel()).isClientSide)
+            return;
+        this.getLevel().setBlock(blockInWorld.getPos(), Blocks.AIR.defaultBlockState(), 3);
     }
 
     @Override
@@ -160,7 +178,7 @@ public abstract class AbstractExtruderBlockEntity extends KineticBlockEntity imp
 
     @Override
     public int getCycles() {
-        if(!getRecipe().isPresent())
+        if(getRecipe().isEmpty())
             return 1;
         return getRecipe().get().getRequiredBonks();
     }
@@ -180,15 +198,15 @@ public abstract class AbstractExtruderBlockEntity extends KineticBlockEntity imp
         if(matchingRecipes.isEmpty())
             return Optional.empty();
 
+        if(!isAdvancedMachine())
+            matchingRecipes = matchingRecipes.stream().filter(ExtrudingRecipe::notAdvanced).toList();
+
         List<ExtrudingRecipe> matchingRequirementRecipes =  matchingRecipes.stream()
                 .filter(extrudingRecipe -> extrudingRecipe.meetsRequirements(this)).toList();
 
         if(!matchingRequirementRecipes.isEmpty())
             return matchingRequirementRecipes.stream().findFirst();
         return matchingRecipes.stream().findAny();
-        /*if(matchingRecipes.isPresent())
-            return Optional.of(ModRecipes.findExtruding(this, level).get().value());
-        return Optional.empty();*/
     }
 
 

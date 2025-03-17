@@ -86,6 +86,23 @@ public class ExtrudingRecipeBuilder extends BaseRecipeBuilder<ExtrudingRecipe, E
         params.requiredBonks = requiredBonks;
         return this;
     }
+    public ExtrudingRecipeBuilder isAdvanced(boolean value) {
+        params.isAdvanced = value;
+        return this;
+    }
+
+    public ExtrudingRecipeBuilder consumeBlocks(Couple<Boolean> pConsumeBlocks){
+        params.consumeBlocks = pConsumeBlocks;
+        return this;
+    }
+    public ExtrudingRecipeBuilder consumeBlocksFirstBlock(){
+        params.consumeBlocks.setFirst(true);
+        return this;
+    }
+    public ExtrudingRecipeBuilder consumeBlocksSecondBlock(){
+        params.consumeBlocks.setSecond(true);
+        return this;
+    }
     public ExtrudingRecipe build(){
         return new ExtrudingRecipe(this.params);
     }

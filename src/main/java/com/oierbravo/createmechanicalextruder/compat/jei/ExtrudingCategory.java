@@ -3,6 +3,7 @@ package com.oierbravo.createmechanicalextruder.compat.jei;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.oierbravo.createmechanicalextruder.CreateMechanicalExtruder;
+import com.oierbravo.createmechanicalextruder.compat.jei.animations.AnimatedBrassExtruder;
 import com.oierbravo.createmechanicalextruder.compat.jei.animations.AnimatedExtruder;
 import com.oierbravo.createmechanicalextruder.components.extruder.recipe.ExtrudingRecipe;
 import com.oierbravo.createmechanicalextruder.foundation.utility.ModLang;
@@ -50,6 +51,8 @@ public class ExtrudingCategory extends CreateRecipeCategory<ExtrudingRecipe> {
     public static final BlockPredicate ANY = new BlockPredicate(Optional.empty(), Optional.empty(), Optional.empty());
 
     private AnimatedExtruder extruder = new AnimatedExtruder();
+    private AnimatedBrassExtruder brassExtruder = new AnimatedBrassExtruder();
+
     public final static ResourceLocation UID = CreateMechanicalExtruder.asResource("extruding");
     public final static RecipeType<ExtrudingRecipe>  TYPE = new mezz.jei.api.recipe.RecipeType<>(UID, ExtrudingRecipe.class);
     //public final static Supplier<List<RecipeHolder<ExtrudingRecipe>>> RECIPE_SUPPLIER = ModRecipes::getAllHolders;
@@ -60,7 +63,10 @@ public class ExtrudingCategory extends CreateRecipeCategory<ExtrudingRecipe> {
             new EmptyBackground(177, 85),
             new ItemIcon(() -> new ItemStack(ModBlocks.MECHANICAL_EXTRUDER.asItem())),
             ModRecipes::getAllHolders,
-            List.of(ModBlocks.MECHANICAL_EXTRUDER::asStack)
+            List.of(
+                    ModBlocks.MECHANICAL_EXTRUDER::asStack,
+                    ModBlocks.MECHANICAL_BRASS_EXTRUDER::asStack
+            )
     );
 
 
@@ -153,7 +159,11 @@ public class ExtrudingCategory extends CreateRecipeCategory<ExtrudingRecipe> {
 
 
     public void draw(ExtrudingRecipe recipe, IRecipeSlotsView iRecipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY) {
-        extruder.draw(graphics, 42, 55);
+        if(recipe.isAdvanced())
+            brassExtruder.draw(graphics, 42, 55);
+        else
+            extruder.draw(graphics, 42, 55);
+
         AllGuiTextures.JEI_DOWN_ARROW.render(graphics, 42, 50); //Output arrow
         drawRequirements(recipe, graphics, 63, 4);
 

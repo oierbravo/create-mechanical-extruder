@@ -8,6 +8,10 @@
       "blocks": "minecraft:lava"
     }
   },
+  "consumeBlocks": {
+    "first": false,
+    "second": false
+  },
   "requirements": [
     {
       "type": "mechanicals:min_y",

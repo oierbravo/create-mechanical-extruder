@@ -11,6 +11,10 @@
   "catalyst": {
     "blocks": "minecraft:soul_soil"
   },
+  "consumeBlocks": {
+    "first": false,
+    "second": false
+  },
   "result": {
     "id": "minecraft:basalt"
   }

@@ -50,7 +50,7 @@ public class ModBlocks {
             .properties(p -> p.mapColor(MapColor.METAL))
             .transform(pickaxeOnly())
             .blockstate(BlockStateGen.horizontalBlockProvider(true))
-            .transform(ModStress.setImpact(4.0))
+            .transform(ModStress.setImpact(16.0))
             .item()
             .transform(customItemModel())
 

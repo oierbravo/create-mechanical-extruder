@@ -1,18 +1,22 @@
 {
   "type": "create_mechanical_extruder:extruding",
+  "advanced": true,
   "blockIngredients": {
     "first": {
-      "blocks": "create:honey"
+      "blocks": "minecraft:blue_ice"
     },
     "second": {
       "blocks": "minecraft:lava"
     }
   },
+  "catalyst": {
+    "blocks": "minecraft:netherrack"
+  },
   "consumeBlocks": {
     "first": false,
-    "second": false
+    "second": true
   },
   "result": {
-    "id": "create:limestone"
+    "id": "minecraft:netherrack"
   }
 }

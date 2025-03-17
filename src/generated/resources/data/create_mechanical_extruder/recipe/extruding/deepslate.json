@@ -8,6 +8,10 @@
       "blocks": "minecraft:lava"
     }
   },
+  "consumeBlocks": {
+    "first": false,
+    "second": false
+  },
   "requirements": [
     {
       "type": "mechanicals:max_y",
@@ -15,7 +19,7 @@
     },
     {
       "type": "mechanicals:max_speed",
-      "value": 32.0
+      "value": 16.0
     }
   ],
   "result": {
