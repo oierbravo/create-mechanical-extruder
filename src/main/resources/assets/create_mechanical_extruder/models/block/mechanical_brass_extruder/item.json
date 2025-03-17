@@ -5,6 +5,8 @@
 		"3": "create:block/tunnel/brass_tunnel_top_window",
 		"5": "create:block/funnel/funnel_closed",
 		"7": "create:block/brass_gearbox",
+		"8": "create:block/girder_pole",
+		"9": "create:block/girder",
 		"particle": "create:block/brass_casing",
 		"top": "create_mechanical_extruder:block/brass_extruder_top"
 	},
@@ -113,6 +115,94 @@
 				"up": {"uv": [6, 1, 10, 5], "texture": "#top"},
 				"down": {"uv": [6, 1, 10, 5], "texture": "#top"}
 			}
+		},
+		{
+			"name": "Pole1Core",
+			"from": [6, 3, 6],
+			"to": [10, 13, 10],
+			"rotation": {"angle": 0, "axis": "y", "origin": [0, -6, 0]},
+			"faces": {
+				"east": {"uv": [2, 0, 6, 16], "texture": "#8"},
+				"west": {"uv": [2, 0, 6, 16], "texture": "#8"},
+				"down": {"uv": [8.5, 8.5, 12.5, 12.5], "rotation": 180, "texture": "#9"}
+			}
+		},
+		{
+			"name": "Pole2Core",
+			"from": [6, 13, 6],
+			"to": [10, 22, 10],
+			"rotation": {"angle": 0, "axis": "y", "origin": [0, -6, 0]},
+			"faces": {
+				"east": {"uv": [2, 0, 6, 16], "texture": "#8"},
+				"west": {"uv": [2, 0, 6, 16], "texture": "#8"},
+				"up": {"uv": [8.5, 8.5, 12.5, 12.5], "rotation": 180, "texture": "#9"}
+			}
+		},
+		{
+			"name": "Pole1Side",
+			"from": [5, 3, 5],
+			"to": [11, 13, 6],
+			"rotation": {"angle": 0, "axis": "y", "origin": [0, -6, 0]},
+			"faces": {
+				"north": {"uv": [0, 0, 8, 16], "texture": "#8"},
+				"east": {"uv": [7, 0, 8, 16], "texture": "#8"},
+				"south": {"uv": [0, 5, 8, 9], "texture": "#9"},
+				"west": {"uv": [7, 0, 8, 16], "texture": "#8"},
+				"down": {"uv": [0, 15, 8, 16], "rotation": 180, "texture": "#8"}
+			}
+		},
+		{
+			"name": "Pole1Side",
+			"from": [5, 3, 10],
+			"to": [11, 13, 11],
+			"rotation": {"angle": 0, "axis": "y", "origin": [0, -6, 0]},
+			"faces": {
+				"north": {"uv": [0, 5, 8, 9], "texture": "#9"},
+				"east": {"uv": [0, 0, 1, 16], "texture": "#8"},
+				"south": {"uv": [0, 0, 8, 16], "texture": "#8"},
+				"west": {"uv": [0, 0, 1, 16], "texture": "#8"},
+				"down": {"uv": [0, 15, 8, 16], "rotation": 180, "texture": "#8"}
+			}
+		},
+		{
+			"name": "Pole2Side",
+			"from": [5, 13, 10],
+			"to": [11, 22, 11],
+			"rotation": {"angle": 0, "axis": "y", "origin": [0, -6, 0]},
+			"faces": {
+				"north": {"uv": [0, 5, 8, 9], "texture": "#9"},
+				"east": {"uv": [0, 0, 1, 16], "texture": "#8"},
+				"south": {"uv": [0, 0, 8, 16], "texture": "#8"},
+				"west": {"uv": [0, 0, 1, 16], "texture": "#8"},
+				"up": {"uv": [0, 15, 8, 16], "rotation": 180, "texture": "#8"}
+			}
+		},
+		{
+			"name": "Pole2Side",
+			"from": [5, 13, 5],
+			"to": [11, 22, 6],
+			"rotation": {"angle": 0, "axis": "y", "origin": [0, -6, 0]},
+			"faces": {
+				"north": {"uv": [0, 0, 8, 16], "texture": "#8"},
+				"east": {"uv": [7, 0, 8, 16], "texture": "#8"},
+				"south": {"uv": [0, 5, 8, 9], "texture": "#9"},
+				"west": {"uv": [7, 0, 8, 16], "texture": "#8"},
+				"up": {"uv": [0, 15, 8, 16], "rotation": 180, "texture": "#8"}
+			}
+		},
+		{
+			"name": "PoleBase",
+			"from": [4, 1, 4],
+			"to": [12, 3, 12],
+			"rotation": {"angle": 0, "axis": "y", "origin": [4, 1, 4]},
+			"faces": {
+				"north": {"uv": [0, 0, 8, 2], "texture": "#9"},
+				"east": {"uv": [0, 0, 8, 2], "texture": "#9"},
+				"south": {"uv": [0, 0, 8, 2], "texture": "#9"},
+				"west": {"uv": [0, 0, 8, 2], "texture": "#9"},
+				"up": {"uv": [8, 0, 16, 8], "texture": "#8"},
+				"down": {"uv": [8, 0, 16, 8], "texture": "#8"}
+			}
 		}
 	],
 	"display": {
@@ -137,5 +227,21 @@
 			"rotation": [31, -140, 0],
 			"scale": [0.6, 0.6, 0.6]
 		}
-	}
+	},
+	"groups": [
+		0,
+		1,
+		2,
+		3,
+		4,
+		5,
+		6,
+		7,
+		{
+			"name": "pole",
+			"origin": [8, 8, 8],
+			"color": 0,
+			"children": [8, 9, 10, 11, 12, 13, 14]
+		}
+	]
 }

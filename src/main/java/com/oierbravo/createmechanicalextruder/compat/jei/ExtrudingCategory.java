@@ -8,8 +8,7 @@ import com.oierbravo.createmechanicalextruder.components.extruder.recipe.Extrudi
 import com.oierbravo.createmechanicalextruder.foundation.utility.ModLang;
 import com.oierbravo.createmechanicalextruder.register.ModBlocks;
 import com.oierbravo.createmechanicalextruder.register.ModRecipes;
-import com.oierbravo.mechanical_lemon_lib.foundation.recipe.RecipeRequirementsUtils;
-import com.oierbravo.mechanical_lemon_lib.utility.LibLang;
+import com.oierbravo.mechanicals.utility.LibLang;
 import com.simibubi.create.compat.jei.EmptyBackground;
 import com.simibubi.create.compat.jei.ItemIcon;
 import com.simibubi.create.compat.jei.category.CreateRecipeCategory;
@@ -34,7 +33,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.material.Fluid;
@@ -46,7 +44,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class ExtrudingCategory extends CreateRecipeCategory<ExtrudingRecipe> {
@@ -55,14 +52,14 @@ public class ExtrudingCategory extends CreateRecipeCategory<ExtrudingRecipe> {
     private AnimatedExtruder extruder = new AnimatedExtruder();
     public final static ResourceLocation UID = CreateMechanicalExtruder.asResource("extruding");
     public final static RecipeType<ExtrudingRecipe>  TYPE = new mezz.jei.api.recipe.RecipeType<>(UID, ExtrudingRecipe.class);
-    public final static Supplier<List<RecipeHolder<ExtrudingRecipe>>> RECIPE_SUPPLIER = ModRecipes::getAllHolders;
+    //public final static Supplier<List<RecipeHolder<ExtrudingRecipe>>> RECIPE_SUPPLIER = ModRecipes::getAllHolders;
 
     public final static CreateRecipeCategory.Info<ExtrudingRecipe> INFO = new CreateRecipeCategory.Info<>(
             TYPE,
             ModLang.translate("recipe.extruding").component(),
             new EmptyBackground(177, 85),
             new ItemIcon(() -> new ItemStack(ModBlocks.MECHANICAL_EXTRUDER.asItem())),
-            ExtrudingCategory.RECIPE_SUPPLIER,
+            ModRecipes::getAllHolders,
             List.of(ModBlocks.MECHANICAL_EXTRUDER::asStack)
     );
 
@@ -127,12 +124,12 @@ public class ExtrudingCategory extends CreateRecipeCategory<ExtrudingRecipe> {
         int initX = 1;
         int initY = 30;
         int distance = 42;
-        for(int index= 0;index < recipe.getBlockIngredients().size();index++ ){
-            for(int i= 0;i < matchedItemStacks(recipe.getBlockIngredients().get(index)).size();i++ ){
-                builder.addSlot(RecipeIngredientRole.INPUT, initX + distance * slotIndex, initY).setBackground(getRenderedSlot(), -1, -1).addItemStacks(matchedItemStacks(recipe.getBlockIngredients().get(index)));
+        for(int index= 0;index < 2;index++ ){
+            for(int i= 0;i < matchedItemStacks(recipe.getBlockPredicateIngredients().get(index == 0)).size();i++ ){
+                builder.addSlot(RecipeIngredientRole.INPUT, initX + distance * slotIndex, initY).setBackground(getRenderedSlot(), -1, -1).addItemStacks(matchedItemStacks(recipe.getBlockPredicateIngredients().get(index == 0)));
                 slotIndex++;
             }
-            Set<FluidStack> fluidIngredients = matchedFluidStacks(recipe.getBlockIngredients().get(index));
+            Set<FluidStack> fluidIngredients = matchedFluidStacks(recipe.getBlockPredicateIngredients().get(index == 0));
             for(int i= 0;i < fluidIngredients.size();i++ ){
                 builder.addSlot(RecipeIngredientRole.INPUT, initX + distance * slotIndex, initY).setBackground(getRenderedSlot(), -1, -1).addIngredients(NeoForgeTypes.FLUID_STACK,fluidIngredients.stream().toList());
                 slotIndex++;
@@ -141,9 +138,6 @@ public class ExtrudingCategory extends CreateRecipeCategory<ExtrudingRecipe> {
         }
 
         if(recipe.getCatalyst().blocks().isPresent()) {
-            //List<ItemStack> itemStackList = new java.util.ArrayList<>(List.of());
-            //recipe.getCatalyst().blocks().get().unwrap().ifLeft(blockTagKey -> blockTagKey.cast())
-            //recipe.getCatalyst().blocks().get().unwrap().ifRight(holders -> holders.forEach(blockHolder -> itemStackList.add(new ItemStack(blockHolder.value()))));
             builder.addSlot(RecipeIngredientRole.INPUT, 21, 57)
                     .setBackground(getRenderedSlot(), -1, -1)
                     .addItemStacks(matchedItemStacks(recipe.getCatalyst()));
@@ -177,7 +171,7 @@ public class ExtrudingCategory extends CreateRecipeCategory<ExtrudingRecipe> {
         int offsetX = 5;
         int offsetY = 14;
 
-        List<Pair<Component,Component>> requirementComponents = RecipeRequirementsUtils.getRequirementsTooltips(recipe);
+        List<Pair<Component,Component>> requirementComponents = recipe.getRequirementsTooltips();
         for( Pair<Component,Component> pair : requirementComponents){
             int oneLinerLenght = pair.getSecond().getString().length() + pair.getSecond().getString().length();
             if(oneLinerLenght < 19){

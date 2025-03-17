@@ -1,6 +1,7 @@
 package com.oierbravo.createmechanicalextruder.components.extruder;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.oierbravo.createmechanicalextruder.components.extruder.andesite.ExtruderBlock;
 import com.simibubi.create.foundation.blockEntity.behaviour.ValueBoxTransform;
 import dev.engine_room.flywheel.lib.transform.TransformStack;
 import net.createmod.catnip.math.AngleHelper;

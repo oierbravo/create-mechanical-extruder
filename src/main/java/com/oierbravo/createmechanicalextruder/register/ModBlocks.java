@@ -1,7 +1,8 @@
 package com.oierbravo.createmechanicalextruder.register;
 
 import com.oierbravo.createmechanicalextruder.CreateMechanicalExtruder;
-import com.oierbravo.createmechanicalextruder.components.extruder.ExtruderBlock;
+import com.oierbravo.createmechanicalextruder.components.extruder.brass.BrassExtruderBlock;
+import com.oierbravo.createmechanicalextruder.components.extruder.andesite.ExtruderBlock;
 import com.oierbravo.createmechanicalextruder.infrastructure.config.ModStress;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllTags;
@@ -40,6 +41,16 @@ public class ModBlocks {
                     .pattern(" G ")
                     .unlockedBy("has_andesite_casing", RegistrateRecipeProvider.has(AllTags.AllItemTags.CASING.tag))
                     .save(p, CreateMechanicalExtruder.asResource("crafting/" + c.getName())))
+            .item()
+            .transform(customItemModel())
+
+            .register();
+    public static final BlockEntry<BrassExtruderBlock> MECHANICAL_BRASS_EXTRUDER = REGISTRATE.block("mechanical_brass_extruder", BrassExtruderBlock::new)
+            .initialProperties(SharedProperties::stone)
+            .properties(p -> p.mapColor(MapColor.METAL))
+            .transform(pickaxeOnly())
+            .blockstate(BlockStateGen.horizontalBlockProvider(true))
+            .transform(ModStress.setImpact(4.0))
             .item()
             .transform(customItemModel())
 

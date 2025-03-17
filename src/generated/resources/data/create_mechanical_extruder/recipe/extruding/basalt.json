@@ -1,13 +1,13 @@
 {
   "type": "create_mechanical_extruder:extruding",
-  "blockIngredients": [
-    {
+  "blockIngredients": {
+    "first": {
       "blocks": "minecraft:blue_ice"
     },
-    {
+    "second": {
       "blocks": "minecraft:lava"
     }
-  ],
+  },
   "catalyst": {
     "blocks": "minecraft:soul_soil"
   },

@@ -1,17 +1,16 @@
 package com.oierbravo.createmechanicalextruder.components.extruder;
 
 import com.mojang.math.Axis;
-import com.oierbravo.createmechanicalextruder.register.ModPartials;
-import com.simibubi.create.AllPartialModels;
+import com.oierbravo.mechanicals.MechanicalPartials;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntityVisual;
 import com.simibubi.create.content.kinetics.base.RotatingInstance;
 import com.simibubi.create.foundation.render.AllInstanceTypes;
 import dev.engine_room.flywheel.api.instance.Instance;
-import dev.engine_room.flywheel.api.visual.DynamicVisual;
 import dev.engine_room.flywheel.api.visualization.VisualizationContext;
 import dev.engine_room.flywheel.lib.instance.InstanceTypes;
 import dev.engine_room.flywheel.lib.instance.OrientedInstance;
 import dev.engine_room.flywheel.lib.model.Models;
+import dev.engine_room.flywheel.lib.model.baked.PartialModel;
 import dev.engine_room.flywheel.lib.visual.SimpleDynamicVisual;
 import net.createmod.catnip.math.AngleHelper;
 import net.minecraft.core.Direction;
@@ -21,20 +20,20 @@ import java.util.function.Consumer;
 
 import static com.simibubi.create.content.kinetics.base.HorizontalKineticBlock.HORIZONTAL_FACING;
 
-public class ExtruderVisual extends KineticBlockEntityVisual<ExtruderBlockEntity> implements SimpleDynamicVisual {
+public abstract class AbstractExtruderVisual<EX extends AbstractExtruderBlockEntity> extends KineticBlockEntityVisual<EX> implements SimpleDynamicVisual {
     private final OrientedInstance extruderPole;
     protected final RotatingInstance shaft;
     final Direction direction;
     private final Direction opposite;
 
-
-    public ExtruderVisual(VisualizationContext context, ExtruderBlockEntity blockEntity, float partialTick) {
+    protected abstract PartialModel getPoleModel();
+    public AbstractExtruderVisual(VisualizationContext context, EX blockEntity, float partialTick) {
         super(context, blockEntity, partialTick);
         direction = blockState.getValue(HORIZONTAL_FACING);
 
         opposite = direction.getOpposite();
 
-        shaft = instancerProvider().instancer(AllInstanceTypes.ROTATING, Models.partial(AllPartialModels.SHAFT_HALF))
+        shaft = instancerProvider().instancer(AllInstanceTypes.ROTATING, Models.partial(MechanicalPartials.SHAFT_QUARTER))
                 .createInstance();
 
         shaft.setup(blockEntity)
@@ -42,7 +41,7 @@ public class ExtruderVisual extends KineticBlockEntityVisual<ExtruderBlockEntity
                 .rotateToFace(Direction.SOUTH, opposite)
                 .setChanged();
 
-        extruderPole = instancerProvider().instancer(InstanceTypes.ORIENTED, Models.partial(ModPartials.MECHANICAL_EXTRUDER_POLE))
+        extruderPole = instancerProvider().instancer(InstanceTypes.ORIENTED, Models.partial(getPoleModel()))
                 .createInstance();
 
         Quaternionf q = Axis.YP
@@ -71,7 +70,7 @@ public class ExtruderVisual extends KineticBlockEntityVisual<ExtruderBlockEntity
     }
 
     @Override
-    public void beginFrame(DynamicVisual.Context ctx) {
+    public void beginFrame(Context ctx) {
         transformModels(ctx.partialTick());
     }
 

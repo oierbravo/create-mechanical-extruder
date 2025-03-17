@@ -1,16 +1,16 @@
 {
   "type": "create_mechanical_extruder:extruding",
-  "blockIngredients": [
-    {
+  "blockIngredients": {
+    "first": {
       "blocks": "minecraft:water"
     },
-    {
+    "second": {
       "blocks": "minecraft:water"
     }
-  ],
+  },
   "requirements": [
     {
-      "type": "mechanical_lemon_lib:min_y",
+      "type": "mechanicals:min_y",
       "value": 150
     }
   ],

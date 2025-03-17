@@ -1,13 +1,13 @@
 {
   "type": "create_mechanical_extruder:extruding",
-  "blockIngredients": [
-    {
+  "blockIngredients": {
+    "first": {
       "blocks": "minecraft:lava"
     },
-    {
+    "second": {
       "blocks": "create:chocolate"
     }
-  ],
+  },
   "result": {
     "id": "create:scoria"
   }

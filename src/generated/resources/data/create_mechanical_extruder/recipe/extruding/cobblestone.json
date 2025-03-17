@@ -1,13 +1,13 @@
 {
   "type": "create_mechanical_extruder:extruding",
-  "blockIngredients": [
-    {
+  "blockIngredients": {
+    "first": {
       "blocks": "minecraft:water"
     },
-    {
+    "second": {
       "blocks": "minecraft:lava"
     }
-  ],
+  },
   "result": {
     "id": "minecraft:cobblestone"
   }

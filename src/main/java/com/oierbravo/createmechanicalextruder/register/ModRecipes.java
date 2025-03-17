@@ -1,18 +1,18 @@
 package com.oierbravo.createmechanicalextruder.register;
 
 import com.oierbravo.createmechanicalextruder.CreateMechanicalExtruder;
-import com.oierbravo.createmechanicalextruder.components.extruder.ExtruderBlockEntity;
+import com.oierbravo.createmechanicalextruder.components.extruder.AbstractExtruderBlockEntity;
 import com.oierbravo.createmechanicalextruder.components.extruder.recipe.ExtrudingRecipe;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.world.item.crafting.*;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 public class ModRecipes {
@@ -38,27 +38,46 @@ public class ModRecipes {
         RECIPE_TYPES.register(eventBus);
 
     }
-    public static Optional<RecipeHolder<ExtrudingRecipe>> find(SingleRecipeInput pInput, Level pLevel) {
+    /*public static Optional<RecipeHolder<ExtrudingRecipe>> find(SingleRecipeInput pInput, Level pLevel) {
         if(pLevel.isClientSide())
             return Optional.empty();
         return pLevel.getRecipeManager().getRecipeFor(ModRecipes.EXTRUDING_TYPE.get() ,pInput,pLevel);
-    }
-    public static Optional<RecipeHolder<ExtrudingRecipe>> findExtruding(ExtruderBlockEntity extruder, Level level){
+    }*/
+    /*ublic static <EXB extends AbstractExtruderBlockEntity> List<RecipeHolder<ExtrudingRecipe>> findMatchingIngredientExtruding(EXB extruder){
+        Level level = extruder.getLevel();
+        assert level != null;
         if(level.isClientSide())
-            return Optional.empty();
-
+            return List.of();
         return level.getRecipeManager().getAllRecipesFor(ExtrudingRecipe.Type.INSTANCE)
                 .stream()
-                    .filter(extruder::matchIngredients)
-                    .sorted(Comparator.comparing(ExtrudingRecipe::hasCatalyst,Comparator.reverseOrder()))
-                    .findFirst();
+                .filter(extruder::matchIngredients).toList();
+    }*//*ublic static <EXB extends AbstractExtruderBlockEntity> List<RecipeHolder<ExtrudingRecipe>> findMatchingIngredientExtruding(EXB extruder){
+        Level level = extruder.getLevel();
+        assert level != null;
+        if(level.isClientSide())
+            return List.of();
+        return level.getRecipeManager().getAllRecipesFor(ExtrudingRecipe.Type.INSTANCE)
+                .stream()
+                .filter(extruder::matchIngredients).toList();
+    }*/
+
+
+    public static <EXB extends AbstractExtruderBlockEntity> List<ExtrudingRecipe> findRecipesWithMatchingIngredients(EXB extruder){
+        if(Objects.requireNonNull(extruder.getLevel()).isClientSide())
+            return List.of();
+
+        return extruder.getLevel().getRecipeManager().getAllRecipesFor(ExtrudingRecipe.Type.INSTANCE)
+                .stream()
+                    .filter(extruder::matchesIngredients)
+                    .map(RecipeHolder::value)
+                    //.sorted(Comparator.comparing(ExtrudingRecipe::hasCatalyst,Comparator.reverseOrder()))
+                    .toList();
 
     }
 
     public static List<RecipeHolder<ExtrudingRecipe>> getAllHolders() {
-        RecipeManager rm = Minecraft.getInstance()
-                .getConnection()
-                .getRecipeManager();
-        return rm.getAllRecipesFor(ExtrudingRecipe.Type.INSTANCE);
+        return Objects.requireNonNull(Minecraft.getInstance().getConnection())
+                .getRecipeManager()
+                .getAllRecipesFor(ExtrudingRecipe.Type.INSTANCE);
     }
 }

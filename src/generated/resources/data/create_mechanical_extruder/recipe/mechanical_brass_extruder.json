@@ -1,0 +1,29 @@
+{
+  "type": "create:mechanical_crafting",
+  "accept_mirrored": true,
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "create:brass_casing"
+    },
+    "G": {
+      "item": "create:metal_girder"
+    },
+    "P": {
+      "tag": "c:plates/brass"
+    },
+    "T": {
+      "item": "create:framed_glass_trapdoor"
+    }
+  },
+  "pattern": [
+    " G ",
+    "PGP",
+    "TCT",
+    "PTP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "create_mechanical_extruder:mechanical_brass_extruder"
+  }
+}

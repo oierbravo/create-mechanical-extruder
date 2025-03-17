@@ -3,7 +3,7 @@
 	"textures": {
 		"2": "create:block/andesite_casing",
 		"3": "create_mechanical_extruder:block/andesite_tunnel_top_window",
-		"5": "create:block/funnel_closed",
+		"5": "create:block/funnel/funnel_closed",
 		"7": "create:block/gearbox",
 		"particle": "create:block/andesite_casing",
 		"top": "create_mechanical_extruder:block/extruder_top"

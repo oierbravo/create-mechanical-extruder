@@ -1,9 +1,12 @@
-// 1.21.1	2025-03-08T21:12:53.393851676	Registrate Provider for create_mechanical_extruder [Registries, Data Maps, Recipes, Advancements, Loot Tables, Tags (enchantments), Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), generic_server_provider, Blockstates, Item models, Lang (en_us/en_ud), generic_client_provider]
+// 1.21.1	2025-03-16T05:50:42.742815136	Registrate Provider for create_mechanical_extruder [Registries, Data Maps, Recipes, Advancements, Loot Tables, Tags (enchantments), Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), generic_server_provider, Blockstates, Item models, Lang (en_us/en_ud), generic_client_provider]
+90afd59cb7cfdee4902cbd8022178d45f323487f assets/create_mechanical_extruder/blockstates/mechanical_brass_extruder.json
 f34bf825d2e5cb5deb151c503f031e4d924a3007 assets/create_mechanical_extruder/blockstates/mechanical_extruder.json
-06141ac7455dc588d4199983760fb89636a5b8d6 assets/create_mechanical_extruder/lang/en_ud.json
-90911d358c355ed632cf28b9a772943d74c4064a assets/create_mechanical_extruder/lang/en_us.json
+41a64a7c545893fd8dd48e6b821dac5dc8e80cc6 assets/create_mechanical_extruder/lang/en_ud.json
+c104abf5faf57b0196104dbed882fd322050d3ce assets/create_mechanical_extruder/lang/en_us.json
+31c9162b2403e30cde754fe5050cd259996f5e15 assets/create_mechanical_extruder/models/item/mechanical_brass_extruder.json
 5042d1ae35c8c621d51a095b7f79b73a38945048 assets/create_mechanical_extruder/models/item/mechanical_extruder.json
 09db30b395179886ccbbae9e7e6b3ccc6ebac1fc data/create_mechanical_extruder/advancement/recipes/misc/crafting/mechanical_extruder.json
+9bb6a2c698a54a77c4959785f7be1325a8c9c1ea data/create_mechanical_extruder/loot_table/blocks/mechanical_brass_extruder.json
 1c1062533a55b4dd96feb9823aea0b6a7d4f7d12 data/create_mechanical_extruder/loot_table/blocks/mechanical_extruder.json
 70b9a4376d90908d128422862a32d0bc980775bb data/create_mechanical_extruder/recipe/crafting/mechanical_extruder.json
-01043f26fdfc54cc082d2663dd6ce80b2cc482c0 data/minecraft/tags/block/mineable/pickaxe.json
+4cd9cde5983d2a214c86de3f158daf32954d02dc data/minecraft/tags/block/mineable/pickaxe.json

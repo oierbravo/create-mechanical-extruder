@@ -1,16 +1,16 @@
 {
   "type": "create_mechanical_extruder:extruding",
-  "blockIngredients": [
-    {
+  "blockIngredients": {
+    "first": {
       "blocks": "minecraft:blue_ice"
     },
-    {
+    "second": {
       "blocks": "minecraft:lava"
     }
-  ],
+  },
   "requirements": [
     {
-      "type": "mechanical_lemon_lib:biome_tag",
+      "type": "mechanicals:biome_tag",
       "value": "minecraft:is_nether"
     }
   ],

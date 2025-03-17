@@ -1,5 +1,6 @@
 {
   "values": [
-    "create_mechanical_extruder:mechanical_extruder"
+    "create_mechanical_extruder:mechanical_extruder",
+    "create_mechanical_extruder:mechanical_brass_extruder"
   ]
 }

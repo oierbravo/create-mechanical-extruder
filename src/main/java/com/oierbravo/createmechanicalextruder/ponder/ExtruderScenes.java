@@ -1,6 +1,6 @@
 package com.oierbravo.createmechanicalextruder.ponder;
 
-import com.oierbravo.createmechanicalextruder.components.extruder.ExtruderBlockEntity;
+import com.oierbravo.createmechanicalextruder.components.extruder.andesite.ExtruderBlockEntity;
 import com.simibubi.create.foundation.ponder.CreateSceneBuilder;
 import net.createmod.catnip.math.Pointing;
 import net.createmod.ponder.api.PonderPalette;

@@ -3,35 +3,30 @@ package com.oierbravo.createmechanicalextruder.components.extruder;
 import com.oierbravo.createmechanicalextruder.components.extruder.recipe.ExtrudingRecipe;
 import com.oierbravo.createmechanicalextruder.foundation.utility.ModLang;
 import com.oierbravo.createmechanicalextruder.infrastructure.config.ModConfigs;
-import com.oierbravo.createmechanicalextruder.register.ModBlockEntities;
 import com.oierbravo.createmechanicalextruder.register.ModRecipes;
-import com.oierbravo.mechanical_lemon_lib.foundation.blockEntity.behaviour.CycleBehavior;
-import com.oierbravo.mechanical_lemon_lib.foundation.blockEntity.behaviour.RecipeRequirementsBehaviour;
-import com.oierbravo.mechanical_lemon_lib.register.MechanicalLemonRecipeRequirementTypes;
+import com.oierbravo.mechanicals.foundation.blockEntity.behaviour.CycleBehavior;
+import com.oierbravo.mechanicals.foundation.blockEntity.behaviour.RecipeRequirementsBehaviour;
+import com.oierbravo.mechanicals.register.MechanicalRecipeRequirementTypes;
 import com.simibubi.create.AllSoundEvents;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.ValueBoxTransform;
 import com.simibubi.create.foundation.blockEntity.behaviour.filtering.FilteringBehaviour;
+import net.createmod.catnip.data.Couple;
 import net.createmod.catnip.math.VecHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.pattern.BlockInWorld;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
@@ -43,7 +38,7 @@ import java.util.Optional;
 
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING;
 
-public class ExtruderBlockEntity extends KineticBlockEntity implements CycleBehavior.CycleBehaviourSpecifics, RecipeRequirementsBehaviour.RecipeRequirementsSpecifics<ExtrudingRecipe> {
+public abstract class AbstractExtruderBlockEntity extends KineticBlockEntity implements CycleBehavior.CycleBehaviourSpecifics, RecipeRequirementsBehaviour.RecipeRequirementsSpecifics<ExtrudingRecipe> {
 
     //public ItemStackHandler outputInventory;
     public Lazy<IItemHandler> capability;
@@ -53,41 +48,44 @@ public class ExtruderBlockEntity extends KineticBlockEntity implements CycleBeha
     public RecipeRequirementsBehaviour<ExtrudingRecipe> recipeRequirementsBehaviour;
     public float headOffset = 0.44f;
 
-    private BlockInWorld catalystBlock;
-
     public final ItemStackHandler outputInventory = new ItemStackHandler(1) {
+        @Override
+        public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+           return stack;
+        }
+
         @Override
         protected void onContentsChanged(int slot) {
             setChanged();
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
         }
     };
-    public ExtruderBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+    public AbstractExtruderBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
 
-        //outputInventory = new ItemStackHandler(1);
-        //capability = Lazy.of(outputInventory);
-        catalystBlock = getCatalystBlock();
     }
 
-    private @Nullable IItemHandler getItemHandler() {
+    public @Nullable IItemHandler getItemHandler() {
         return outputInventory;
     }
-    public static void registerCapabilities(RegisterCapabilitiesEvent event) {
+
+    /*public static void registerCapabilities(RegisterCapabilitiesEvent event) {
         event.registerBlockEntity(
                 Capabilities.ItemHandler.BLOCK,
                 ModBlockEntities.MECHANICAL_EXTRUDER.get(),
                 (be, context) -> be.getItemHandler()
         );
 
-    }
+    }*/
     @Override
     public boolean isSpeedRequirementFulfilled() {
         Optional<ExtrudingRecipe> recipe = getRecipe();
         if(recipe.isEmpty())
             return super.isSpeedRequirementFulfilled();
-        if(recipe.get().getRequirement(MechanicalLemonRecipeRequirementTypes.SPEED.get()).isPresent())
-            return recipe.get().getRequirement(MechanicalLemonRecipeRequirementTypes.SPEED.get()).get().test(level, this);
+        if(recipe.get().getRequirement(MechanicalRecipeRequirementTypes.MIN_SPEED.get()).isPresent())
+            return recipe.get().getRequirement(MechanicalRecipeRequirementTypes.MIN_SPEED.get()).get().test(level, this);
+        if(recipe.get().getRequirement(MechanicalRecipeRequirementTypes.MAX_SPEED.get()).isPresent())
+            return recipe.get().getRequirement(MechanicalRecipeRequirementTypes.MAX_SPEED.get()).get().test(level, this);
         return super.isSpeedRequirementFulfilled();
     }
 
@@ -106,7 +104,6 @@ public class ExtruderBlockEntity extends KineticBlockEntity implements CycleBeha
 
         recipeRequirementsBehaviour = new RecipeRequirementsBehaviour<ExtrudingRecipe>(this);
         behaviours.add(recipeRequirementsBehaviour);
-
 
     }
     public CycleBehavior getExtrudingBehaviour() {
@@ -134,18 +131,23 @@ public class ExtruderBlockEntity extends KineticBlockEntity implements CycleBeha
     @Override
     public boolean tryProcess(boolean simulate) {
         Optional<ExtrudingRecipe> recipe = getRecipe();
+        if(recipe.isEmpty()){
+            recipeRequirementsBehaviour.cleanRequirements();
+            return false;
+        }
+        ExtrudingRecipe extrudingRecipe = recipe.get();
 
-        if(!recipeRequirementsBehaviour.checkRequirements(recipe, level, this))
+        if(!recipeRequirementsBehaviour.checkRequirements(extrudingRecipe))
             return false;
 
         if(simulate)
             return true;
 
-        ItemStack output = recipe.get().getResult().rollOutput();
+        ItemStack output = extrudingRecipe.getResult().rollOutput();
         if(outputInventory.getStackInSlot(0).isEmpty()){
 
             outputInventory.setStackInSlot(0, output);
-        } else if(outputInventory.getStackInSlot(0).is(recipe.get().getResult().getStack().getItem())) {
+        } else if(outputInventory.getStackInSlot(0).is(extrudingRecipe.getResult().getStack().getItem())) {
             outputInventory.getStackInSlot(0).grow(output.getCount());
         }
         return true;
@@ -174,9 +176,19 @@ public class ExtruderBlockEntity extends KineticBlockEntity implements CycleBeha
     }
 
     public Optional<ExtrudingRecipe> getRecipe() {
-        if(ModRecipes.findExtruding(this, level).isPresent())
+        List<ExtrudingRecipe> matchingRecipes = ModRecipes.findRecipesWithMatchingIngredients(this);
+        if(matchingRecipes.isEmpty())
+            return Optional.empty();
+
+        List<ExtrudingRecipe> matchingRequirementRecipes =  matchingRecipes.stream()
+                .filter(extrudingRecipe -> extrudingRecipe.meetsRequirements(this)).toList();
+
+        if(!matchingRequirementRecipes.isEmpty())
+            return matchingRequirementRecipes.stream().findFirst();
+        return matchingRecipes.stream().findAny();
+        /*if(matchingRecipes.isPresent())
             return Optional.of(ModRecipes.findExtruding(this, level).get().value());
-        return Optional.empty();
+        return Optional.empty();*/
     }
 
 
@@ -218,7 +230,6 @@ public class ExtruderBlockEntity extends KineticBlockEntity implements CycleBeha
             added = true;
         }
 
-
         boolean addedRequirements = recipeRequirementsBehaviour.addToGoggleTooltip(tooltip, isPlayerSneaking, added);
         if(addedRequirements)
             added = true;
@@ -238,74 +249,26 @@ public class ExtruderBlockEntity extends KineticBlockEntity implements CycleBeha
                     Direction.WEST, Direction.SOUTH,
                     Direction.EAST, Direction.NORTH
             );
-    public Block getLeftBlock(){
-        BlockPos currentPos = this.getBlockPos();
-        Direction localDir = this.getBlockState().getValue(HORIZONTAL_FACING);
-        return this.level.getBlockState(currentPos.relative(directionLefttBlockMap.get(localDir))).getBlock();
-    }
-    private Block getRightBlock(){
-        BlockPos currentPos = this.getBlockPos();
-        Direction localDir = this.getBlockState().getValue(HORIZONTAL_FACING);
-        return this.level.getBlockState(currentPos.relative(directionRightBlockMap.get(localDir))).getBlock();
-    }
+
     public BlockInWorld getLeftBlockInWorld(){
         BlockPos currentPos = this.getBlockPos();
         Direction localDir = this.getBlockState().getValue(HORIZONTAL_FACING);
+        assert this.level != null;
         return new BlockInWorld(this.level,currentPos.relative(directionLefttBlockMap.get(localDir)), false);
-
     }
     private BlockInWorld getRightBlockInWorld(){
         BlockPos currentPos = this.getBlockPos();
         Direction localDir = this.getBlockState().getValue(HORIZONTAL_FACING);
+        assert this.level != null;
         return new BlockInWorld(this.level,currentPos.relative(directionRightBlockMap.get(localDir)), false);
     }
-    private Block getBelowBlock(){
-        BlockPos currentPos = this.getBlockPos();
-        return this.level.getBlockState(currentPos.below()).getBlock();
-    }
 
-    public NonNullList<Ingredient> getItemIngredients() {
-        NonNullList<Ingredient> itemIngredients = NonNullList.create();
-        Block leftBlock = getLeftBlock();
-        Block rightBlock = getRightBlock();
-
-        if(!(leftBlock instanceof LiquidBlock)){
-            itemIngredients.add( Ingredient.of(leftBlock.asItem()));
-        }
-        if(!(rightBlock instanceof LiquidBlock)){
-            itemIngredients.add( Ingredient.of(rightBlock.asItem()));
-        }
-
-        return itemIngredients;
-    }
-
-    /*public NonNullList<FluidIngredient> getFluidIngredients() {
-        NonNullList<FluidIngredient> fluidIngredients = NonNullList.create();
-        Block leftBlock = getLeftBlock();
-        Block rightBlock = getRightBlock();
-
-        if(leftBlock instanceof LiquidBlock){
-            fluidIngredients.add( FluidIngredient.fromFluid(((LiquidBlock) leftBlock).fluid,1000 ));
-        }
-        if(rightBlock instanceof LiquidBlock){
-            fluidIngredients.add( FluidIngredient.fromFluid(((LiquidBlock) rightBlock).fluid,1000 ));
-        }
-
-        return fluidIngredients;
-    }*/
 
     public BlockInWorld getCatalystBlock() {
         assert this.level != null;
         return new BlockInWorld(this.level,this.getBlockPos().below(), false);
     }
 
-    /*public List<String> getAllIngredientsStringList() {
-        List<String> list = new ArrayList<>();
-        getItemIngredients().forEach(ingredient -> list.add((!ingredient.isEmpty()) ? ingredient.getItems()[0].getItem().toString() : ItemStack.EMPTY.toString()));
-        getFluidIngredients().forEach(ingredient -> list.add(ingredient.getMatchingFluidStacks().get(0).getFluid().getFluidType().getDescriptionId()));
-        Collections.sort(list);
-        return list;
-    }*/
 
     @Override
     public boolean hasEnoughOutputSpace() {
@@ -319,51 +282,26 @@ public class ExtruderBlockEntity extends KineticBlockEntity implements CycleBeha
     }
 
     @Override
-    public boolean matchIngredients(ExtrudingRecipe extrudingRecipe) {
-        return ExtrudingRecipe.match( this, extrudingRecipe);
+    public boolean matchesIngredients(ExtrudingRecipe extrudingRecipe) {
+        return extrudingRecipe.match( this);
     }
 
-    public boolean matchIngredients(RecipeHolder<ExtrudingRecipe> extrudingRecipeRecipeHolder) {
-        return ExtrudingRecipe.match( this, extrudingRecipeRecipeHolder.value());
+    public boolean matchesIngredients(RecipeHolder<ExtrudingRecipe> extrudingRecipeRecipeHolder) {
+        return matchesIngredients(extrudingRecipeRecipeHolder.value());
+    }
+    public boolean matchRequirements(RecipeHolder<ExtrudingRecipe> extrudingRecipeRecipeHolder) {
+        return extrudingRecipeRecipeHolder.value().meetsRequirements(this);
     }
 
-    public void checkBlocks() {
-        catalystBlock = getCatalystBlock();
-    }
 
-    public List<BlockInWorld> getSideBlocks() {
-        return List.of(
+    public Couple<BlockInWorld> getSideBlocks() {
+        return Couple.create(
                 this.getLeftBlockInWorld(),
                 this.getRightBlockInWorld()
         );
     }
 
-    /*private class ExtruderInventoryHandler extends CombinedInvWrapper {
 
-        public ExtruderInventoryHandler() {
-            super(outputInventory);
-        }
-
-        @Override
-        public boolean isItemValid(int slot, ItemStack stack) {
-            if (outputInventory == getHandlerFromIndex(getIndexForSlot(slot)))
-                return false;
-            return super.isItemValid(slot, stack);
-        }
-
-        @Override
-        public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate) {
-            notifyUpdate();
-            return super.extractItem(slot, amount, simulate);
-        }
-
-        @Override
-        public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-            return stack;
-        }
-
-
-    }*/
     class ExtruderValueBox extends ValueBoxTransform.Sided {
 
         @Override

@@ -3,11 +3,11 @@ package com.oierbravo.createmechanicalextruder.components.extruder;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.oierbravo.createmechanicalextruder.register.ModPartials;
-import com.oierbravo.mechanical_lemon_lib.foundation.blockEntity.behaviour.CycleBehavior;
 import com.simibubi.create.AllPartialModels;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntityRenderer;
 import com.simibubi.create.foundation.blockEntity.behaviour.filtering.FilteringRenderer;
 import dev.engine_room.flywheel.api.visualization.VisualizationManager;
+import dev.engine_room.flywheel.lib.model.baked.PartialModel;
 import net.createmod.catnip.render.CachedBuffers;
 import net.createmod.catnip.render.SuperByteBuffer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -17,16 +17,18 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING;
 
-public class ExtruderRenderer extends KineticBlockEntityRenderer<ExtruderBlockEntity> {
-    public ExtruderRenderer(BlockEntityRendererProvider.Context context) {
+public abstract class AbstractExtruderRenderer<EXB extends AbstractExtruderBlockEntity> extends KineticBlockEntityRenderer<EXB> {
+    public AbstractExtruderRenderer(BlockEntityRendererProvider.Context context) {
         super(context);
     }
+    protected abstract PartialModel getPoleModel();
+
     @Override
-    public boolean shouldRenderOffScreen(ExtruderBlockEntity be) {
+    public boolean shouldRenderOffScreen(EXB be) {
         return true;
     }
     @Override
-    protected void renderSafe(ExtruderBlockEntity be, float partialTicks, PoseStack ms, MultiBufferSource buffer,
+    protected void renderSafe(EXB be, float partialTicks, PoseStack ms, MultiBufferSource buffer,
                               int light, int overlay) {
 
         FilteringRenderer.renderOnBlockEntity(be, partialTicks, ms, buffer, light, overlay);
@@ -38,9 +40,6 @@ public class ExtruderRenderer extends KineticBlockEntityRenderer<ExtruderBlockEn
 
         BlockState blockState = be.getBlockState();
 
-
-
-        CycleBehavior extrudingBehaviour = be.getExtrudingBehaviour();
         float renderedHeadOffset =
                 be.getRenderedPoleOffset(partialTicks);
 
@@ -54,7 +53,7 @@ public class ExtruderRenderer extends KineticBlockEntityRenderer<ExtruderBlockEn
         standardKineticRotationTransform(superBuffer, be, light).renderInto(ms, vb);
     }
    @Override
-   protected SuperByteBuffer getRotatedModel(ExtruderBlockEntity be, BlockState state) {
+   protected SuperByteBuffer getRotatedModel(EXB be, BlockState state) {
        return CachedBuffers.partial(AllPartialModels.SHAFT_HALF, state);
    }
 }

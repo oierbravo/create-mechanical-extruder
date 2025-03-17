@@ -1,21 +1,21 @@
 {
   "type": "create_mechanical_extruder:extruding",
-  "blockIngredients": [
-    {
+  "blockIngredients": {
+    "first": {
       "blocks": "minecraft:water"
     },
-    {
+    "second": {
       "blocks": "minecraft:lava"
     }
-  ],
+  },
   "requirements": [
     {
-      "type": "mechanical_lemon_lib:max_y",
+      "type": "mechanicals:max_y",
       "value": 0
     },
     {
-      "type": "mechanical_lemon_lib:min_speed",
-      "value": 128.0
+      "type": "mechanicals:max_speed",
+      "value": 32.0
     }
   ],
   "result": {

@@ -1,6 +1,5 @@
 package com.oierbravo.createmechanicalextruder.components.extruder;
 
-import com.oierbravo.createmechanicalextruder.register.ModBlockEntities;
 import com.oierbravo.createmechanicalextruder.register.ModShapes;
 import com.simibubi.create.AllShapes;
 import com.simibubi.create.content.kinetics.base.HorizontalKineticBlock;
@@ -16,7 +15,7 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -25,16 +24,12 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.NotNull;
 
-public class ExtruderBlock extends HorizontalKineticBlock implements IBE<ExtruderBlockEntity> {
-    public ExtruderBlock(Properties properties) {
+public abstract class AbstractExtruderBlock<EX extends BlockEntity> extends HorizontalKineticBlock implements IBE<EX> {
+    public AbstractExtruderBlock(Properties properties) {
         super(properties);
     }
-
-    @Override
-    public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor) {
-        super.onNeighborChange(state, level, pos, neighbor);
-            withBlockEntityDo(level, pos, ExtruderBlockEntity::checkBlocks);
-    }
+    protected abstract IItemHandlerModifiable getOutputInventory(EX extruder);
+    protected abstract void sendDataInternal(EX extruder);
     @Override
     protected @NotNull ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         if (!stack.isEmpty())
@@ -43,7 +38,7 @@ public class ExtruderBlock extends HorizontalKineticBlock implements IBE<Extrude
             return ItemInteractionResult.SUCCESS;
 
         withBlockEntityDo(level, pos, extruder -> {
-            IItemHandlerModifiable inv = extruder.outputInventory;
+            IItemHandlerModifiable inv = getOutputInventory(extruder);
             for (int slot = 0; slot < inv.getSlots(); slot++) {
                 ItemStack stackInSlot = inv.getStackInSlot(slot);
                 player.getInventory()
@@ -52,7 +47,7 @@ public class ExtruderBlock extends HorizontalKineticBlock implements IBE<Extrude
             }
 
             extruder.setChanged();
-            extruder.sendData();
+            sendDataInternal(extruder);
         });
 
         return ItemInteractionResult.SUCCESS;
@@ -88,7 +83,7 @@ public class ExtruderBlock extends HorizontalKineticBlock implements IBE<Extrude
     public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
         if (state.hasBlockEntity() && state.getBlock() != newState.getBlock()) {
             withBlockEntityDo(worldIn, pos, te -> {
-                ItemHelper.dropContents(worldIn, pos, te.outputInventory);
+                ItemHelper.dropContents(worldIn, pos, getOutputInventory(te));
             });
 
             worldIn.removeBlockEntity(pos);
@@ -100,15 +95,4 @@ public class ExtruderBlock extends HorizontalKineticBlock implements IBE<Extrude
         return state.getValue(HORIZONTAL_FACING)
                 .getAxis();
     }
-
-    @Override
-    public Class<ExtruderBlockEntity> getBlockEntityClass() {
-        return ExtruderBlockEntity.class;
-    }
-
-    @Override
-    public BlockEntityType<? extends ExtruderBlockEntity> getBlockEntityType() {
-        return ModBlockEntities.MECHANICAL_EXTRUDER.get();
-    }
-
 }

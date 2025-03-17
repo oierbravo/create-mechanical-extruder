@@ -157,7 +157,7 @@ repositories {
 dependencies {
     implementation 'org.jetbrains:annotations:22.0.0'
 
-    jarJar(implementation("com.oierbravo.mechanical_lemon_lib:MechanicalLemonLib:${mechanical_lemon_lib_version}"))
+    jarJar(implementation("com.oierbravo.mechanicals:Mechanicals:${mechanicals}"))
 
     implementation("com.simibubi.create:create-${minecraft_version}:${create_version}:slim") { transitive = false }
     implementation("net.createmod.ponder:Ponder-NeoForge-${minecraft_version}:${ponder_version}")

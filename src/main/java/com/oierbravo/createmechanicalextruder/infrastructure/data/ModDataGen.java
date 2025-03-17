@@ -1,7 +1,6 @@
 package com.oierbravo.createmechanicalextruder.infrastructure.data;
 
 import com.oierbravo.createmechanicalextruder.CreateMechanicalExtruder;
-import com.oierbravo.createmechanicalextruder.foundation.data.ExtrudingRecipeGen;
 import com.tterrag.registrate.providers.RegistrateDataProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
@@ -20,6 +19,7 @@ public class ModDataGen {
 
         if (event.includeServer()) {
             generator.addProvider(true, new ExtrudingRecipeGen(output, lookupProvider));
+            generator.addProvider(true, new CraftingRecipeGen(output, lookupProvider));
         }
         event.getGenerator().addProvider(true, CreateMechanicalExtruder.registrate().setDataProvider(new RegistrateDataProvider(CreateMechanicalExtruder.registrate(), CreateMechanicalExtruder.MODID, event)));
 

@@ -1,6 +1,7 @@
 package com.oierbravo.createmechanicalextruder;
 
-import com.oierbravo.createmechanicalextruder.components.extruder.ExtruderBlockEntity;
+import com.oierbravo.createmechanicalextruder.components.extruder.brass.BrassExtruderBlockEntity;
+import com.oierbravo.createmechanicalextruder.components.extruder.andesite.ExtruderBlockEntity;
 import com.oierbravo.createmechanicalextruder.infrastructure.config.ModConfigs;
 import com.oierbravo.createmechanicalextruder.infrastructure.data.ModDataGen;
 import com.oierbravo.createmechanicalextruder.ponder.ModPonderPlugin;
@@ -8,7 +9,7 @@ import com.oierbravo.createmechanicalextruder.register.ModBlockEntities;
 import com.oierbravo.createmechanicalextruder.register.ModBlocks;
 import com.oierbravo.createmechanicalextruder.register.ModPartials;
 import com.oierbravo.createmechanicalextruder.register.ModRecipes;
-import com.oierbravo.mechanical_lemon_lib.register.LemonCreativeModeTabs;
+import com.oierbravo.mechanicals.register.MechanicalCreativeModeTabs;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.item.ItemDescription;
 import com.simibubi.create.foundation.item.KineticStats;
@@ -36,7 +37,8 @@ public class CreateMechanicalExtruder
     private static final Logger LOGGER = LogManager.getLogger(MODID);
     public static IEventBus modEventBus;
 
-    public static final CreateRegistrate REGISTRATE = CreateRegistrate.create(MODID).defaultCreativeTab(LemonCreativeModeTabs.MAIN_TAB.getKey());
+    public static final CreateRegistrate REGISTRATE =
+            CreateRegistrate.create(MODID).defaultCreativeTab(MechanicalCreativeModeTabs.MAIN_TAB.getKey());
 
     static {
         REGISTRATE.setTooltipModifierFactory(item ->
@@ -66,6 +68,7 @@ public class CreateMechanicalExtruder
     @net.neoforged.bus.api.SubscribeEvent
     public void registerCapabilities(net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent event) {
         ExtruderBlockEntity.registerCapabilities(event);
+        BrassExtruderBlockEntity.registerCapabilities(event);
     }
     private void doClientStuff(final FMLClientSetupEvent event) {
         ModPartials.init();
@@ -74,6 +77,7 @@ public class CreateMechanicalExtruder
         RenderType cutout = RenderType.cutoutMipped();
 
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.MECHANICAL_EXTRUDER.get(), cutout);
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.MECHANICAL_BRASS_EXTRUDER.get(), cutout);
     }
     private void generateLangEntries(){
         registrate().addRawLang("create_mechanical_extruder.recipe.extruding", "Extruding recipe");
@@ -86,18 +90,6 @@ public class CreateMechanicalExtruder
         registrate().addRawLang("create_mechanical_extruder.ponder.extruder.text_3", "When the process is done, the result can be obtained via Right-click");
         registrate().addRawLang("create_mechanical_extruder.ponder.extruder.text_4", "The outputs can also be extracted by automation");
         registrate().addRawLang("create_mechanical_extruder.ponder.extruder.text_5", "When a conbination of ingredient has multiple possible outcomes, the filter slot can specify it");
-
-        registrate().addRawLang("create_mechanical_extruder.goggles.recipe_requirement.ingredients", "Missing ingredients");
-        registrate().addRawLang("create_mechanical_extruder.goggles.recipe_requirement.output", "Output full or incompatible");
-        registrate().addRawLang("create_mechanical_extruder.goggles.recipe_requirement.biome", "Incorrect biome");
-        registrate().addRawLang("create_mechanical_extruder.goggles.recipe_requirement.min_height", "Too low");
-        registrate().addRawLang("create_mechanical_extruder.goggles.recipe_requirement.max_height", "Too high");
-        registrate().addRawLang("create_mechanical_extruder.goggles.recipe_requirement.min_speed", "Not enough speed");
-
-        registrate().addRawLang("create_mechanical_extruder.ui.recipe_requirement.min_height", "Min Y: %s");
-        registrate().addRawLang("create_mechanical_extruder.ui.recipe_requirement.max_height", "Max Y: %s");
-        registrate().addRawLang("create_mechanical_extruder.ui.recipe_requirement.min_speed", "Min Speed: %s");
-
 
     }
     public static CreateRegistrate registrate() {

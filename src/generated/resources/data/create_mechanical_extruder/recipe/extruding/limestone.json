@@ -1,13 +1,13 @@
 {
   "type": "create_mechanical_extruder:extruding",
-  "blockIngredients": [
-    {
+  "blockIngredients": {
+    "first": {
       "blocks": "create:honey"
     },
-    {
+    "second": {
       "blocks": "minecraft:lava"
     }
-  ],
+  },
   "result": {
     "id": "create:limestone"
   }
