@@ -55,7 +55,6 @@ public class ExtrudingCategory extends CreateRecipeCategory<ExtrudingRecipe> {
 
     public final static ResourceLocation UID = CreateMechanicalExtruder.asResource("extruding");
     public final static RecipeType<ExtrudingRecipe>  TYPE = new mezz.jei.api.recipe.RecipeType<>(UID, ExtrudingRecipe.class);
-    //public final static Supplier<List<RecipeHolder<ExtrudingRecipe>>> RECIPE_SUPPLIER = ModRecipes::getAllHolders;
 
     public final static CreateRecipeCategory.Info<ExtrudingRecipe> INFO = new CreateRecipeCategory.Info<>(
             TYPE,
@@ -170,16 +169,26 @@ public class ExtrudingCategory extends CreateRecipeCategory<ExtrudingRecipe> {
     }
 
     protected void drawRequirements(ExtrudingRecipe recipe, GuiGraphics guiGraphics, int x, int y){
-        if(recipe.getRecipeRequirements().isEmpty())
-            return;
         Minecraft minecraft = Minecraft.getInstance();
         Font fontRenderer = minecraft.font;
-        guiGraphics.drawString(fontRenderer, LibLang.translate("ui.recipe.requirements.title").component().withStyle(), x, y, 0xFFFFFFFF, true);
-
         int index = 0;
         int distance = 9;
         int offsetX = 5;
         int offsetY = 14;
+
+        guiGraphics.drawString(fontRenderer, LibLang.translate("ui.recipe.requirements.title").component().withStyle(), x, y, 0xFFFFFFFF, true);
+
+
+
+        if(recipe.getRecipeRequirements().isEmpty() && !recipe.isAdvanced()){
+            guiGraphics.drawString(fontRenderer, LibLang.translate("ui.recipe_requirement.none.tooltip").component().withStyle(),x + offsetX, y + offsetY + distance * index, 0xFF808080, false);
+            return;
+        }
+
+        if(recipe.isAdvanced()){
+            guiGraphics.drawString(fontRenderer, ModLang.translate("ui.recipe_requirement.advanced.title").component(), x + offsetX, y + offsetY + distance * index, 0xFF808080, false);
+            index++;
+        }
 
         List<Pair<Component,Component>> requirementComponents = recipe.getRequirementsTooltips();
         for( Pair<Component,Component> pair : requirementComponents){

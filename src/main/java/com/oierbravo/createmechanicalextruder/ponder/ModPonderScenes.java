@@ -13,6 +13,8 @@ public class ModPonderScenes {
 
         HELPER.forComponents(ModBlocks.MECHANICAL_EXTRUDER)
                 .addStoryBoard("mechanical_extruder_basic", ExtruderScenes::extruderBasic);
+        HELPER.forComponents(ModBlocks.MECHANICAL_BRASS_EXTRUDER)
+                .addStoryBoard("mechanical_extruder_basic", ExtruderScenes::extruderBasic);
 
     }
 }

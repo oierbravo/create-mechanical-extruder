@@ -9,5 +9,6 @@
   "create_mechanical_extruder.ponder.extruder.text_4": "The outputs can also be extracted by automation",
   "create_mechanical_extruder.ponder.extruder.text_5": "When a conbination of ingredient has multiple possible outcomes, the filter slot can specify it",
   "create_mechanical_extruder.recipe.extruding": "Extruding recipe",
+  "create_mechanical_extruder.ui.recipe_requirement.advanced.title": "Brass extruder",
   "itemGroup.create_mechanical_extruder:main": "Create Mechanical Extruder"
 }

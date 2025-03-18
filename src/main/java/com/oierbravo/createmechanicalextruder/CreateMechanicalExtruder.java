@@ -90,6 +90,8 @@ public class CreateMechanicalExtruder
         registrate().addRawLang("create_mechanical_extruder.ponder.extruder.text_3", "When the process is done, the result can be obtained via Right-click");
         registrate().addRawLang("create_mechanical_extruder.ponder.extruder.text_4", "The outputs can also be extracted by automation");
         registrate().addRawLang("create_mechanical_extruder.ponder.extruder.text_5", "When a conbination of ingredient has multiple possible outcomes, the filter slot can specify it");
+        registrate().addRawLang("create_mechanical_extruder.ui.recipe_requirement.advanced.title", "Brass extruder");
+
 
     }
     public static CreateRegistrate registrate() {
