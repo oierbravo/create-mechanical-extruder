@@ -175,9 +175,6 @@ dependencies {
     api("dev.latvian.mods:kubejs-neoforge:$kubejs_version")
     interfaceInjectionData("dev.latvian.mods:kubejs-neoforge:$kubejs_version") // optional
 
-    //implementation("dev.latvian.mods:rhino:$rhino_version") { transitive(false) }
-    //implementation("dev.latvian.mods:kubejs-neoforge:$kubejs_version")
-
     runtimeOnly("curse.maven:jade-324717:${jade_id}")
 
     if (cc_tweaked_enable.toBoolean()) {

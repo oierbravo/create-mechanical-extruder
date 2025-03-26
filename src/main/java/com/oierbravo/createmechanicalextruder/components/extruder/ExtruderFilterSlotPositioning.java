@@ -16,31 +16,11 @@ public class ExtruderFilterSlotPositioning extends ValueBoxTransform {
     private Direction facing;
     private BlockState currentState;
 
-    /*@Override
-    public Vec3 getLocalOffset(LevelAccessor level, BlockPos pos, BlockState state) {
-        float y = 16f;
-        float z = 3f;
-        return VecHelper.rotateCentered(VecHelper.voxelSpace(8, y, z), angleY(state), Direction.Axis.Y);
-    }
-
-    @Override
-    public void rotate(LevelAccessor level, BlockPos pos, BlockState state, PoseStack ms) {
-        TransformStack.of(ms)
-                .rotateY(angleY(state))
-                .rotateX(90);
-    }*/
     protected float angleY(BlockState state) {
         float horizontalAngle = AngleHelper.horizontalAngle(state.getValue(ExtruderBlock.HORIZONTAL_FACING));
             horizontalAngle += 180;
         return horizontalAngle;
     }
-    /*protected float angle(BlockState state) {
-        float horizontalAngle = ModBlocks.MECHANICAL_EXTRUDER.has(state)
-                ? AngleHelper.horizontalAngle(state.getValue(ExtruderBlock.HORIZONTAL_FACING))
-                : 0;
-        return horizontalAngle;
-    }*/
-
 
     @Override
     public Vec3 getLocalOffset(LevelAccessor level, BlockPos pos, BlockState state) {
@@ -56,8 +36,5 @@ public class ExtruderFilterSlotPositioning extends ValueBoxTransform {
         TransformStack.of(ms)
                 .rotateYDegrees(yRot)
                 .rotateXDegrees(90);
-        /*TransformStack.of(ms)
-                .rotateY(angleY(state))
-                .rotateZ(90);*/
     }
 }

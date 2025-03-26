@@ -14,6 +14,7 @@ public abstract class AbstractAnimatedExtruder<E extends AbstractExtruderBlock<?
 
     abstract BlockEntry<E> getBlock();
     abstract PartialModel getPolePartial();
+    abstract Float getPoleOffset();
 
     @Override
     public void draw(GuiGraphics guiGraphics, int xOffset, int yOffset) {
@@ -30,7 +31,7 @@ public abstract class AbstractAnimatedExtruder<E extends AbstractExtruderBlock<?
                 .render(guiGraphics);
 
         blockElement(getPolePartial())
-                .atLocal(0, -getAnimatedHeadOffset() - 0.44f, 0)
+                .atLocal(0, -getAnimatedHeadOffset() - getPoleOffset(), 0)
                 .scale(scale)
                 .render(guiGraphics);
 

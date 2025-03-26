@@ -1,6 +1,6 @@
 package com.oierbravo.createmechanicalextruder.compat.jei;
 
-import com.oierbravo.createmechanicalextruder.CreateMechanicalExtruder;
+import com.oierbravo.createmechanicalextruder.ModConstants;
 import com.oierbravo.createmechanicalextruder.components.extruder.recipe.ExtrudingRecipe;
 import com.simibubi.create.compat.jei.category.CreateRecipeCategory;
 import mezz.jei.api.IModPlugin;
@@ -19,7 +19,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class CreateMechanicalExtruderJEI implements IModPlugin {
 
-    private static final ResourceLocation ID = CreateMechanicalExtruder.asResource("jei_plugin");
+    private static final ResourceLocation ID = ModConstants.asResource("jei_plugin");
 
     @Override
     @Nonnull

@@ -29,7 +29,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.pattern.BlockInWorld;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
@@ -42,9 +41,6 @@ import java.util.Optional;
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING;
 
 public abstract class AbstractExtruderBlockEntity extends KineticBlockEntity implements CycleBehavior.CycleBehaviourSpecifics, RecipeRequirementsBehaviour.RecipeRequirementsSpecifics<ExtrudingRecipe> {
-
-    //public ItemStackHandler outputInventory;
-    public Lazy<IItemHandler> capability;
 
     private CycleBehavior extrudingBehaviour;
     private FilteringBehaviour filtering;
@@ -62,6 +58,7 @@ public abstract class AbstractExtruderBlockEntity extends KineticBlockEntity imp
         @Override
         protected void onContentsChanged(int slot) {
             setChanged();
+            assert level != null;
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
         }
     };

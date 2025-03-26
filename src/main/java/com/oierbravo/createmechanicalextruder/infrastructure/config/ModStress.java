@@ -1,6 +1,6 @@
 package com.oierbravo.createmechanicalextruder.infrastructure.config;
 
-import com.oierbravo.createmechanicalextruder.CreateMechanicalExtruder;
+import com.oierbravo.createmechanicalextruder.ModConstants;
 import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
@@ -67,7 +67,7 @@ public class ModStress extends ConfigBase {
 
 	public static <B extends Block, P> NonNullUnaryOperator<BlockBuilder<B, P>> setImpact(double value) {
 		return builder -> {
-			ResourceLocation id = CreateMechanicalExtruder.asResource(builder.getName());
+			ResourceLocation id = ModConstants.asResource(builder.getName());
 			DEFAULT_IMPACTS.put(id, value);
 			return builder;
 		};
@@ -75,7 +75,7 @@ public class ModStress extends ConfigBase {
 
 	public static <B extends Block, P> NonNullUnaryOperator<BlockBuilder<B, P>> setCapacity(double value) {
 		return builder -> {
-			ResourceLocation id = CreateMechanicalExtruder.asResource(builder.getName());
+			ResourceLocation id = ModConstants.asResource(builder.getName());
 			DEFAULT_CAPACITIES.put(id, value);
 			return builder;
 		};

@@ -16,4 +16,8 @@ public class AnimatedExtruder extends AbstractAnimatedExtruder<ExtruderBlock> {
     PartialModel getPolePartial() {
         return ModPartials.MECHANICAL_EXTRUDER_POLE;
     }
+    @Override
+    Float getPoleOffset() {
+        return 0.44f;
+    }
 }

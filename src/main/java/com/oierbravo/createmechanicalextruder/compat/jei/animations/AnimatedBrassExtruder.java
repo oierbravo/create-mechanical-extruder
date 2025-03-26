@@ -14,6 +14,11 @@ public class AnimatedBrassExtruder extends AbstractAnimatedExtruder<BrassExtrude
 
     @Override
     PartialModel getPolePartial() {
-        return ModPartials.MECHANICAL_EXTRUDER_POLE;
+        return ModPartials.MECHANICAL_BRASS_EXTRUDER_POLE;
+    }
+
+    @Override
+    Float getPoleOffset() {
+        return 0.29f;
     }
 }

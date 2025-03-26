@@ -1,6 +1,6 @@
 package com.oierbravo.createmechanicalextruder.infrastructure.data;
 
-import com.oierbravo.createmechanicalextruder.CreateMechanicalExtruder;
+import com.oierbravo.createmechanicalextruder.ModConstants;
 import com.oierbravo.createmechanicalextruder.components.extruder.recipe.ExtrudingRecipeBuilder;
 import com.oierbravo.mechanicals.foundation.recipe.requirements.BiomeTagRequirement;
 import com.oierbravo.mechanicals.foundation.recipe.requirements.MaxSpeedRequirement;
@@ -126,17 +126,17 @@ public class ExtrudingRecipeGen extends RecipeProvider {
         return BuiltInRegistries.BLOCK.get(resourceLocation);
     }
     private ExtrudingRecipeBuilder create(String id, Block output){
-        return new ExtrudingRecipeBuilder(CreateMechanicalExtruder.asResource("extruding/" + id))
+        return new ExtrudingRecipeBuilder(ModConstants.asResource("extruding/" + id))
                 .withSingleItemOutput(new ProcessingOutput(new ItemStack(output),1));
     }
 
     private ExtrudingRecipeBuilder create(String id, Item output){
-        return new ExtrudingRecipeBuilder(CreateMechanicalExtruder.asResource("extruding/" + id))
+        return new ExtrudingRecipeBuilder(ModConstants.asResource("extruding/" + id))
                 .withSingleItemOutput(new ProcessingOutput(new ItemStack(output),1));
     }
 
     private ExtrudingRecipeBuilder createAdvanced(String id, Item output){
-        return new ExtrudingRecipeBuilder(CreateMechanicalExtruder.asResource("extruding/" + id))
+        return new ExtrudingRecipeBuilder(ModConstants.asResource("extruding/" + id))
                 .withSingleItemOutput(new ProcessingOutput(new ItemStack(output),1))
                 .isAdvanced(true);
     }

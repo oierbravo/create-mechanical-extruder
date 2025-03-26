@@ -1,7 +1,7 @@
 package com.oierbravo.createmechanicalextruder;
 
-import com.oierbravo.createmechanicalextruder.components.extruder.brass.BrassExtruderBlockEntity;
 import com.oierbravo.createmechanicalextruder.components.extruder.andesite.ExtruderBlockEntity;
+import com.oierbravo.createmechanicalextruder.components.extruder.brass.BrassExtruderBlockEntity;
 import com.oierbravo.createmechanicalextruder.infrastructure.config.ModConfigs;
 import com.oierbravo.createmechanicalextruder.infrastructure.data.ModDataGen;
 import com.oierbravo.createmechanicalextruder.ponder.ModPonderPlugin;
@@ -10,6 +10,7 @@ import com.oierbravo.createmechanicalextruder.register.ModBlocks;
 import com.oierbravo.createmechanicalextruder.register.ModPartials;
 import com.oierbravo.createmechanicalextruder.register.ModRecipes;
 import com.oierbravo.mechanicals.register.MechanicalCreativeModeTabs;
+import com.oierbravo.mechanicals.utility.RegistrateLangBuilder;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.item.ItemDescription;
 import com.simibubi.create.foundation.item.KineticStats;
@@ -18,7 +19,6 @@ import net.createmod.catnip.lang.FontHelper;
 import net.createmod.ponder.foundation.PonderIndex;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModLoadingContext;
@@ -27,12 +27,12 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import static com.oierbravo.createmechanicalextruder.ModConstants.MODID;
+
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod("create_mechanical_extruder")
 public class CreateMechanicalExtruder
 {
-    public static final String MODID = "create_mechanical_extruder";
-    public static final String DISPLAY_NAME = "Create Mechanical Extruder";
     // Directly reference a log4j logger.
     private static final Logger LOGGER = LogManager.getLogger(MODID);
     public static IEventBus modEventBus;
@@ -80,28 +80,24 @@ public class CreateMechanicalExtruder
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.MECHANICAL_BRASS_EXTRUDER.get(), cutout);
     }
     private void generateLangEntries(){
-        registrate().addRawLang("create_mechanical_extruder.recipe.extruding", "Extruding recipe");
-        registrate().addRawLang("itemGroup.create_mechanical_extruder:main", DISPLAY_NAME);
+        new RegistrateLangBuilder(MODID, registrate())
 
-        registrate().addRawLang("create_mechanical_extruder.goggles.bonks", "%1$s bonks");
-        registrate().addRawLang("create_mechanical_extruder.ponder.extruder.header", "Block generation");
-        registrate().addRawLang("create_mechanical_extruder.ponder.extruder.text_1", "The Extruder uses rotational force to generate blocks");
-        registrate().addRawLang("create_mechanical_extruder.ponder.extruder.text_2", "Generation depends on side & below blocks.");
-        registrate().addRawLang("create_mechanical_extruder.ponder.extruder.text_3", "When the process is done, the result can be obtained via Right-click");
-        registrate().addRawLang("create_mechanical_extruder.ponder.extruder.text_4", "The outputs can also be extracted by automation");
-        registrate().addRawLang("create_mechanical_extruder.ponder.extruder.text_5", "When a conbination of ingredient has multiple possible outcomes, the filter slot can specify it");
-        registrate().addRawLang("create_mechanical_extruder.ui.recipe_requirement.advanced.title", "Brass extruder");
+                .addRaw("itemGroup.create_mechanical_extruder:main", ModConstants.DISPLAY_NAME)
+                .add("recipe.extruding", "Extruding recipe")
+
+                .add("goggles.bonks", "%1$s bonks")
+                .add("ponder.extruder.header", "Block generation")
+                .add("ponder.extruder.text_1", "The Extruder uses rotational force to generate blocks")
+                .add("ponder.extruder.text_2", "Generation depends on side & below blocks.")
+                .add("ponder.extruder.text_3", "When the process is done, the result can be obtained via Right-click")
+                .add("ponder.extruder.text_4", "The outputs can also be extracted by automation")
+                .add("ponder.extruder.text_5", "When a conbination of ingredient has multiple possible outcomes, the filter slot can specify it")
+                .add("ui.recipe_requirement.advanced.title", "Brass extruder");
 
 
     }
     public static CreateRegistrate registrate() {
         return REGISTRATE;
-    }
-
-
-
-    public static ResourceLocation asResource(String path) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, path);
     }
     public static Logger logger(){
         return LOGGER;

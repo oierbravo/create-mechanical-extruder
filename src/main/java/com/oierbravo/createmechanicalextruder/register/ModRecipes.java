@@ -1,8 +1,9 @@
 package com.oierbravo.createmechanicalextruder.register;
 
-import com.oierbravo.createmechanicalextruder.CreateMechanicalExtruder;
+import com.oierbravo.createmechanicalextruder.ModConstants;
 import com.oierbravo.createmechanicalextruder.components.extruder.AbstractExtruderBlockEntity;
 import com.oierbravo.createmechanicalextruder.components.extruder.recipe.ExtrudingRecipe;
+import com.oierbravo.createmechanicalextruder.components.extruder.recipe.ExtrudingRecipeSerializer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -17,20 +18,20 @@ import java.util.function.Supplier;
 
 public class ModRecipes {
     public static final DeferredRegister<RecipeSerializer<?>> SERIALIZERS =
-            DeferredRegister.create(Registries.RECIPE_SERIALIZER, CreateMechanicalExtruder.MODID);
-    public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(Registries.RECIPE_TYPE, CreateMechanicalExtruder.MODID);
+            DeferredRegister.create(Registries.RECIPE_SERIALIZER, ModConstants.MODID);
+    public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(Registries.RECIPE_TYPE, ModConstants.MODID);
 
 
     public static final Supplier<RecipeType<ExtrudingRecipe>> EXTRUDING_TYPE =
             RECIPE_TYPES.register(
                     "extruding_type",
                     // We need the qualifying generic here due to generics being generics.
-                    () -> RecipeType.<ExtrudingRecipe>simple(CreateMechanicalExtruder.asResource("extruding_type"))
+                    () -> RecipeType.<ExtrudingRecipe>simple(ModConstants.asResource("extruding_type"))
 
         );
 
-    public static final Supplier<ExtrudingRecipe.Serializer> EXTRUDING_SERIALIZER =
-            SERIALIZERS.register("extruding", () -> ExtrudingRecipe.Serializer.INSTANCE);
+    public static final Supplier<ExtrudingRecipeSerializer> EXTRUDING_SERIALIZER =
+            SERIALIZERS.register("extruding", () -> ExtrudingRecipeSerializer.INSTANCE);
 
     public static void register(IEventBus eventBus) {
 

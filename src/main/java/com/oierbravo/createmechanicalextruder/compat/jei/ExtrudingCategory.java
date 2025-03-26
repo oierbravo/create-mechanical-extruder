@@ -2,7 +2,7 @@ package com.oierbravo.createmechanicalextruder.compat.jei;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.oierbravo.createmechanicalextruder.CreateMechanicalExtruder;
+import com.oierbravo.createmechanicalextruder.ModConstants;
 import com.oierbravo.createmechanicalextruder.compat.jei.animations.AnimatedBrassExtruder;
 import com.oierbravo.createmechanicalextruder.compat.jei.animations.AnimatedExtruder;
 import com.oierbravo.createmechanicalextruder.components.extruder.recipe.ExtrudingRecipe;
@@ -53,7 +53,7 @@ public class ExtrudingCategory extends CreateRecipeCategory<ExtrudingRecipe> {
     private AnimatedExtruder extruder = new AnimatedExtruder();
     private AnimatedBrassExtruder brassExtruder = new AnimatedBrassExtruder();
 
-    public final static ResourceLocation UID = CreateMechanicalExtruder.asResource("extruding");
+    public final static ResourceLocation UID = ModConstants.asResource("extruding");
     public final static RecipeType<ExtrudingRecipe>  TYPE = new mezz.jei.api.recipe.RecipeType<>(UID, ExtrudingRecipe.class);
 
     public final static CreateRecipeCategory.Info<ExtrudingRecipe> INFO = new CreateRecipeCategory.Info<>(

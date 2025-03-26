@@ -1,8 +1,8 @@
 package com.oierbravo.createmechanicalextruder.register;
 
-import com.oierbravo.createmechanicalextruder.CreateMechanicalExtruder;
-import com.oierbravo.createmechanicalextruder.components.extruder.brass.BrassExtruderBlock;
+import com.oierbravo.createmechanicalextruder.ModConstants;
 import com.oierbravo.createmechanicalextruder.components.extruder.andesite.ExtruderBlock;
+import com.oierbravo.createmechanicalextruder.components.extruder.brass.BrassExtruderBlock;
 import com.oierbravo.createmechanicalextruder.infrastructure.config.ModStress;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllTags;
@@ -20,12 +20,6 @@ import static com.simibubi.create.foundation.data.ModelGen.customItemModel;
 import static com.simibubi.create.foundation.data.TagGen.pickaxeOnly;
 
 public class ModBlocks {
-
-
-    public static void register() {
-
-    }
-
     public static final BlockEntry<ExtruderBlock> MECHANICAL_EXTRUDER = REGISTRATE.block("mechanical_extruder", ExtruderBlock::new)
             .initialProperties(SharedProperties::stone)
             .properties(p -> p.mapColor(MapColor.METAL))
@@ -40,11 +34,11 @@ public class ModBlocks {
                     .pattern("GAG")
                     .pattern(" G ")
                     .unlockedBy("has_andesite_casing", RegistrateRecipeProvider.has(AllTags.AllItemTags.CASING.tag))
-                    .save(p, CreateMechanicalExtruder.asResource("crafting/" + c.getName())))
+                    .save(p, ModConstants.asResource("crafting/" + c.getName())))
             .item()
             .transform(customItemModel())
-
             .register();
+
     public static final BlockEntry<BrassExtruderBlock> MECHANICAL_BRASS_EXTRUDER = REGISTRATE.block("mechanical_brass_extruder", BrassExtruderBlock::new)
             .initialProperties(SharedProperties::stone)
             .properties(p -> p.mapColor(MapColor.METAL))
@@ -55,4 +49,7 @@ public class ModBlocks {
             .transform(customItemModel())
 
             .register();
+
+    public static void register() {}
+
 }
