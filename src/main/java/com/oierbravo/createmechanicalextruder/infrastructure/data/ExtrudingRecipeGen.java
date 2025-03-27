@@ -62,6 +62,19 @@ public class ExtrudingRecipeGen extends RecipeProvider {
                 .withCatalyst(Blocks.SOUL_SOIL)
                 .save(recipeOutput);
 
+        create("crimsite", AllPaletteStoneTypes.CRIMSITE.getBaseBlock().get())
+                .withBlockIngredients(Blocks.IRON_BLOCK,Blocks.LAVA)
+                .withCatalyst(Blocks.SOUL_SOIL)
+                .save(recipeOutput);
+
+        create("ochrum", AllPaletteStoneTypes.OCHRUM.getBaseBlock().get())
+                .withBlockIngredients(Blocks.GOLD_BLOCK,Blocks.LAVA)
+                .save(recipeOutput);
+
+        create("asurine",  AllPaletteStoneTypes.ASURINE.getBaseBlock().get())
+                .withBlockIngredients(Blocks.LAPIS_BLOCK,Blocks.LAVA)
+                .save(recipeOutput);
+
         create("limestone", AllPaletteStoneTypes.LIMESTONE.getBaseBlock().get())
                 .withBlockIngredients(block("create:honey"),Blocks.LAVA)
                 .save(recipeOutput);

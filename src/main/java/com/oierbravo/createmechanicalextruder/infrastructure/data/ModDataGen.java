@@ -20,7 +20,6 @@ public class ModDataGen {
 
         if (event.includeServer()) {
             generator.addProvider(true, new ExtrudingRecipeGen(output, lookupProvider));
-            generator.addProvider(true, new CraftingRecipeGen(output, lookupProvider));
         }
         event.getGenerator().addProvider(true, CreateMechanicalExtruder.registrate().setDataProvider(new RegistrateDataProvider(CreateMechanicalExtruder.registrate(), ModConstants.MODID, event)));
 

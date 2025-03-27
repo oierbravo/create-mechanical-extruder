@@ -8,10 +8,12 @@ import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllTags;
 import com.simibubi.create.foundation.data.BlockStateGen;
 import com.simibubi.create.foundation.data.SharedProperties;
+import com.simibubi.create.foundation.data.recipe.MechanicalCraftingRecipeBuilder;
 import com.tterrag.registrate.providers.RegistrateRecipeProvider;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.material.MapColor;
 import net.neoforged.neoforge.common.Tags;
 
@@ -45,6 +47,18 @@ public class ModBlocks {
             .transform(pickaxeOnly())
             .blockstate(BlockStateGen.horizontalBlockProvider(true))
             .transform(ModStress.setImpact(16.0))
+            .recipe((blockBrassExtruderBlockDataGenContext, registrateRecipeProvider) ->
+                    MechanicalCraftingRecipeBuilder.shapedRecipe(blockBrassExtruderBlockDataGenContext.get())
+                            .key('G', Ingredient.of(AllBlocks.METAL_GIRDER))
+                            .key('T', Ingredient.of(AllBlocks.FRAMED_GLASS_TRAPDOOR))
+                            .key('C', Ingredient.of(AllBlocks.BRASS_CASING))
+                            .key('P', Ingredient.of(AllTags.commonItemTag("plates/brass")))
+                            .patternLine(" G ")
+                            .patternLine("PGP")
+                            .patternLine("TCT")
+                            .patternLine("PTP")
+                            .build(registrateRecipeProvider)
+                    )
             .item()
             .transform(customItemModel())
 
