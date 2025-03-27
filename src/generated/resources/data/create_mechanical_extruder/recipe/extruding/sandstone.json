@@ -1,0 +1,18 @@
+{
+  "type": "create_mechanical_extruder:extruding",
+  "blockIngredients": {
+    "first": {
+      "blocks": "minecraft:water"
+    },
+    "second": {
+      "blocks": "minecraft:sand"
+    }
+  },
+  "consumeBlocks": {
+    "first": false,
+    "second": false
+  },
+  "result": {
+    "id": "minecraft:sandstone"
+  }
+}

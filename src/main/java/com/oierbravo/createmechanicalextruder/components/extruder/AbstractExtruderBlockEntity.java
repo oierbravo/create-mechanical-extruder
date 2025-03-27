@@ -206,7 +206,6 @@ public abstract class AbstractExtruderBlockEntity extends KineticBlockEntity imp
         return matchingRecipes.stream().findAny();
     }
 
-
     @Override
     public void invalidate() {
         super.invalidate();
@@ -278,12 +277,10 @@ public abstract class AbstractExtruderBlockEntity extends KineticBlockEntity imp
         return new BlockInWorld(this.level,currentPos.relative(directionRightBlockMap.get(localDir)), false);
     }
 
-
     public BlockInWorld getCatalystBlock() {
         assert this.level != null;
         return new BlockInWorld(this.level,this.getBlockPos().below(), false);
     }
-
 
     @Override
     public boolean hasEnoughOutputSpace() {
@@ -308,14 +305,12 @@ public abstract class AbstractExtruderBlockEntity extends KineticBlockEntity imp
         return extrudingRecipeRecipeHolder.value().meetsRequirements(this);
     }
 
-
     public Couple<BlockInWorld> getSideBlocks() {
         return Couple.create(
                 this.getLeftBlockInWorld(),
                 this.getRightBlockInWorld()
         );
     }
-
 
     class ExtruderValueBox extends ValueBoxTransform.Sided {
 
@@ -329,6 +324,5 @@ public abstract class AbstractExtruderBlockEntity extends KineticBlockEntity imp
             return direction.getAxis()
                     .isHorizontal();
         }
-
     }
 }

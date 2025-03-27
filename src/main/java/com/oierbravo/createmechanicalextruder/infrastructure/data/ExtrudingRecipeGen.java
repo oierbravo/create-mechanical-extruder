@@ -53,6 +53,10 @@ public class ExtrudingRecipeGen extends RecipeProvider {
                 .withRequirement(MaxYRequirement.of(60))
                 .save(recipeOutput);
 
+        create("sandstone", Items.SANDSTONE)
+                .withBlockIngredients(Blocks.WATER, Blocks.SAND)
+                .save(recipeOutput);
+
         create("basalt", Items.BASALT)
                 .withBlockIngredients(Blocks.BLUE_ICE,Blocks.LAVA)
                 .withCatalyst(Blocks.SOUL_SOIL)
