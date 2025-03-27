@@ -1,0 +1,18 @@
+{
+  "type": "create_mechanical_extruder:extruding",
+  "blockIngredients": {
+    "first": {
+      "blocks": "minecraft:lapis_block"
+    },
+    "second": {
+      "blocks": "minecraft:lava"
+    }
+  },
+  "consumeBlocks": {
+    "first": false,
+    "second": false
+  },
+  "result": {
+    "id": "create:asurine"
+  }
+}
