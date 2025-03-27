@@ -93,12 +93,6 @@ public class ExtrudingRecipeGen extends RecipeProvider {
                 .withRequirement(BiomeTagRequirement.of(BiomeTags.IS_END))
                 .save(recipeOutput);
 
-        /*create("andesite", Items.ANDESITE)
-                .withBlockIngredient(Blocks.WATER)
-                .withBlockIngredient(Blocks.LAVA)
-                .withRequirement(MinYRequirement.of(0))
-                .withRequirement(MaxYRequirement.of(10))
-                .save(recipeOutput);*/
 
         create("deepslate", Items.DEEPSLATE)
                 .withBlockIngredients(Blocks.WATER, Blocks.LAVA)
