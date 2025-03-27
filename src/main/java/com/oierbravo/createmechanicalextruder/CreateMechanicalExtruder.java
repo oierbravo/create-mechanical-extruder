@@ -5,11 +5,7 @@ import com.oierbravo.createmechanicalextruder.components.extruder.brass.BrassExt
 import com.oierbravo.createmechanicalextruder.infrastructure.config.ModConfigs;
 import com.oierbravo.createmechanicalextruder.infrastructure.data.ModDataGen;
 import com.oierbravo.createmechanicalextruder.ponder.ModPonderPlugin;
-import com.oierbravo.createmechanicalextruder.register.ModBlockEntities;
-import com.oierbravo.createmechanicalextruder.register.ModBlocks;
-import com.oierbravo.createmechanicalextruder.register.ModPartials;
-import com.oierbravo.createmechanicalextruder.register.ModRecipes;
-import com.oierbravo.mechanicals.register.MechanicalCreativeModeTabs;
+import com.oierbravo.createmechanicalextruder.register.*;
 import com.oierbravo.mechanicals.utility.RegistrateLangBuilder;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.item.ItemDescription;
@@ -38,7 +34,8 @@ public class CreateMechanicalExtruder
     public static IEventBus modEventBus;
 
     public static final CreateRegistrate REGISTRATE =
-            CreateRegistrate.create(MODID).defaultCreativeTab(MechanicalCreativeModeTabs.MAIN_TAB.getKey());
+            CreateRegistrate.create(MODID).defaultCreativeTab(ModCreativeTabs.MAIN_TAB.getKey());
+            //CreateRegistrate.create(MODID).defaultCreativeTab(MechanicalCreativeModeTabs.MAIN_TAB.getKey());
 
     static {
         REGISTRATE.setTooltipModifierFactory(item ->
@@ -55,7 +52,7 @@ public class CreateMechanicalExtruder
 
         ModBlocks.register();
         ModBlockEntities.register();
-        //ModCreativeTabs.register(modEventBus);
+        ModCreativeTabs.register(modEventBus);
         ModConfigs.register(modLoadingContext, modContainer);
 
         ModRecipes.register(modEventBus);

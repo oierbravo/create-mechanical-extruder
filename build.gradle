@@ -214,7 +214,7 @@ jar {
 publishMods {
     file = jar.archiveFile
     changelog = rootProject.file("changes/${minecraft_version}-${mod_version}.md").text
-    type = STABLE
+    type = BETA
     version = "$minecraft_version-$mod_version"
     displayName = "$mod_name $mod_version for mc$minecraft_version"
     modLoaders.add("neoforge")
@@ -239,7 +239,7 @@ publishMods {
             projectId = "${modrinth_id}"
             minecraftVersions.add(minecraft_version)
             requires("create")
-            optional("jei", "kubejs","crafttweaker")
+            optional("jei")
         }
     }
 }
