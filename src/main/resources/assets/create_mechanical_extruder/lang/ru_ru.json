@@ -1,0 +1,14 @@
+{
+  "block.create_mechanical_extruder.mechanical_brass_extruder": "Латунный механический экструдер",
+  "block.create_mechanical_extruder.mechanical_extruder": "Механический экструдер",
+  "create_mechanical_extruder.goggles.bonks": "%1$s ударяется",
+  "create_mechanical_extruder.ponder.extruder.header": "Генерация блоков",
+  "create_mechanical_extruder.ponder.extruder.text_1": "Экструдер использует вращательную силу для генерации блоков",
+  "create_mechanical_extruder.ponder.extruder.text_2": "Генерация зависит от блоков сбоку и снизу.",
+  "create_mechanical_extruder.ponder.extruder.text_3": "Когда процесс будет завершён, результат можно будет получить, щёлкнув ПКМ",
+  "create_mechanical_extruder.ponder.extruder.text_4": "Результат также может быть извлечён с помощью автоматизации",
+  "create_mechanical_extruder.ponder.extruder.text_5": "Если сочетание ингредиентов имеет несколько возможных результатов, фильтр рецепта может уточнить его",
+  "create_mechanical_extruder.recipe.extruding": "Рецепт экструзии",
+  "create_mechanical_extruder.ui.recipe_requirement.advanced.title": "Латунный экструдер",
+  "itemGroup.create_mechanical_extruder:main": "Create: Механический Экструдер"
+}
