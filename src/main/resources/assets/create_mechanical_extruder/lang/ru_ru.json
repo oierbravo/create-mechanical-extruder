@@ -7,7 +7,7 @@
   "create_mechanical_extruder.ponder.extruder.text_2": "Генерация зависит от блоков сбоку и снизу.",
   "create_mechanical_extruder.ponder.extruder.text_3": "Когда процесс будет завершён, результат можно будет получить, щёлкнув ПКМ",
   "create_mechanical_extruder.ponder.extruder.text_4": "Выход также может быть извлечён с помощью автоматизации",
-  "create_mechanical_extruder.ponder.extruder.text_5": "Если сочетание ингредиентов имеет несколько возможных исходов, его можно уточнить в слоте фильтра",
+  "create_mechanical_extruder.ponder.extruder.text_5": "Если сочетание ингредиентов имеет несколько возможных результатов, фильтр рецепта может уточнить его",
   "create_mechanical_extruder.recipe.extruding": "Рецепт экструзии",
   "create_mechanical_extruder.ui.recipe_requirement.advanced.title": "Латунный экструдер",
   "itemGroup.create_mechanical_extruder:main": "Create: Механический Экструдер"
