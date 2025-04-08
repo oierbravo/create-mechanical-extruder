@@ -129,6 +129,11 @@ public class ExtrudingRecipeGen extends RecipeProvider {
                 .save(recipeOutput);
 
 
+        /*create("test", Items.REDSTONE_BLOCK)
+                .withBlockIngredients(BlockPredicate.Builder.block().of(Blocks.END_STONE).hasNbt(new CompoundTag().).build(), BlockPredicate.Builder.block().of(Blocks.BLUE_ICE).build())
+                .withRequirement(BiomeTagRequirement.of(BiomeTags.IS_END))
+                .save(recipeOutput);*/
+
     }
     private Block block(String resourceLocationString){
         return block(ResourceLocation.parse(resourceLocationString));

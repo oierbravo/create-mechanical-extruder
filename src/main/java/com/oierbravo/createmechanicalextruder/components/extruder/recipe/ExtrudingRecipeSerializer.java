@@ -71,7 +71,7 @@ public class ExtrudingRecipeSerializer implements RecipeSerializer<ExtrudingReci
                             BlockPredicate.CODEC.optionalFieldOf("catalyst",BlockPredicate.Builder.block().build()).forGetter(ExtrudingRecipe::getCatalyst),
                             Codec.INT.optionalFieldOf("requiredBonks",1).forGetter(ExtrudingRecipe::getRequiredBonks),
                             Codec.BOOL.optionalFieldOf("advanced", false).forGetter(ExtrudingRecipe::isAdvanced),
-                            Couple.codec(Codec.BOOL).fieldOf("consumeBlocks").forGetter(ExtrudingRecipe::getConsumeBlocks),
+                            Couple.codec(Codec.BOOL).optionalFieldOf("consumeBlocks", Couple.create(false, false)).forGetter(ExtrudingRecipe::getConsumeBlocks),
                             IRecipeRequirement.LIST_CODEC.optionalFieldOf("requirements", List.of()).forGetter(ExtrudingRecipe::getRecipeRequirements),
                             ICondition.LIST_CODEC.optionalFieldOf(ConditionalOps.DEFAULT_CONDITIONS_KEY, List.of()).forGetter(ExtrudingRecipe::getConditions)
                     ).apply(instance, (blockIngredients, processingOutput, catalyst, requiredBonks, isAdvanced, consumeBlocks, requirements, iConditions) -> {
