@@ -194,7 +194,7 @@ public class ExtruderBlockEntity extends KineticBlockEntity implements Extruding
 
         int currentBonks = extrudingBehaviour.getBonks();
         if(currentBonks > 0){
-            ModLang.translate("create_mechanical_extruder.goggles.bonks",currentBonks)
+            ModLang.translate("goggles.bonks",currentBonks)
                     .forGoggles(tooltip, 1);
             added = true;
         }
