@@ -16,11 +16,13 @@ import com.simibubi.create.compat.jei.category.CreateRecipeCategory;
 import com.simibubi.create.content.processing.recipe.ProcessingOutput;
 import com.simibubi.create.foundation.gui.AllGuiTextures;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
+import mezz.jei.api.gui.ingredient.IRecipeSlotRichTooltipCallback;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
+import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.critereon.BlockPredicate;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.Holder;
@@ -127,12 +129,17 @@ public class ExtrudingCategory extends CreateRecipeCategory<ExtrudingRecipe> {
         int distance = 42;
         for(int index= 0;index < 2;index++ ){
             for(int i= 0;i < matchedItemStacks(recipe.getBlockPredicateIngredients().get(index == 0)).size();i++ ){
-                builder.addSlot(RecipeIngredientRole.INPUT, initX + distance * slotIndex, initY).setBackground(getRenderedSlot(), -1, -1).addItemStacks(matchedItemStacks(recipe.getBlockPredicateIngredients().get(index == 0)));
+                builder.addSlot(RecipeIngredientRole.INPUT, initX + distance * slotIndex, initY).setBackground(getRenderedSlot(), -1, -1)
+                        .addItemStacks(matchedItemStacks(recipe.getBlockPredicateIngredients().get(index == 0)))
+                        .addRichTooltipCallback(addConsumeBlockTooltip(recipe.getConsumeBlocks().get(index == 0)));
+
                 slotIndex++;
             }
             Set<FluidStack> fluidIngredients = matchedFluidStacks(recipe.getBlockPredicateIngredients().get(index == 0));
             for(int i= 0;i < fluidIngredients.size();i++ ){
-                builder.addSlot(RecipeIngredientRole.INPUT, initX + distance * slotIndex, initY).setBackground(getRenderedSlot(), -1, -1).addIngredients(NeoForgeTypes.FLUID_STACK,fluidIngredients.stream().toList());
+                builder.addSlot(RecipeIngredientRole.INPUT, initX + distance * slotIndex, initY).setBackground(getRenderedSlot(), -1, -1)
+                        .addIngredients(NeoForgeTypes.FLUID_STACK,fluidIngredients.stream().toList())
+                        .addRichTooltipCallback(addConsumeBlockTooltip(recipe.getConsumeBlocks().get(index == 0)));
                 slotIndex++;
             }
 
@@ -148,10 +155,17 @@ public class ExtrudingCategory extends CreateRecipeCategory<ExtrudingRecipe> {
         builder.addSlot(RecipeIngredientRole.OUTPUT,  44,67)
                 .setBackground(getRenderedSlot(), -1, -1)
                 .addRichTooltipCallback(addStochasticTooltip(output))
-                .addItemStack(recipe.rollOutput());
+                .addItemStack(recipe.getResultItemStack());
 
     }
 
+    private static IRecipeSlotRichTooltipCallback addConsumeBlockTooltip(boolean consume){
+        return (view, tooltip) -> {
+            if(consume)
+                tooltip.add(ModLang.translate("ui.recipe.extruding.consumes_block").component()
+                        .withStyle(ChatFormatting.RED));
+        };
+    }
 
     public void draw(ExtrudingRecipe recipe, IRecipeSlotsView iRecipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY) {
         if(recipe.isAdvanced())

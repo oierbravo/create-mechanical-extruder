@@ -1,6 +1,7 @@
 package com.oierbravo.create_mechanical_extruder.compat.kubejs.recipe;
 
 import com.oierbravo.mechanicals.compat.kubejs.components.BlockPredicateComponent;
+import com.oierbravo.mechanicals.compat.kubejs.components.CoupleBooleanComponent;
 import com.oierbravo.mechanicals.compat.kubejs.components.ProcessingOutputComponent;
 import com.oierbravo.mechanicals.compat.kubejs.components.RecipeRequirementsComponent;
 import com.oierbravo.mechanicals.foundation.recipe.IRecipeRequirement;
@@ -20,11 +21,11 @@ public interface ExtrudingRecipeSchema {
     RecipeKey<ProcessingOutput> RESULT = ProcessingOutputComponent.OUTPUT.key("result",ComponentRole.OUTPUT).noFunctions();
     RecipeKey<Couple<BlockPredicate>> BLOCK_INGREDIENTS = BlockPredicateComponent.BLOCK_PREDICATE_COUPLE.key("blockIngredients", ComponentRole.INPUT).noFunctions();
     RecipeKey<BlockPredicate> CATALYST = BlockPredicateComponent.BLOCK_PREDICATE.key("catalyst",ComponentRole.OTHER).optional(BlockPredicateUtils.Matcher.EMPTY).allowEmpty();
-    RecipeKey<Integer> REQUIRED_BONKS = NumberComponent.INT.key("requiredBonks", ComponentRole.OTHER).optional(1);
-    RecipeKey<Boolean> ADVANCED = BooleanComponent.BOOLEAN.key("advanced", ComponentRole.OTHER).optional(false);
+    RecipeKey<Integer> REQUIRED_BONKS = NumberComponent.INT.key("requiredBonks", ComponentRole.OTHER).optional(1).allowEmpty();
+    RecipeKey<Boolean> ADVANCED = BooleanComponent.BOOLEAN.key("advanced", ComponentRole.OTHER).optional(false).allowEmpty();
+    RecipeKey<Couple<Boolean>> CONSUME_BLOCKS = CoupleBooleanComponent.BOOLEAN.key("consumeBlocks", ComponentRole.OTHER).optional(Couple.create(false,false)).allowEmpty();
     RecipeKey<List<IRecipeRequirement>> RECIPE_REQUIREMENTS = RecipeRequirementsComponent.RECIPE_REQUIREMENT.asList().key("requirements", ComponentRole.OTHER).optional(List.of()).allowEmpty();
 
-
-    RecipeSchema SCHEMA = new RecipeSchema(RESULT, BLOCK_INGREDIENTS, CATALYST, REQUIRED_BONKS, ADVANCED, RECIPE_REQUIREMENTS).factory(ExtrudingKubeRecipe.FACTORY);;
+    RecipeSchema SCHEMA = new RecipeSchema(RESULT, BLOCK_INGREDIENTS, CATALYST, REQUIRED_BONKS, ADVANCED, CONSUME_BLOCKS, RECIPE_REQUIREMENTS).factory(ExtrudingKubeRecipe.FACTORY);;
 
 }

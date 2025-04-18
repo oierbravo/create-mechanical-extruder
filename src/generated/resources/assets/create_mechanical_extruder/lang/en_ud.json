@@ -10,6 +10,7 @@
   "create_mechanical_extruder.ponder.extruder.text_4": "uoıʇɐɯoʇnɐ ʎq pǝʇɔɐɹʇxǝ ǝq osןɐ uɐɔ sʇndʇno ǝɥ⟘",
   "create_mechanical_extruder.ponder.extruder.text_5": "ʇı ʎɟıɔǝds uɐɔ ʇoןs ɹǝʇןıɟ ǝɥʇ 'sǝɯoɔʇno ǝןqıssod ǝןdıʇןnɯ sɐɥ ʇuǝıpǝɹbuı ɟo uoıʇɐuıquoɔ ɐ uǝɥM",
   "create_mechanical_extruder.recipe.extruding": "ǝdıɔǝɹ buıpnɹʇxƎ",
+  "create_mechanical_extruder.ui.recipe.extruding.consumes_block": "ʞɔoןq sǝɯnsuoƆ",
   "mechanicals.ui.recipe_requirement.advanced_extruder.tooltip.title": "ɹǝpnɹʇxǝ ssɐɹᗺ",
   "mechanicals.ui.recipe_requirement.advanced_extruder.tooltip.value": "",
   "mechanicals.ui.recipe_requirement.bonks.tooltip.title": ":sʞuoᗺ",

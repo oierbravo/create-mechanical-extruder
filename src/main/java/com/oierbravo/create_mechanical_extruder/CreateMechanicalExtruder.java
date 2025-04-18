@@ -80,6 +80,7 @@ public class CreateMechanicalExtruder
 
                 .addCreativeTab( ModConstants.DISPLAY_NAME)
                 .add("recipe.extruding", "Extruding recipe")
+                .add("ui.recipe.extruding.consumes_block", "Consumes block")
 
                 .add("goggles.bonks", "%1$s bonks")
                 .addPonderHeader("extruder", "Block generation")
