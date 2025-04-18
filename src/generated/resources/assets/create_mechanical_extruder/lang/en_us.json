@@ -2,6 +2,7 @@
   "block.create_mechanical_extruder.mechanical_brass_extruder": "Mechanical Brass Extruder",
   "block.create_mechanical_extruder.mechanical_extruder": "Mechanical Extruder",
   "create_mechanical_extruder.goggles.bonks": "%1$s bonks",
+  "create_mechanical_extruder.itemGroup:main": "Create Mechanical Extruder",
   "create_mechanical_extruder.ponder.extruder.header": "Block generation",
   "create_mechanical_extruder.ponder.extruder.text_1": "The Extruder uses rotational force to generate blocks",
   "create_mechanical_extruder.ponder.extruder.text_2": "Generation depends on side & below blocks.",
@@ -9,6 +10,6 @@
   "create_mechanical_extruder.ponder.extruder.text_4": "The outputs can also be extracted by automation",
   "create_mechanical_extruder.ponder.extruder.text_5": "When a conbination of ingredient has multiple possible outcomes, the filter slot can specify it",
   "create_mechanical_extruder.recipe.extruding": "Extruding recipe",
-  "create_mechanical_extruder.ui.recipe_requirement.advanced.title": "Brass extruder",
-  "itemGroup.create_mechanical_extruder:main": "Create Mechanical Extruder"
+  "mechanicals.ui.recipe_requirement.advanced_extruder.tooltip.title": "Brass extruder",
+  "mechanicals.ui.recipe_requirement.advanced_extruder.tooltip.value": ""
 }

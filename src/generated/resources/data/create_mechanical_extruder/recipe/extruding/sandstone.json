@@ -8,10 +8,6 @@
       "blocks": "minecraft:sand"
     }
   },
-  "consumeBlocks": {
-    "first": false,
-    "second": false
-  },
   "result": {
     "id": "minecraft:sandstone"
   }

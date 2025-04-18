@@ -8,10 +8,6 @@
       "blocks": "minecraft:lava"
     }
   },
-  "consumeBlocks": {
-    "first": false,
-    "second": false
-  },
   "result": {
     "id": "create:ochrum"
   }
