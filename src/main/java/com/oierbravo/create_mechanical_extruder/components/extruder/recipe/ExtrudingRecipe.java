@@ -2,6 +2,7 @@ package com.oierbravo.create_mechanical_extruder.components.extruder.recipe;
 
 import com.oierbravo.create_mechanical_extruder.components.extruder.AbstractExtruderBlockEntity;
 import com.oierbravo.create_mechanical_extruder.components.extruder.recipe.requirements.AdvancedExtruderRecipeRequirement;
+import com.oierbravo.create_mechanical_extruder.components.extruder.recipe.requirements.BonksRecipeRequirement;
 import com.oierbravo.mechanicals.foundation.recipe.AbstractMechanicalRecipe;
 import com.oierbravo.mechanicals.foundation.recipe.AbstractMechanicalRecipeParams;
 import com.oierbravo.mechanicals.foundation.recipe.IRecipeRequirement;
@@ -107,7 +108,7 @@ public class ExtrudingRecipe extends AbstractMechanicalRecipe<RecipeInput, Extru
         FilteringBehaviour filter = extruderBlockEntity.getFilter();
         if (filter == null)
             return false;
-        boolean filterTest = filter.test(this.getResultItem(extruderBlockEntity.getLevel().registryAccess()));
+        boolean filterTest = filter.test(this.getResultItemStack());
 
         if(!matchIngredients(extruderBlockEntity, this.getBlockPredicateIngredients()))
             return false;
@@ -148,8 +149,11 @@ public class ExtrudingRecipe extends AbstractMechanicalRecipe<RecipeInput, Extru
     }
 
 
-    public ItemStack getResultItem() {
+    public ItemStack rollOutput() {
         return result.rollOutput();
+    }
+    public ItemStack getResultItemStack(){
+        return result.getStack();
     }
     public ProcessingOutput getResult(){
         return result;
@@ -202,6 +206,8 @@ public class ExtrudingRecipe extends AbstractMechanicalRecipe<RecipeInput, Extru
         ArrayList<IRecipeRequirement> extraRequirements = new ArrayList<>();
         if(isAdvanced())
             extraRequirements.add(new AdvancedExtruderRecipeRequirement(true));
+        if(requiredBonks > 1)
+            extraRequirements.add(new BonksRecipeRequirement(requiredBonks));
         return Stream.concat(extraRequirements.stream(), super.getJeiRecipeRequirements().stream()).toList();
     }
 

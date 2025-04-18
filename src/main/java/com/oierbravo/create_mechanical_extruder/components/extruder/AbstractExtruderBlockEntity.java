@@ -29,6 +29,8 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.pattern.BlockInWorld;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
@@ -109,16 +111,6 @@ public abstract class AbstractExtruderBlockEntity extends KineticBlockEntity imp
     }
 
     @Override
-    public void onCycleCompleted() {
-
-    }
-
-    @Override
-    public void onOperationCompletd() {
-
-    }
-
-    @Override
     public float getKineticSpeed() {
         return getSpeed();
     }
@@ -140,7 +132,7 @@ public abstract class AbstractExtruderBlockEntity extends KineticBlockEntity imp
         if(simulate)
             return true;
 
-        ItemStack output = extrudingRecipe.getResult().rollOutput();
+        ItemStack output = extrudingRecipe.rollOutput();
         if(outputInventory.getStackInSlot(0).isEmpty()){
 
             outputInventory.setStackInSlot(0, output);
@@ -169,15 +161,22 @@ public abstract class AbstractExtruderBlockEntity extends KineticBlockEntity imp
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public void playActuateSound() {
         AllSoundEvents.MECHANICAL_PRESS_ACTIVATION_ON_BELT.playOnServer(level, worldPosition);
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
+    public void playCompletionSound() {
+        /*AllSoundEvents.MECHANICAL_PRESS_ACTIVATION_ON_BELT.playOnServer(level, worldPosition, .5f,
+                .75f);*/
+    }
+
+    @Override
     public int getCycles() {
-        if(getRecipe().isEmpty())
-            return 1;
-        return getRecipe().get().getRequiredBonks();
+        Optional<ExtrudingRecipe> extrudingRecipe = getRecipe();
+        return extrudingRecipe.map(ExtrudingRecipe::getRequiredBonks).orElse(1);
     }
 
     public float getRenderedPoleOffset(float partialTicks) {
@@ -199,7 +198,9 @@ public abstract class AbstractExtruderBlockEntity extends KineticBlockEntity imp
             matchingRecipes = matchingRecipes.stream().filter(ExtrudingRecipe::notAdvanced).toList();
 
         List<ExtrudingRecipe> matchingRequirementRecipes =  matchingRecipes.stream()
-                .filter(extrudingRecipe -> extrudingRecipe.meetsRequirements(this)).toList();
+                .filter(extrudingRecipe -> extrudingRecipe.meetsRequirements(this))
+                //.filter(extrudingRecipe -> filtering.test(extrudingRecipe.getResultItemStack()))
+                .toList();
 
         if(!matchingRequirementRecipes.isEmpty())
             return matchingRequirementRecipes.stream().findFirst();
@@ -237,8 +238,8 @@ public abstract class AbstractExtruderBlockEntity extends KineticBlockEntity imp
         boolean added = super.addToGoggleTooltip(tooltip, isPlayerSneaking);
 
 
-        int currentBonks = extrudingBehaviour.getCurrentCycle();
-        if(currentBonks > 0 && getCycles() > 1){
+        int currentBonks = extrudingBehaviour.getActuatedTimes();
+        if(currentBonks > 0 && extrudingBehaviour.getCycles() > 1){
             ModLang.translate("goggles.bonks",currentBonks)
                     .forGoggles(tooltip, 1);
             added = true;

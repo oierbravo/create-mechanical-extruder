@@ -39,28 +39,6 @@ public class ModRecipes {
         RECIPE_TYPES.register(eventBus);
 
     }
-    /*public static Optional<RecipeHolder<ExtrudingRecipe>> find(SingleRecipeInput pInput, Level pLevel) {
-        if(pLevel.isClientSide())
-            return Optional.empty();
-        return pLevel.getRecipeManager().getRecipeFor(ModRecipes.EXTRUDING_TYPE.get() ,pInput,pLevel);
-    }*/
-    /*ublic static <EXB extends AbstractExtruderBlockEntity> List<RecipeHolder<ExtrudingRecipe>> findMatchingIngredientExtruding(EXB extruder){
-        Level level = extruder.getLevel();
-        assert level != null;
-        if(level.isClientSide())
-            return List.of();
-        return level.getRecipeManager().getAllRecipesFor(ExtrudingRecipe.Type.INSTANCE)
-                .stream()
-                .filter(extruder::matchIngredients).toList();
-    }*//*ublic static <EXB extends AbstractExtruderBlockEntity> List<RecipeHolder<ExtrudingRecipe>> findMatchingIngredientExtruding(EXB extruder){
-        Level level = extruder.getLevel();
-        assert level != null;
-        if(level.isClientSide())
-            return List.of();
-        return level.getRecipeManager().getAllRecipesFor(ExtrudingRecipe.Type.INSTANCE)
-                .stream()
-                .filter(extruder::matchIngredients).toList();
-    }*/
 
 
     public static <EXB extends AbstractExtruderBlockEntity> List<ExtrudingRecipe> findRecipesWithMatchingIngredients(EXB extruder){

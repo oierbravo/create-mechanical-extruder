@@ -89,7 +89,9 @@ public class CreateMechanicalExtruder
                 .addPonderText(4,"extruder", "The outputs can also be extracted by automation")
                 .addPonderText(5,"extruder", "When a conbination of ingredient has multiple possible outcomes, the filter slot can specify it")
                 .addRecipeRequirementTitle("advanced_extruder", "Brass extruder")
-                .addRecipeRequirementValue("advanced_extruder", "");
+                .addRecipeRequirementValue("advanced_extruder", "")
+                .addRecipeRequirementTitle("bonks", "Bonks:")
+                .addRecipeRequirementValue("bonks", "%s");
 
 
     }
