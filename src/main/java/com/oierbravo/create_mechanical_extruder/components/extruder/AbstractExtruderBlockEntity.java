@@ -1,6 +1,6 @@
 package com.oierbravo.create_mechanical_extruder.components.extruder;
 
-import com.oierbravo.create_mechanical_extruder.ModConstants;
+import com.oierbravo.create_mechanical_extruder.ModLang;
 import com.oierbravo.create_mechanical_extruder.components.extruder.recipe.ExtrudingRecipe;
 import com.oierbravo.create_mechanical_extruder.infrastructure.config.ModConfigs;
 import com.oierbravo.create_mechanical_extruder.register.ModRecipes;
@@ -239,7 +239,7 @@ public abstract class AbstractExtruderBlockEntity extends KineticBlockEntity imp
 
         int currentBonks = extrudingBehaviour.getCurrentCycle();
         if(currentBonks > 0 && getCycles() > 1){
-            ModConstants.ModLang.translate("goggles.bonks",currentBonks)
+            ModLang.translate("goggles.bonks",currentBonks)
                     .forGoggles(tooltip, 1);
             added = true;
         }

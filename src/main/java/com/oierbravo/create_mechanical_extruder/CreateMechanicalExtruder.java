@@ -76,7 +76,7 @@ public class CreateMechanicalExtruder
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.MECHANICAL_BRASS_EXTRUDER.get(), cutout);
     }
     private void generateLangEntries(){
-        new RegistrateLangBuilder(MODID, registrate())
+        new RegistrateLangBuilder<>(MODID, registrate())
 
                 .addCreativeTab( ModConstants.DISPLAY_NAME)
                 .add("recipe.extruding", "Extruding recipe")

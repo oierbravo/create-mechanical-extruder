@@ -205,7 +205,7 @@ jar {
 publishMods {
     file = jar.archiveFile
     changelog = rootProject.file("changes/${minecraft_version}-${mod_version}.md").text
-    type = BETA
+    type = STABLE
     version = "$minecraft_version-$mod_version"
     displayName = "$mod_name $mod_version for mc$minecraft_version"
     modLoaders.add("neoforge")
