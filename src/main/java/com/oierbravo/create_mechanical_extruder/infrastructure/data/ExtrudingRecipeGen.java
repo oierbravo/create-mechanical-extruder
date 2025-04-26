@@ -139,8 +139,10 @@ public class ExtrudingRecipeGen extends AbstractMechanicalRecipeGenerator<Extrud
                 .consumeBlocksSecondBlock()
                 .withCatalyst(Blocks.END_STONE)
                 .save(recipeOutput);
-
-
+        
+        create("veridium",  AllPaletteStoneTypes.VERIDIUM.getBaseBlock().get())
+                .withBlockIngredients(Blocks.PRISMARINE, Blocks.LAVA)
+                .save(recipeOutput);
     }
     private Block block(String resourceLocationString){
         return block(ResourceLocation.parse(resourceLocationString));
