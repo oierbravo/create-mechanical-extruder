@@ -6,210 +6,267 @@ This mod it's meant to be used in modpacks. Only contains very basic recipes.
 
 Heavily inspired on Thermal Expansions Igneous Extruder.
 
-## Features
-- Andesite based kinetic block.
+## 1.21.1-2.x Version Requires Mechanicals Lib
+- [Curseforge](https://www.curseforge.com/minecraft/mc-mods/mechanicals-lib "Curseforge")
+- [Modrinth](https://modrinth.com/mod/mechanicals-lib "Modrinth")
+
+## Version support & documentation
+- 1.21.1: Supported. Documentation refers to this version.
+- 1.20.1: Only critical issues
+- 1.19.x: Unsupported: [Documentation](https://github.com/oierbravo/create-mechanical-extruder/tree/mc1.19/dev "Documentation")
+- 1.18.x: Unsupported: [Documentation](https://github.com/oierbravo/create-mechanical-extruder/tree/mc1.18/dev "Documentation")
+
+## Andesite Extruder
+- Kinetic block.
 - Filter functionality for selecting output when recipe collides.
-- Ponder scene.
 - Shift+right click with empty hand to extract content.
 - Extraction via automation.
-- JEI integration.
-- Per recipe biome, minY, maxY, speed requirements.
+
+## Brass Extruder
+- Can consume source blocks.
 
 ## Extruding recipes
-- Left and right blocks/fluids are `ingredients` in any order.
-- `result` is an Item or Block
-- Required bonks can be specified with `requiredBonks` (int)
-- Required catalyst can be specified with `catalyst` (block)
-- Required biome can be specified with `biome` (resource)
-- Required minimum Y level can be specified with `min_height` (int)
-- Required maximum Y level can be specified with `max_height` (int)
-- Required speed can be specified with `min_speed` (float)
+- JEI integration.
+- Per recipe custom requirements.
 
-CobbleGen example (already in the mod)
-```
+## BlockState
+### Block
+```json
 {
-  "type": "create_mechanical_extruder:extruding",
-  "ingredients": [
-
-    {
-      "fluid": "minecraft:water",
-      "amount": 1000
-    },
-    {
-      "fluid": "minecraft:lava",
-      "amount": 1000
-    }
-  ],
-  "result": {
-    "item": "minecraft:cobblestone"
-  }
-}
+        "blocks": "minecraft:water"
+},
 ```
-BasaltGen example (already in the mod)
-```
+### Block with State
+```json
 {
-  "type": "create_mechanical_extruder:extruding",
-  "ingredients": [
-    {
-      "fluid": "minecraft:lava",
-      "amount": 1000
-    },
-    {
-      "item": "minecraft:blue_ice"
-    }
-  ],
-  "catalyst": {
-    "item": "minecraft:soul_sand"
-  },
-  "result": {
-    "item": "minecraft:basalt"
-  }
-}
-```
-Required Bonks example
-```
-{
-    "type": "create_mechanical_extruder:extruding",
-    "ingredients": [
-      {
-        "fluid": "minecraft:lava",
-        "amount": 1000
-      },
-      {
-        "item": "minecraft:blue_ice"
-      }
-    ],
-    "catalyst": {
-      "item": "minecraft:soul_sand"
-    },
-    "result": {
-      "item": "minecraft:basalt"
-    },
-    "requiredBonks":10
-}
-```
-
-Required biome (Tag)
-```
-{
-  "type": "create_mechanical_extruder:extruding",
-  "biome": "minecraft:is_end",
-  "ingredients": [
-    {
-      "item": "minecraft:blue_ice"
-    },
-    {
-      "amount": 1000,
-      "fluid": "minecraft:lava",
-      "nbt": {}
-    }
-  ],
-  "result": {
-    "item": "minecraft:end_stone"
+  "blocks": "minecraft:furnace",
+  "state": {
+    "lit": "true"
   }
 }
 ```
 
-Required biome (Id)
-```
-{
-    "type": "create_mechanical_extruder:extruding",
-    "ingredients": [
-      {
-        "fluid": "minecraft:lava",
-        "amount": 1000
-      },
-      {
-        "item": "minecraft:blue_ice"
-      }
-    ],
-    "result": {
-      "item": "minecraft:netherrack"
+### Input BlockStates
+```json
+"blockIngredients": {
+    "first": {
+        "blocks": "minecraft:water"
     },
-    "biome":"minecraft:plains"
-}
-```
-
-Required biome (Tag)
-```
-{
-    "type": "create_mechanical_extruder:extruding",
-    "ingredients": [
-      {
-        "fluid": "minecraft:lava",
-        "amount": 1000
-      },
-      {
-        "item": "minecraft:blue_ice"
-      }
-    ],
-    "result": {
-      "item": "minecraft:netherrack"
-    },
-    "biome":"is_nether"
-}
-```
-
-Required min/max height (Y level)
-```
-{
-  "type": "create_mechanical_extruder:extruding",
-  "ingredients": [
-    {
-      "amount": 1000,
-      "fluid": "minecraft:lava",
-      "nbt": {}
-    },
-    {
-      "amount": 1000,
-      "fluid": "minecraft:water",
-      "nbt": {}
+    "second": {
+        "blocks": "minecraft:lava"
     }
-  ],
-  "max_height": "-10",
-  "min_height": "-50",
-  "result": {
-    "item": "minecraft:andesite"
-  }
 }
 ```
-
-
-Required minimum speed.
+### Catalyst BlockStates
+```json
+"catalyst": {
+  "blocks": "minecraft:obsidian"
+}
 ```
-{
-  "type": "create_mechanical_extruder:extruding",
-  "ingredients": [
+### Required bonks (optional)
+- `	"requiredBonks": 10`
+- Defines how many times must hit.
+
+### Advanced extruder (brass) per recipe (optional)
+- `"advanced":"true"`
+- Recipes requires brass extruder.
+
+## Consume blocks (advanced recipe)
+- Advanced extruder can consume blocks.
+```json
+"consumeBlocks": {
+    "first": false,
+    "second": true
+},
+```
+### Recipe Requirements
+- MinY/MaxY
+```json
+"requirements": [
     {
-      "amount": 1000,
-      "fluid": "minecraft:lava",
-      "nbt": {}
+        "type": "mechanicals:min_y",
+        "value": 0
     },
     {
-      "amount": 1000,
-      "fluid": "minecraft:water",
-      "nbt": {}
+        "type": "mechanicals:max_y",
+        "value": 60
     }
-  ],
-  "max_height": "64",
-  "min_speed": "128.0",
-  "result": {
-    "item": "minecraft:deepslate"
-  }
-}
+],
 ```
-### KubeJS integration:
+- MinSpeed/MaxSpeed
+```json
+"requirements": [
+    {
+        "type": "mechanicals:max_speed",
+        "value": 4.0
+    }
+],
+```
+- Biome
+```json
+"requirements": [
+    {
+        "type": "mechanicals:biome",
+        "value": "minecraft:plains"
+    }
+],
+```
+- BiomeTag
+```json
+"requirements": [
+    {
+        "type": "mechanicals:biome_tag",
+        "value": "minecraft:is_nether"
+    }
+],
+```
+
+
+### KubeJS
+- Remove al Extruding recipes.
+```js
+ServerEvents.recipes(event => {
+  event.remove({ type: 'create_mechanical_extruder:extruding' })
+})
+```
+- Chanced output (binding)
+```js
+Output.of('minecraft:clay', 0.5)
+Output.of('4xminecraft:clay', 0.5)
+```
+- BlockPredicate (binding)
+```js
+BlockPredicate.of('minecraft:sand')
+```
+
+- RecipeRequirement (binding)
+```js
+RecipeRequirement.minY(int) //ex: RecipeRequirement.minY(-10)
+RecipeRequirement.maxY(int) //ex: RecipeRequirement.maxY(20)
+RecipeRequirement.minSpeed(float) //ex: RecipeRequirement.minSpeed(2.0)
+RecipeRequirement.maxSpeed(float) //ex: RecipeRequirement.maxSpeed(160)
+RecipeRequirement.biome(string) //ex: RecipeRequirement.biome("minecraft:plains")
+RecipeRequirement.maxSpeed(string)  //ex: RecipeRequirement.biome("minecraft:plains")
+```
+
+- Add recipes
+```js
+ServerEvents.recipes(event => {
+  /** 
+    create_mechanical_extruder.extruding(Output result, BlockPredicate[] inputs)
+    .catalys(BlockPredicate catalyst) // optional, default: empty
+    .advanced(true) //optional, default: false
+    .consumeBlock(Couple consume) //optional, default: empty
+  **/
+  
+    event.recipes.create_mechanical_extruder.extruding(Item.of('minecraft:dirt'),[BlockPredicate.of('minecraft:lava'),BlockPredicate.of('minecraft:stone')])
+    	    .catalyst('minecraft:clay')})
+```
+- Some examples:
+```js
+//Minimal
+        event.recipes.create_mechanical_extruder.extruding(Item.of('minecraft:redstone_block'),[BlockPredicate.of('minecraft:lava'),BlockPredicate.of('minecraft:stone')])
+
+        //Catalyst
+    	event.recipes.create_mechanical_extruder.extruding(Item.of('minecraft:dirt'),[BlockPredicate.of('minecraft:lava'),BlockPredicate.of('minecraft:stone')])
+    	    .catalyst('minecraft:clay')
+
+        //Bonks
+    	event.recipes.create_mechanical_extruder.extruding(Item.of('minecraft:sand'),[BlockPredicate.of('minecraft:lava'),BlockPredicate.of('minecraft:stone')])
+    	    .requiredBonks(10)
+
+        //Chanced output
+        event.recipes.create_mechanical_extruder.extruding(Output.of('minecraft:red_sand',0.5),[BlockPredicate.of('minecraft:lava'),BlockPredicate.of('minecraft:stone')])
+
+        //Chanced output & bonks
+        event.recipes.create_mechanical_extruder.extruding(Output.of('minecraft:birch_planks',0.5),[BlockPredicate.of('minecraft:lava'),BlockPredicate.of('minecraft:stone')])
+            .requiredBonks(5)
+
+        //Advanced extruder
+    	event.recipes.create_mechanical_extruder.extruding(Item.of('minecraft:obsidian'),[BlockPredicate.of('minecraft:sand'),BlockPredicate.of('minecraft:gravel')])
+    	    .catalyst(BlockPredicate.of("minecraft:dirt"))
+    	    .advanced(true)
+
+    	//Advanced extruder + consume blocks
+        event.recipes.create_mechanical_extruder.extruding(Item.of('minecraft:birch_planks'),[BlockPredicate.of('minecraft:sand'),BlockPredicate.of('minecraft:gravel')])
+            .catalyst(BlockPredicate.of("minecraft:dirt"))
+            .consumeBlocks(true)
+            .advanced(true)
+
+        //Advanced extruder + consume different blocks
+        event.recipes.create_mechanical_extruder.extruding(Item.of('minecraft:obsidian'),[BlockPredicate.of('minecraft:sand'),BlockPredicate.of('minecraft:gravel')])
+            .catalyst(BlockPredicate.of("minecraft:dirt"))
+            .consumeBlocks([true,false])
+            .advanced(true)
+
+        //Biome requirement
+        event.recipes.create_mechanical_extruder.extruding(Item.of('minecraft:iron_block'),[BlockPredicate.of('minecraft:sand'),BlockPredicate.of('minecraft:gravel')]).catalyst(BlockPredicate.of("minecraft:dirt"))
+            .requirements(
+                [
+                    RecipeRequirement.biome("minecraft:plains")
+                ]
+            );
+
+        //Biome Tag requirement
+        event.recipes.create_mechanical_extruder.extruding(Item.of('minecraft:gold_block'),[BlockPredicate.of('minecraft:sand'),BlockPredicate.of('minecraft:gravel')]).catalyst(BlockPredicate.of("minecraft:dirt"))
+            .requirements(
+                [
+            	    RecipeRequirement.biomeTag("minecraft:is_nether")
+                ]
+            );
+
+        //MinY & MaxY requirement
+        event.recipes.create_mechanical_extruder.extruding(Item.of('minecraft:coal_block'),[BlockPredicate.of('minecraft:sand'),BlockPredicate.of('minecraft:gravel')]).catalyst(BlockPredicate.of("minecraft:dirt"))
+            .requirements(
+                [
+                    RecipeRequirement.minY(-10),
+                    RecipeRequirement.maxY(12),
+                ]
+    	    );
+        //MinSpeed & MaxSpeed requirement
+        event.recipes.create_mechanical_extruder.extruding(Item.of('minecraft:dirt'),[BlockPredicate.of('minecraft:sand'),BlockPredicate.of('minecraft:gravel')]).catalyst(BlockPredicate.of("minecraft:dirt"))
+    	    .requirements(
+                [
+                    RecipeRequirement.minSpeed(1.0),
+                    RecipeRequirement.maxSpeed(16.0),
+                ]
+            );
+
+        //All requirements together
+    	event.recipes.create_mechanical_extruder.extruding(Item.of('minecraft:emerald_block'),[BlockPredicate.of('minecraft:sand'),BlockPredicate.of('minecraft:gravel')]).catalyst(BlockPredicate.of("minecraft:dirt"))
+    	.requirements(
+    	    [
+    	        RecipeRequirement.minSpeed(6.0),
+    	        RecipeRequirement.maxSpeed(16.0),
+    	        RecipeRequirement.minY(10),
+    	        RecipeRequirement.maxY(12),
+    	        RecipeRequirement.biomeTag("minecraft:is_nether")
+
+    	    ]
+    	);
+
+        //Everything together
+        event.recipes.create_mechanical_extruder.extruding(Item.of('minecraft:emerald_block'),[BlockPredicate.of('minecraft:sand'),BlockPredicate.of('minecraft:gravel')])
+        .catalyst(BlockPredicate.of("minecraft:dirt"))
+        .advanced(true)
+        .consumeBlocks(true)
+    	.requirements(
+    	    [
+    	        RecipeRequirement.minSpeed(16.0),
+    	        RecipeRequirement.minY(10),
+    	        RecipeRequirement.maxY(12),
+    	        RecipeRequirement.biomeTag("minecraft:is_nether")
+
+    	    ]
+    	);
+
+    	// Funny things
+    	// Flower pots
+        event.recipes.create_mechanical_extruder.extruding(Item.of('minecraft:glowstone'),[BlockPredicate.of('minecraft:potted_dandelion'),BlockPredicate.of('minecraft:potted_poppy')])
 
 ```
-//event.recipes.createsifterSifting(output, input[])
 
-//EXAMPLE
-event.recipes.createMechanicalExtruderExtruding(Item.of('minecraft:sand'),[Item.of('minecraft:cobblestone'),Item.of('minecraft:stone')])
-//With catalyst
-event.recipes.createMechanicalExtruderExtruding(Item.of('minecraft:dirt'),[Item.of('minecraft:sand'),Item.of('minecraft:stone')]).withCatalyst('minecraft:clay')
-// With bonks 
-event.recipes.createMechanicalExtruderExtruding(Item.of('minecraft:dirt'),[Fluid.of('minecraft:lava'),Item.of('minecraft:stone')]).withCatalyst('minecraft:clay').requiredBonks(10)
-```
+
 
 **Thanks to the Creators of Create.**
 

@@ -143,6 +143,13 @@ public class ExtrudingRecipeGen extends AbstractMechanicalRecipeGenerator<Extrud
         create("veridium",  AllPaletteStoneTypes.VERIDIUM.getBaseBlock().get())
                 .withBlockIngredients(Blocks.PRISMARINE, Blocks.LAVA)
                 .save(recipeOutput);
+
+
+        /*create("test_block_with_state",  AllPaletteStoneTypes.VERIDIUM.getBaseBlock().get())
+                .withBlockIngredients(Blocks.PRISMARINE, Blocks.LAVA)
+                .withCatalyst(BlockPredicateBuilder.from("minecraft:furnace").setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(FurnaceBlock.LIT, true)).build())
+                .save(recipeOutput);*/
+
     }
     private Block block(String resourceLocationString){
         return block(ResourceLocation.parse(resourceLocationString));

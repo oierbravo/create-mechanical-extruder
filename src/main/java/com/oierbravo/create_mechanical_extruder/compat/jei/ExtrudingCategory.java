@@ -24,6 +24,7 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.critereon.BlockPredicate;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
@@ -32,11 +33,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.neoforged.neoforge.fluids.FluidStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
@@ -177,43 +180,12 @@ public class ExtrudingCategory extends CreateRecipeCategory<ExtrudingRecipe> {
         RecipeRequirementRenderer.drawRequirements(recipe,graphics, 63,4);
 
     }
-
-    /*protected void drawRequirements(ExtrudingRecipe recipe, GuiGraphics guiGraphics, int x, int y){
-        Minecraft minecraft = Minecraft.getInstance();
-        Font fontRenderer = minecraft.font;
-        int index = 0;
-        int distance = 9;
-        int offsetX = 5;
-        int offsetY = 14;
-
-        guiGraphics.drawString(fontRenderer, LibLang.translate("ui.recipe.requirements.title").component().withStyle(), x, y, 0xFFFFFFFF, true);
-
-
-
-        if(recipe.getRecipeRequirements().isEmpty() && !recipe.isAdvanced()){
-            guiGraphics.drawString(fontRenderer, LibLang.translate("ui.recipe_requirement.none.tooltip").component().withStyle(),x + offsetX, y + offsetY + distance * index, 0xFF808080, false);
-            return;
-        }
-
-        if(recipe.isAdvanced()){
-            guiGraphics.drawString(fontRenderer, ModConstants.ModLang.translate("ui.recipe_requirement.advanced.title").component(), x + offsetX, y + offsetY + distance * index, 0xFF808080, false);
-            index++;
-        }
-
-        List<Pair<Component,Component>> requirementComponents = recipe.getRequirementsTooltips();
-        for( Pair<Component,Component> pair : requirementComponents){
-            int oneLinerLenght = pair.getSecond().getString().length() + pair.getSecond().getString().length();
-            if(oneLinerLenght < 19){
-                guiGraphics.drawString(fontRenderer, pair.getFirst().plainCopy().append(" ").append(pair.getSecond()), x + offsetX, y + offsetY + distance * index, 0xFF808080, false);
-                index++;
-                continue;
-            }
-            guiGraphics.drawString(fontRenderer, pair.getFirst(), x + offsetX, y + offsetY + distance * index, 0xFF808080, false);
-            index++;
-            guiGraphics.drawString(fontRenderer, pair.getSecond(), x + offsetX * 2, y + offsetY + distance * index, 0xFF808080, false);
-            index++;
-
-        }
-
-    }*/
+    public @Nullable ResourceLocation getRegistryName(ExtrudingRecipe recipe) {
+        assert Minecraft.getInstance().level != null;
+        return Minecraft.getInstance().level.getRecipeManager().getAllRecipesFor(ExtrudingRecipe.Type.INSTANCE).stream()
+                .filter(recipeHolder -> recipeHolder.value().equals(recipe))
+                .map(RecipeHolder::id)
+                .findFirst()
+                .orElse(null);
+    }
 }
