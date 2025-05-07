@@ -222,6 +222,7 @@ publishMods {
             clientRequired = true
             serverRequired = true
             requires("create")
+            requires("mechanicals-lib")
             optional("jei", "kubejs","crafttweaker")
 
         }
@@ -233,6 +234,7 @@ publishMods {
             projectId = "${modrinth_id}"
             minecraftVersions.add(minecraft_version)
             requires("create")
+            requires("mechanicals-lib")
             optional("jei")
         }
     }
