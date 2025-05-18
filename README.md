@@ -6,6 +6,8 @@ This mod it's meant to be used in modpacks. Only contains very basic recipes.
 
 Heavily inspired on Thermal Expansions Igneous Extruder.
 
+## [Dedicated wiki](https://wiki.mechanicalmods.net/mods/mechanical-extruder/)
+
 ## 1.21.1-2.x Version Requires Mechanicals Lib
 - [Curseforge](https://www.curseforge.com/minecraft/mc-mods/mechanicals-lib "Curseforge")
 - [Modrinth](https://modrinth.com/mod/mechanicals-lib "Modrinth")
