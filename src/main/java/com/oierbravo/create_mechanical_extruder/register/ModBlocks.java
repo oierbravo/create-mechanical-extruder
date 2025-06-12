@@ -6,9 +6,9 @@ import com.oierbravo.create_mechanical_extruder.components.extruder.brass.BrassE
 import com.oierbravo.create_mechanical_extruder.infrastructure.config.ModStress;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllTags;
+import com.simibubi.create.api.data.recipe.MechanicalCraftingRecipeBuilder;
 import com.simibubi.create.foundation.data.BlockStateGen;
 import com.simibubi.create.foundation.data.SharedProperties;
-import com.simibubi.create.foundation.data.recipe.MechanicalCraftingRecipeBuilder;
 import com.tterrag.registrate.providers.RegistrateRecipeProvider;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import net.minecraft.data.recipes.RecipeCategory;

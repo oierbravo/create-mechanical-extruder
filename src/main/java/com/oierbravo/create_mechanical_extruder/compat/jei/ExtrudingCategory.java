@@ -2,15 +2,14 @@ package com.oierbravo.create_mechanical_extruder.compat.jei;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.oierbravo.create_mechanical_extruder.ModConstants;
 import com.oierbravo.create_mechanical_extruder.ModLang;
 import com.oierbravo.create_mechanical_extruder.compat.jei.animations.AnimatedBrassExtruder;
 import com.oierbravo.create_mechanical_extruder.compat.jei.animations.AnimatedExtruder;
 import com.oierbravo.create_mechanical_extruder.components.extruder.recipe.ExtrudingRecipe;
 import com.oierbravo.create_mechanical_extruder.register.ModBlocks;
 import com.oierbravo.create_mechanical_extruder.register.ModRecipes;
+import com.oierbravo.mechanicals.compat.jei.CreateRecipeCategoryBuilder;
 import com.oierbravo.mechanicals.compat.jei.RecipeRequirementRenderer;
-import com.simibubi.create.compat.jei.EmptyBackground;
 import com.simibubi.create.compat.jei.ItemIcon;
 import com.simibubi.create.compat.jei.category.CreateRecipeCategory;
 import com.simibubi.create.content.processing.recipe.ProcessingOutput;
@@ -21,25 +20,20 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import mezz.jei.api.recipe.RecipeType;
 import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.critereon.BlockPredicate;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.neoforged.neoforge.fluids.FluidStack;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
@@ -54,21 +48,15 @@ public class ExtrudingCategory extends CreateRecipeCategory<ExtrudingRecipe> {
     private AnimatedExtruder extruder = new AnimatedExtruder();
     private AnimatedBrassExtruder brassExtruder = new AnimatedBrassExtruder();
 
-    public final static ResourceLocation UID = ModConstants.asResource("extruding");
-    public final static RecipeType<ExtrudingRecipe>  TYPE = new mezz.jei.api.recipe.RecipeType<>(UID, ExtrudingRecipe.class);
-
-    public final static CreateRecipeCategory.Info<ExtrudingRecipe> INFO = new CreateRecipeCategory.Info<>(
-            TYPE,
-            ModLang.translate("recipe.extruding").component(),
-            new EmptyBackground(177, 85),
-            new ItemIcon(() -> new ItemStack(ModBlocks.MECHANICAL_EXTRUDER.asItem())),
-            ModRecipes::getAllHolders,
-            List.of(
-                    ModBlocks.MECHANICAL_EXTRUDER::asStack,
-                    ModBlocks.MECHANICAL_BRASS_EXTRUDER::asStack
-            )
-    );
-
+    @SuppressWarnings("unchecked")
+    public final static CreateRecipeCategory<ExtrudingRecipe> INFO = CreateRecipeCategoryBuilder
+            .builder(ExtrudingRecipe.class)
+            .addRecipes(ModRecipes::getAllHolders)
+            .catalyst(ModBlocks.MECHANICAL_EXTRUDER)
+            .catalyst(ModBlocks.MECHANICAL_BRASS_EXTRUDER)
+            .icon(new ItemIcon(() -> new ItemStack(ModBlocks.MECHANICAL_EXTRUDER.asItem())))
+            .emptyBackground(177, 85)
+            .build("extruding", ExtrudingCategory::new);
 
     public ExtrudingCategory(Info<ExtrudingRecipe> info) {
         super(info);
@@ -179,13 +167,5 @@ public class ExtrudingCategory extends CreateRecipeCategory<ExtrudingRecipe> {
         AllGuiTextures.JEI_DOWN_ARROW.render(graphics, 42, 50); //Output arrow
         RecipeRequirementRenderer.drawRequirements(recipe,graphics, 63,4);
 
-    }
-    public @Nullable ResourceLocation getRegistryName(ExtrudingRecipe recipe) {
-        assert Minecraft.getInstance().level != null;
-        return Minecraft.getInstance().level.getRecipeManager().getAllRecipesFor(ExtrudingRecipe.Type.INSTANCE).stream()
-                .filter(recipeHolder -> recipeHolder.value().equals(recipe))
-                .map(RecipeHolder::id)
-                .findFirst()
-                .orElse(null);
     }
 }
