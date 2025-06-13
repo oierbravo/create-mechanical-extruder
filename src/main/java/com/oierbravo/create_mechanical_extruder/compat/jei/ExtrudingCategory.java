@@ -2,6 +2,7 @@ package com.oierbravo.create_mechanical_extruder.compat.jei;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.oierbravo.create_mechanical_extruder.ModConstants;
 import com.oierbravo.create_mechanical_extruder.ModLang;
 import com.oierbravo.create_mechanical_extruder.compat.jei.animations.AnimatedBrassExtruder;
 import com.oierbravo.create_mechanical_extruder.compat.jei.animations.AnimatedExtruder;
@@ -56,7 +57,7 @@ public class ExtrudingCategory extends CreateRecipeCategory<ExtrudingRecipe> {
             .catalyst(ModBlocks.MECHANICAL_BRASS_EXTRUDER)
             .icon(new ItemIcon(() -> new ItemStack(ModBlocks.MECHANICAL_EXTRUDER.asItem())))
             .emptyBackground(177, 85)
-            .build("extruding", ExtrudingCategory::new);
+            .build(ModConstants.asResource("extruding"), ExtrudingCategory::new);
 
     public ExtrudingCategory(Info<ExtrudingRecipe> info) {
         super(info);

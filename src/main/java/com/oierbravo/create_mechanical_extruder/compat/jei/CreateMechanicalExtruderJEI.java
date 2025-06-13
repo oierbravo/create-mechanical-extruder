@@ -26,22 +26,17 @@ public class CreateMechanicalExtruderJEI implements IModPlugin {
 
     @Override
     public void registerCategories(IRecipeCategoryRegistration registration) {
-        //CreateRecipeCategory.Factory<ExtrudingRecipe> factory = ExtrudingCategory::new;
-        //CreateRecipeCategory<ExtrudingRecipe> category = factory.create(ExtrudingCategory.INFO);
-
         registration.addRecipeCategories(ExtrudingCategory.INFO);
     }
 
     @Override
     public void registerRecipes(IRecipeRegistration registration) {
         ExtrudingCategory.INFO.registerRecipes(registration);
-        //registration.addRecipes(ExtrudingCategory.TYPE,ExtrudingCategory.INFO.recipes().get().stream().map(RecipeHolder::value).toList());
     }
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
         ExtrudingCategory.INFO.registerCatalysts(registration);
-        //ExtrudingCategory.INFO.catalysts().forEach(supplier -> registration.addRecipeCatalyst(supplier.get(),ExtrudingCategory.TYPE));
     }
 
 }
