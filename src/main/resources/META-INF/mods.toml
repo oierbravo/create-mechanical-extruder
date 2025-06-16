@@ -27,6 +27,6 @@ Gather blocks from fluid combinations.
 [[dependencies.create_mechanical_extruder]]
     modId = "create"
     mandatory = true
-    versionRange="[6.0.4,6.1.0)"
+    versionRange="[6.0.6,6.1.0)"
     ordering = "AFTER"
     side = "BOTH"

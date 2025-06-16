@@ -1,8 +1,12 @@
 plugins {
     id "idea"
-    id "net.neoforged.moddev.legacyforge" version "2.0.74"
+    id 'java-library'
+    id "net.neoforged.moddev.legacyforge" version "2.0.91"
     id "dev.ithundxr.silk" version "0.11.15"
     id "me.modmuss50.mod-publish-plugin" version "0.8.3"
+    id "maven-publish"
+    id "org.jetbrains.gradle.plugin.idea-ext" version "1.1.8" // https://github.com/JetBrains/gradle-idea-ext-plugin
+
 }
 apply from: "./gradle/java.gradle"
 apply from: "gradle/property_loader.gradle"
@@ -135,18 +139,17 @@ repositories {
             includeGroup "com.github.llamalad7.mixinextras"
         }
     }
-
-    maven {
-        url "https://maven.saps.dev/minecraft"
-        content {
-            includeGroup "dev.latvian.mods"
-            includeGroup "dev.ftb.mods"
-        }
-    }
     maven {
         url "https://maven.architectury.dev/"
         content {
             includeGroup "dev.architectury"
+        }
+    }
+    maven {
+        url "https://maven.latvian.dev/releases"
+        content {
+            includeGroup "dev.latvian.mods"
+            includeGroup "dev.latvian.apps"
         }
     }
     mavenLocal()
