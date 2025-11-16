@@ -12,6 +12,7 @@ import net.createmod.catnip.data.Couple;
 import net.minecraft.advancements.critereon.BlockPredicate;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeInput;
@@ -128,7 +129,7 @@ public class ExtrudingRecipe extends AbstractMechanicalRecipe<RecipeInput, Extru
 
     @Override
     public ItemStack assemble(RecipeInput recipeInput, HolderLookup.Provider provider) {
-        return result.rollOutput();
+        return getResultItem(provider);
     }
 
     @Override
@@ -138,19 +139,25 @@ public class ExtrudingRecipe extends AbstractMechanicalRecipe<RecipeInput, Extru
 
 
     @Override
-    public @NotNull ItemStack getResultItem(HolderLookup.Provider provider) {
-        return result.rollOutput();
+    public ItemStack getResultItem(HolderLookup.Provider provider) {
+        return getRollableResult().getStack().isEmpty() ? ItemStack.EMPTY
+                : getRollableResult()
+                .getStack();
     }
+
+    public ProcessingOutput getRollableResult() {
+        return result;
+    }
+
 
     @Override
     public @NotNull RecipeSerializer<?> getSerializer() {
         return ExtrudingRecipeSerializer.INSTANCE;
-
     }
 
 
-    public ItemStack rollOutput() {
-        return result.rollOutput();
+    public ItemStack rollOutput(RandomSource source) {
+        return result.rollOutput(source);
     }
     public ItemStack getResultItemStack(){
         return result.getStack();

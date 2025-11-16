@@ -132,11 +132,10 @@ public abstract class AbstractExtruderBlockEntity extends KineticBlockEntity imp
         if(simulate)
             return true;
 
-        ItemStack output = extrudingRecipe.rollOutput();
+        ItemStack output = extrudingRecipe.rollOutput(level.random);
         if(outputInventory.getStackInSlot(0).isEmpty()){
-
             outputInventory.setStackInSlot(0, output);
-        } else if(outputInventory.getStackInSlot(0).is(extrudingRecipe.getResult().getStack().getItem())) {
+        } else if(outputInventory.getStackInSlot(0).is(output.getItem())) {
             outputInventory.getStackInSlot(0).grow(output.getCount());
         }
 
