@@ -51,6 +51,27 @@ public abstract class AbstractExtruderBlockEntity extends KineticBlockEntity imp
 
     public abstract boolean isAdvancedMachine();
 
+    // Recipe cache: compute once per tick = more tps (I hope).
+    // Invalidates when side blocks, facing direction, or inventory change.
+    @Nullable
+    private ExtrudingRecipe cachedRecipe = null;
+    private boolean cachedRecipeDirty = true;
+    private int cachedLeftX = 0, cachedLeftY = 0, cachedLeftZ = 0;
+    private int cachedRightX = 0, cachedRightY = 0, cachedRightZ = 0;
+    private Direction cachedFacing = Direction.NORTH;
+
+    // Funny function
+    private void spoilRecipe() {
+        cachedRecipeDirty = true;
+    }
+
+    private void refreshCachedRecipe() {
+        if (!cachedRecipeDirty || level == null)
+            return;
+        cachedRecipe = doFindRecipe();
+        cachedRecipeDirty = false;
+    }
+
     public final ItemStackHandler outputInventory = new ItemStackHandler(1) {
         @Override
         public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
@@ -59,11 +80,32 @@ public abstract class AbstractExtruderBlockEntity extends KineticBlockEntity imp
 
         @Override
         protected void onContentsChanged(int slot) {
+            spoilRecipe();
             setChanged();
             assert level != null;
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
         }
     };
+
+    @Override
+    public void tick() {
+        super.tick();
+        // Invalidate cache when side blocks or facing direction change
+        Direction facing = getBlockState().getValue(HORIZONTAL_FACING);
+        BlockPos pos = getBlockPos();
+        BlockPos leftPos = pos.relative(directionLefttBlockMap.get(facing));
+        BlockPos rightPos = pos.relative(directionRightBlockMap.get(facing));
+
+        if (cachedRecipeDirty
+            || leftPos.getX() != cachedLeftX || leftPos.getY() != cachedLeftY || leftPos.getZ() != cachedLeftZ
+            || rightPos.getX() != cachedRightX || rightPos.getY() != cachedRightY || rightPos.getZ() != cachedRightZ
+            || facing != cachedFacing) {
+            spoilRecipe();
+            cachedLeftX = leftPos.getX(); cachedLeftY = leftPos.getY(); cachedLeftZ = leftPos.getZ();
+            cachedRightX = rightPos.getX(); cachedRightY = rightPos.getY(); cachedRightZ = rightPos.getZ();
+            cachedFacing = facing;
+        }
+    }
     public AbstractExtruderBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
 
@@ -76,13 +118,14 @@ public abstract class AbstractExtruderBlockEntity extends KineticBlockEntity imp
 
     @Override
     public boolean isSpeedRequirementFulfilled() {
-        Optional<ExtrudingRecipe> recipe = getRecipe();
-        if(recipe.isEmpty())
+        refreshCachedRecipe();
+        ExtrudingRecipe recipe = cachedRecipe;
+        if(recipe == null)
             return super.isSpeedRequirementFulfilled();
-        if(recipe.get().getRequirement(MechanicalRecipeRequirementTypes.MIN_SPEED.get()).isPresent())
-            return recipe.get().getRequirement(MechanicalRecipeRequirementTypes.MIN_SPEED.get()).get().test(level, this);
-        if(recipe.get().getRequirement(MechanicalRecipeRequirementTypes.MAX_SPEED.get()).isPresent())
-            return recipe.get().getRequirement(MechanicalRecipeRequirementTypes.MAX_SPEED.get()).get().test(level, this);
+        if(recipe.getRequirement(MechanicalRecipeRequirementTypes.MIN_SPEED.get()).isPresent())
+            return recipe.getRequirement(MechanicalRecipeRequirementTypes.MIN_SPEED.get()).get().test(level, this);
+        if(recipe.getRequirement(MechanicalRecipeRequirementTypes.MAX_SPEED.get()).isPresent())
+            return recipe.getRequirement(MechanicalRecipeRequirementTypes.MAX_SPEED.get()).get().test(level, this);
         return super.isSpeedRequirementFulfilled();
     }
 
@@ -119,12 +162,18 @@ public abstract class AbstractExtruderBlockEntity extends KineticBlockEntity imp
 
     @Override
     public boolean tryProcess(boolean simulate) {
-        Optional<ExtrudingRecipe> recipe = getRecipe();
-        if(recipe.isEmpty()){
+        // Skip recipe scan when output is full
+        ItemStack existing = outputInventory.getStackInSlot(0);
+        if (!existing.isEmpty() && existing.getCount() >= existing.getMaxStackSize()) {
+            return false;
+        }
+
+        refreshCachedRecipe();
+        ExtrudingRecipe extrudingRecipe = cachedRecipe;
+        if(extrudingRecipe == null){
             recipeRequirementsBehaviour.cleanRequirements();
             return false;
         }
-        ExtrudingRecipe extrudingRecipe = recipe.get();
 
         if(!recipeRequirementsBehaviour.checkRequirements(extrudingRecipe))
             return false;
@@ -174,8 +223,8 @@ public abstract class AbstractExtruderBlockEntity extends KineticBlockEntity imp
 
     @Override
     public int getCycles() {
-        Optional<ExtrudingRecipe> extrudingRecipe = getRecipe();
-        return extrudingRecipe.map(ExtrudingRecipe::getRequiredBonks).orElse(1);
+        refreshCachedRecipe();
+        return cachedRecipe != null ? cachedRecipe.getRequiredBonks() : 1;
     }
 
     public float getRenderedPoleOffset(float partialTicks) {
@@ -189,25 +238,31 @@ public abstract class AbstractExtruderBlockEntity extends KineticBlockEntity imp
     }
 
     public Optional<ExtrudingRecipe> getRecipe() {
+        refreshCachedRecipe();
+        return Optional.ofNullable(cachedRecipe);
+    }
+
+    private ExtrudingRecipe doFindRecipe() {
         List<ExtrudingRecipe> matchingRecipes = ModRecipes.findRecipesWithMatchingIngredients(this);
         if(matchingRecipes.isEmpty())
-            return Optional.empty();
+            return null;
 
         if(!isAdvancedMachine())
             matchingRecipes = matchingRecipes.stream().filter(ExtrudingRecipe::notAdvanced).toList();
 
         List<ExtrudingRecipe> matchingRequirementRecipes =  matchingRecipes.stream()
                 .filter(extrudingRecipe -> extrudingRecipe.meetsRequirements(this))
-                //.filter(extrudingRecipe -> filtering.test(extrudingRecipe.getResultItemStack()))
                 .toList();
 
         if(!matchingRequirementRecipes.isEmpty())
-            return matchingRequirementRecipes.stream().findFirst();
-        return matchingRecipes.stream().findAny();
+            return matchingRequirementRecipes.get(0);
+        return matchingRecipes.get(0);
     }
 
     @Override
     public void invalidate() {
+        cachedRecipe = null;
+        cachedRecipeDirty = true;
         super.invalidate();
         invalidateCapabilities();
 
